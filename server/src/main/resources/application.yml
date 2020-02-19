@@ -1,0 +1,36 @@
+app:
+  name: anuglar2-spring-jwt
+
+jwt:
+  header: Authorization
+  expires_in: 600 # 10 minutes
+  secret: queenvictoria
+  cookie: AUTH-TOKEN
+
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.bfwg: DEBUG
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+  jpa:
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+
+
+
