@@ -1,3 +1,74 @@
-<p>
-  This is dashboard page!
-</p>
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="position">
+    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="weight">
+    <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="symbol">
+    <mat-header-cell *matHeaderCellDef> Symbol </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+  </ng-container>
+
+  <!-- Action Column -->
+  <ng-container matColumnDef="action">
+    <mat-header-cell  *matHeaderCellDef > Action </mat-header-cell>
+    <mat-cell *matCellDef="let element" >
+      <button mat-button (click)="confirmDialog(element)">Confirm</button>
+    </mat-cell>
+  </ng-container>
+
+
+<!--  <ng-container matColumnDef="action">-->
+<!--    <th mat-header-cell *matHeaderCellDef> Action </th>-->
+<!--    <td mat-cell *matCellDef="let element" >-->
+<!--      <a (click)="confirmDialog(element)">Confirm</a>-->
+<!--    </td>-->
+<!--  </ng-container>-->
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons
+></mat-paginator>
+
+
+<form (ngSubmit)="Submit()">
+
+  <mat-form-field>
+    <mat-label>Toppings</mat-label>
+    <mat-select [formControl]="tempsFC" multiple>
+      <mat-option *ngFor="let temp of tempList" [value]="temp">{{temp}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="pushcontent">
+    <mat-form-field>
+      <mat-label>Notification Message</mat-label>
+      <textarea matInput
+                placeholder="Message"
+                [formControl]="messageFC">
+  </textarea>
+    </mat-form-field>
+
+    <button mat-raised-button type="submit" color="primary">SEND</button>
+  </div>
+</form>

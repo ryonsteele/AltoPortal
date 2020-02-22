@@ -4,6 +4,7 @@ import {ApiService} from './api.service';
 import {UserService} from './user.service';
 import {ConfigService} from './config.service';
 import {map} from 'rxjs/operators';
+import {Observable} from "rxjs";
 
 @Injectable()
 export class AuthService {
@@ -20,11 +21,13 @@ export class AuthService {
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded'
     });
+
     const body = `username=${user.username}&password=${user.password}`;
     return this.apiService.post(this.config.login_url, body, loginHeaders)
       .pipe(map(() => {
         console.log('Login success');
         this.userService.getMyInfo().subscribe();
+        // this.userService.initUser();
       }));
   }
 

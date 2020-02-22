@@ -1,11 +1,12 @@
 package com.bfwg;
 
-import com.bfwg.model.Authority;
-import com.bfwg.model.User;
-import com.bfwg.model.UserRoleName;
-import com.bfwg.repository.UserRepository;
-import com.bfwg.security.auth.AnonAuthentication;
-import com.bfwg.security.auth.TokenBasedAuthentication;
+import com.alto.Application;
+import com.alto.model.Authority;
+import com.alto.model.User;
+import com.alto.model.UserRoleName;
+import com.alto.repository.UserRepository;
+import com.alto.security.auth.AnonAuthentication;
+import com.alto.security.auth.TokenBasedAuthentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

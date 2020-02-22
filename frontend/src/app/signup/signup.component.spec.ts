@@ -13,7 +13,6 @@ import {MockApiService} from '../service/mocks';
 import {AdminComponent} from '../admin';
 import {NotFoundComponent} from '../not-found';
 import {ForbiddenComponent} from '../forbidden';
-import {GithubComponent} from '../component/github';
 import {ApiCardComponent} from '../component/api-card';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -38,8 +37,7 @@ describe('SignupComponent', () => {
         AdminComponent,
         NotFoundComponent,
         ForbiddenComponent,
-        ApiCardComponent,
-        GithubComponent],
+        ApiCardComponent],
       providers: [
         {
           provide: ApiService,

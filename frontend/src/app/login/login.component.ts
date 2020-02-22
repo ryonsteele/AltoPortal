@@ -13,7 +13,6 @@ import {takeUntil} from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   title = 'Login';
-  githubLink = 'https://github.com/bfwg/angular-spring-starter';
   form: FormGroup;
 
   /**
@@ -71,10 +70,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           alert('Server error');
         }
       });
-  }
-
-  repository() {
-    window.location.href = this.githubLink;
   }
 
   onSubmit() {

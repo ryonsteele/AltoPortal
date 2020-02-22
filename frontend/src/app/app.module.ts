@@ -19,8 +19,14 @@ import {ForbiddenComponent} from './forbidden/forbidden.component';
 import {AdminComponent} from './admin/admin.component';
 import {SignupComponent} from './signup/signup.component';
 import {AngularMaterialModule} from './angular-material/angular-material.module';
-import {MatIconRegistry} from '@angular/material';
-import {DashboardComponent} from "./dashboard";
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {MatIconRegistry,
+  MatTableModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatButtonModule
+} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -46,6 +52,12 @@ import {DashboardComponent} from "./dashboard";
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+    MatTableModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatInputModule,
     AngularMaterialModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

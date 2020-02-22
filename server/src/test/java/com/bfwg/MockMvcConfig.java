@@ -3,7 +3,7 @@ package com.bfwg;
 /**
  * Created by fan.jin on 2017-01-14.
  */
-import com.bfwg.security.auth.TokenAuthenticationFilter;
+import com.alto.security.auth.TokenAuthenticationFilter;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.springframework.beans.factory.annotation.Autowired;

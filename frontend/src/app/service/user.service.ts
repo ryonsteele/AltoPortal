@@ -8,7 +8,7 @@ import {map} from 'rxjs/operators';
 })
 export class UserService {
 
-  currentUser;
+   currentUser;
 
   constructor(
     private apiService: ApiService,

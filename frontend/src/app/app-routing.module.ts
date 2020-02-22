@@ -33,13 +33,13 @@ export const routes: Routes = [
     canActivate: [LoginGuard]
   },
   {
-    path: 'admin',
-    component: AdminComponent,
-    canActivate: [AdminGuard]
-  },
-  {
     path: 'dashboard',
     component: DashboardComponent,
+    // canActivate: [LoginGuard]
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
     canActivate: [AdminGuard]
   },
   {

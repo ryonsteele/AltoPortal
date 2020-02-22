@@ -1,5 +1,6 @@
 package com.bfwg.service;
 
+import com.alto.service.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;

@@ -1,5 +1,5 @@
 {
-  "name": "angular-spring-starter-ui",
+  "name": "alto-staffing-portal",
   "version": "0.1.1",
   "scripts": {
     "ng": "ng",
@@ -11,8 +11,8 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~7.2.0",
-    "@angular/cdk": "~7.3.7",
+    "@angular/animations": "^7.2.16",
+    "@angular/cdk": "^7.3.7",
     "@angular/common": "~7.2.0",
     "@angular/compiler": "~7.2.0",
     "@angular/core": "~7.2.0",
