@@ -3,29 +3,41 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ApiService} from '../service/api.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {AuthService, UserService} from "../service";
+import {ConfigService} from "../service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {map} from "rxjs/operators";
 
 
-export interface PeriodicElement {
+
+export class Temp {
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+  tempid: string;
+
+  constructor(name: string, tempid: string) {
+    this.name = name;
+    this.tempid = tempid;
+  }
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];
+export class Shift {
+  user: string;
+  tempid: string;
+  client: string;
+  shiftstart: string;
+  shiftend: string;
+  orderid: string;
+  confirmed: boolean;
+
+  constructor(user: string, tempid: string, client: string,  shiftstart: string, shiftend: string, orderid: string, confirmed: boolean) {
+    this.user = user;
+    this.tempid = tempid;
+    this.client = client;
+    this.shiftstart = shiftstart;
+    this.shiftend = shiftend;
+    this.orderid = orderid;
+    this.confirmed = confirmed;
+  }
+}
 
 
 @Component({
@@ -37,27 +49,48 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private router: Router,
+    private config: ConfigService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder
   ) {
 
   }
-
   tempsFC = new FormControl();
   messageFC = new FormControl('', [
-    Validators.maxLength(30)
+    Validators.maxLength(170)
   ]);
-  tempList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  tempList: Temp[] = [];
+  shiftList: Shift[] = [];
+  dtoShiftList: Shift[] = [];
 
-
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'action'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  // User  Client  Shift  Location
+  displayedColumns: string[] = ['user', 'tempid', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
+  dataSource = new MatTableDataSource<Shift>(this.shiftList);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
-    // this.toppings.setValue(['Mushroom', 'Onion']);
     this.dataSource.paginator = this.paginator;
+
+    this.apiService.get(this.config.temps_url).pipe(
+      map((arr) => arr.map(x => new Temp(x.firstname  + ' ' + x.lastname, x.tempid)))).subscribe(lists => {
+      lists.forEach(temp => {
+        // console.log(temp.firstname);
+        this.tempList.push(temp);
+      });
+    });
+    this.updateTable();
+  }
+
+ updateTable() {
+   this.shiftList = [];
+   this.apiService.get(this.config.shifts_url).pipe(
+      map((arr) => arr.map(x => new Shift(x.username, x.tempid, x.clientName, x.shiftStartTime, x.shiftEndTime, x.orderid, false))))
+      .subscribe(lists => {
+        lists.forEach(shift => {
+          this.shiftList.push(shift);
+        });
+        this.dataSource = new MatTableDataSource(this.shiftList);
+      });
   }
 
   filter(data) {
@@ -65,15 +98,39 @@ export class DashboardComponent implements OnInit {
   }
 
   confirmDialog(obj) {
-    console.log('confirmed!');
     console.log(obj);
+    obj.confirmed = true;
+    this.dtoShiftList = [];
+    this.dtoShiftList.push(obj);
+    for (let item of this.shiftList) {
+      if (item.tempid != obj.tempid && item.orderid != obj.orderid) {
+        this.dtoShiftList.push(item);
+      }
+    }
+    console.log(JSON.stringify({records: JSON.parse(JSON.stringify(this.dtoShiftList))}));
+    this.apiService.post(this.config.confirm_url, {records: JSON.parse(JSON.stringify(this.dtoShiftList))})
+      .pipe(map(() => {
+        console.log('Confirm success');
+        this.updateTable();
+      })).subscribe( item =>
+      console.log('Confirm success bugaloo')
+    );
+
   }
 
   Submit() {
-    console.log(this.messageFC.value);
-    this.messageFC.setValue('');
-    // this.apiService.post(this.config.logout_url, {}
+    console.log({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(this.tempsFC.value))});
+    let data = JSON.stringify(this.tempsFC.value);
+
+    this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, temps: JSON.parse(data)})
+      .pipe(map(() => {
+        console.log('Push Notify success');
+        this.messageFC.setValue('');
+      })).subscribe( item =>
+      console.log('Push Notify success bugaloo')
+    );
   }
+
 
 }
 

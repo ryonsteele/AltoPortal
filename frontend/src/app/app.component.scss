@@ -2,6 +2,17 @@
   display: block;
   color: rgba(0, 0, 0, .54);
   font-family: Roboto, "Helvetica Neue";
+  height: 100%;
+}
+
+html, body {
+  height: 100%;
+}
+
+app-footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .content {
@@ -20,15 +31,4 @@
   }
 }
 
-//@import '~@angular/material/theming';
-//
-//@include mat-core();
-//
-//
-//$candy-app-primary: mat-palette($mat-indigo);
-//$candy-app-accent:  mat-palette($mat-pink, A200, A100, A400);
-//
-//$candy-app-warn: mat-palette($mat-red);
-//
-//
-//$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+

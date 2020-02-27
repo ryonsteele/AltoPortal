@@ -1,9 +1,8 @@
 package com.alto.service.impl;
 
 
-import com.alto.model.Shift;
-import com.alto.model.ShiftRequest;
-import com.alto.model.ShiftResponse;
+import com.alto.model.*;
+import com.alto.repository.AppUserRepository;
 import com.alto.repository.ShiftRepository;
 import com.alto.service.ShiftService;
 import com.google.gson.Gson;
@@ -27,6 +26,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -41,6 +41,8 @@ public class ShiftServiceImpl implements ShiftService {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private ShiftRepository shiftRepository;
+  @Autowired
+  private AppUserRepository appUserRepository;
 
   final static int BREAK_START = 1;
   final static int BREAK_END = 2;
@@ -165,10 +167,39 @@ public class ShiftServiceImpl implements ShiftService {
     return shiftRepository.findByOrderid(orderid);
   }
 
-  public void sendFMSNotigication(String deviceToken) {
+  public void sendPushNotification(PushMessageRequest message){
+
+    for(String tempid : message.getTemps()){
+      AppUser user = appUserRepository.findByTempid(tempid);
+
+      if(user == null) continue;
+
+      if(user.getDevicetype().equalsIgnoreCase("Android") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
+
+        sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
+      }else if(user.getDevicetype().equalsIgnoreCase("iOS") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
+
+        sendAPNSNotification(user.getDevicetoken(), message.getMsgBody());
+      }
+    }
+
+//    List<AppUser> allUsers = appUserRepository.findAll();
+//
+//    for(AppUser u : allUsers){
+//      if(u.getDevicetype().equalsIgnoreCase("Android") && u.getDevicetoken().length() > 10){
+//
+//        sendFMSNotigication(u.getDevicetoken(), message);
+//      }else if(u.getDevicetype().equalsIgnoreCase("iOS") && u.getDevicetoken().length() > 10){
+//
+//        sendAPNSNotification(u.getDevicetoken(), message);
+//      }
+//    }
+  }
+
+  private void sendFMSNotigication(String deviceToken, String messg) {
 
     try {
-      String androidFcmKey = "XXXXXXXXXXXX";
+      String androidFcmKey = "AAAAiJJmHX4:APA91bGFT2PxR2V8tJZr0JN7PSKVXmCR9BRnhCAR5-bpWGbcAnDdgNla16CUvJvWiGDY8n57YLnOLTcsDVwGC9nYXkH3VGoUm3_vfPqxXENzOgi3JRQRjP_RfbP-_84QCKjwoUO5Lv_l";
       String androidFcmUrl = "https://fcm.googleapis.com/fcm/send";
 
       RestTemplate restTemplate = new RestTemplate();
@@ -178,12 +209,13 @@ public class ShiftServiceImpl implements ShiftService {
       JSONObject msg = new JSONObject();
       JSONObject json = new JSONObject();
 
-      msg.put("title", "Title");
-      msg.put("body", "Message");
-      msg.put("notificationType", "Test");
+      msg.put("title", "Urgent Shift Opened!");
+      msg.put("body", messg);
+      //msg.put("notificationType", "Test");
 
-      json.put("data", msg);
+      json.put("notification", msg);
       json.put("to", deviceToken);
+
 
       HttpEntity<String> httpEntity = new HttpEntity<String>(json.toString(), httpHeaders);
       String response = restTemplate.postForObject(androidFcmUrl, httpEntity, String.class);
@@ -194,7 +226,7 @@ public class ShiftServiceImpl implements ShiftService {
     }
   }
 
-  public void sendAPNSNotification(String deviceToken){
+  private void sendAPNSNotification(String deviceToken, String messg){
 
     try {
       InputStream inputStream = new ClassPathResource("push.p12").getInputStream();
@@ -206,7 +238,7 @@ public class ShiftServiceImpl implements ShiftService {
         service = APNS.newService().withCert(inputStream, "Password@123")
                 .withSandboxDestination().build();
       }
-      String payload = APNS.newPayload().customField("customData","customData")
+      String payload = APNS.newPayload().customField("customData",messg)
               .alertBody("Message").build();
       service.push(deviceToken, payload);
     } catch (IOException e) {

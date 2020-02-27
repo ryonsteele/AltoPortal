@@ -11,5 +11,6 @@ public interface ShiftService {
   Shift addShift(ShiftRequest request);
   Shift updateShift(ShiftRequest request);
   Shift getShift(String orderid);
+  void sendPushNotification(PushMessageRequest message);
 
 }

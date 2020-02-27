@@ -5,9 +5,41 @@
 @import '~@angular/material/theming';
 @include mat-core();
 
+$md-mcgpalette0: (
+  50 : #e4ecee,
+  100 : #bcd1d5,
+  200 : #8fb2b9,
+  300 : #62939c,
+  400 : #407b87,
+  500 : #1e6472,
+  600 : #1a5c6a,
+  700 : #16525f,
+  800 : #124855,
+  900 : #0a3642,
+  A100 : #7ae0ff,
+  A200 : #47d4ff,
+  A400 : #14c8ff,
+  A700 : #00bff9,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
 
-$candy-app-primary: mat-palette($mat-teal);
-$candy-app-accent:  mat-palette($mat-grey, A200, A100, A400);
+$candy-app-primary: mat-palette($md-mcgpalette0, A400, A400, A400);
+$candy-app-accent:  mat-palette($mat-gray, A700, A700, A700);
 
 $candy-app-warn:    mat-palette($mat-red);
 
@@ -15,10 +47,22 @@ $candy-app-warn:    mat-palette($mat-red);
 $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
 
 
+.color-primary-bg {
+  background-color: mat-color($candy-app-primary);
+}
+
+.color-accent-bg {
+  background-color: mat-color($candy-app-accent);
+}
+
+.color-primary {
+  color: mat-color($candy-app-primary);
+}
+
+.color-accent {
+  color: mat-color($candy-app-accent);
+}
+
+
 @include angular-material-theme($candy-app-theme);
 
-
-
-/*@include angular-material-theme($candy-app-theme);*/
-/*html, body { height: 100%; }*/
-/*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/

@@ -1,17 +1,14 @@
 package com.alto.config;
 
 
-import com.alto.model.Authority;
-import com.alto.model.User;
-import com.alto.model.UserAuthority;
-import com.alto.model.UserRoleName;
-import com.alto.repository.AuthorityRepository;
-import com.alto.repository.UserRepository;
-import com.alto.repository.UserAuthorityRepository;
+import com.alto.model.*;
+import com.alto.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.sql.Timestamp;
 
 @Component
 public class InitRoot {
@@ -22,6 +19,10 @@ public class InitRoot {
     AuthorityRepository authorityRepository;
     @Autowired
     UserAuthorityRepository userAuthorityRepository;
+    @Autowired
+    AppUserRepository appUserRepository;
+    @Autowired
+    ShiftBoardRepository shiftBoardRepository;
 
     @EventListener
     public void appReady(ApplicationReadyEvent event) {
@@ -35,13 +36,19 @@ public class InitRoot {
         // INSERT INTO user_authority (user_id, authority_id) VALUES (2, 1);
         // INSERT INTO user_authority (user_id, authority_id) VALUES (2, 2);
 
-        userRepository.saveAndFlush(new User("Fan","Jin", "user@test.com", "user", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_USER"));
-        userRepository.saveAndFlush(new User("Jing","Xiao", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
+        userRepository.saveAndFlush(new User("Test","User", "user@test.com", "user", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_USER"));
+        userRepository.saveAndFlush(new User("Ryon","Steele", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
         authorityRepository.saveAndFlush(new Authority(1L,  UserRoleName.ROLE_USER));
         authorityRepository.saveAndFlush(new Authority(2L,  UserRoleName.ROLE_ADMIN));
         userAuthorityRepository.saveAndFlush(new UserAuthority(1L,1L));
         userAuthorityRepository.saveAndFlush(new UserAuthority(2L,1L));
         userAuthorityRepository.saveAndFlush(new UserAuthority(2L,2L));
+
+
+        appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "9919", "abc123", "Android"));
+        appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "736", "abc123", "Android"));
+
+        shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true ));
 
     }
 }

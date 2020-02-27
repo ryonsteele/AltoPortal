@@ -62,5 +62,29 @@ export class ConfigService {
     return this._signup_url;
   }
 
+  private _temps_url = this._api_url + '/temps';
+
+  get temps_url(): string {
+    return this._temps_url;
+  }
+
+  private _shifts_url = this._api_url + '/shifts';
+
+  get shifts_url(): string {
+    return this._shifts_url;
+  }
+
+  private _pns_url = this._api_url + '/push';
+
+  get pns_url(): string {
+    return this._pns_url;
+  }
+
+  private _confirm_url = this._api_url + '/confirmation';
+
+  get confirm_url(): string {
+    return this._confirm_url;
+  }
+
 
 }

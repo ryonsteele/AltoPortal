@@ -6,6 +6,7 @@ import com.alto.model.Shift;
 import com.alto.model.ShiftRequest;
 import com.alto.model.*;
 import com.alto.service.AppUserService;
+import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +27,8 @@ public class PublicController {
     ShiftService shiftService;
     @Autowired
     AppUserService appUserService;
+    @Autowired
+    ShiftBoardService shiftBoardService;
 
     @RequestMapping( method = GET, value= "/foo")
     public Map<String, String> getFoo() {
@@ -38,6 +41,18 @@ public class PublicController {
     public Shift postShift(@RequestBody ShiftRequest request) {
 
         return shiftService.addShift(request);
+    }
+
+    @RequestMapping( method = POST, value= "/openshift")
+    public ShiftBoardRecord postInterest(@RequestBody InterestRequest request) {
+
+        return shiftBoardService.saveRecord(request);
+    }
+
+    @RequestMapping( method = GET, value= "/openshift/{orderid}/{tempid}")
+    public ShiftBoardRecord getOpenShift(@PathVariable String orderid, @PathVariable String tempid) {
+
+        return shiftBoardService.getRecord(orderid, tempid);
     }
 
     @RequestMapping( method = GET, value= "/shift/{orderid}")

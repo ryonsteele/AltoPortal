@@ -1,29 +1,43 @@
+
+<div *ngIf="dataSource">
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
   <!-- Position Column -->
-  <ng-container matColumnDef="position">
-    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+  <ng-container matColumnDef="user">
+    <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.user}} </mat-cell>
+  </ng-container>
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="tempid">
+    <mat-header-cell *matHeaderCellDef> TempID </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.tempid}} </mat-cell>
   </ng-container>
 
   <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+  <ng-container matColumnDef="client">
+    <mat-header-cell *matHeaderCellDef> Client </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.client}} </mat-cell>
   </ng-container>
 
   <!-- Weight Column -->
-  <ng-container matColumnDef="weight">
-    <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+  <ng-container matColumnDef="shiftstart">
+    <mat-header-cell *matHeaderCellDef> Begin </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.shiftstart | date: 'dd-MM-yyyy h:mm a'}} </mat-cell>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="shiftend">
+    <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.shiftend | date: 'dd-MM-yyyy h:mm a'}} </mat-cell>
   </ng-container>
 
   <!-- Symbol Column -->
-  <ng-container matColumnDef="symbol">
-    <mat-header-cell *matHeaderCellDef> Symbol </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+  <ng-container matColumnDef="orderid">
+    <mat-header-cell *matHeaderCellDef> OrderId </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.orderid}} </mat-cell>
   </ng-container>
 
   <!-- Action Column -->
@@ -35,13 +49,6 @@
   </ng-container>
 
 
-<!--  <ng-container matColumnDef="action">-->
-<!--    <th mat-header-cell *matHeaderCellDef> Action </th>-->
-<!--    <td mat-cell *matCellDef="let element" >-->
-<!--      <a (click)="confirmDialog(element)">Confirm</a>-->
-<!--    </td>-->
-<!--  </ng-container>-->
-
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
@@ -49,14 +56,14 @@
   [pageSizeOptions]="[5, 10, 20]"
   showFirstLastButtons
 ></mat-paginator>
-
+</div>
 
 <form (ngSubmit)="Submit()">
 
   <mat-form-field>
-    <mat-label>Toppings</mat-label>
+    <mat-label>Recipients</mat-label>
     <mat-select [formControl]="tempsFC" multiple>
-      <mat-option *ngFor="let temp of tempList" [value]="temp">{{temp}}</mat-option>
+      <mat-option *ngFor="let temp of tempList" [value]="temp.tempid">{{temp.name}}</mat-option>
     </mat-select>
   </mat-form-field>
 
@@ -66,9 +73,11 @@
       <textarea matInput
                 placeholder="Message"
                 [formControl]="messageFC">
-  </textarea>
+      </textarea>
     </mat-form-field>
 
-    <button mat-raised-button type="submit" color="primary">SEND</button>
+    <div class="pushbutton">
+      <button mat-raised-button type="submit" color="primary">SEND</button>
+    </div>
   </div>
 </form>

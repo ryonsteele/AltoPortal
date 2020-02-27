@@ -25,7 +25,6 @@ export class ApiCardComponent implements OnInit {
   }
 
   onButtonClick() {
-    this.apiClick.next(this.apiText);
     this.router.navigate(['dashboard']);
   }
 

@@ -1,13 +1,14 @@
 button {
-  display: block;
-  width: 10%;
+  width: 20%;
 }
 
 form {
-  display: inline;
   padding-bottom: 150px;
 }
 
+mat-select{
+  display: inline;
+}
 
 textarea{
   max-width: 400px;
@@ -17,6 +18,11 @@ textarea{
 }
 
 .pushcontent{
+  display: inline;
+  padding-left: 250px;
+}
 
-  padding-left: 300px;
+.pushbutton{
+  padding-left: 700px;
+  display: block;
 }
