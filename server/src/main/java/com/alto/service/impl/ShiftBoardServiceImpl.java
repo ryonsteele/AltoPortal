@@ -103,9 +103,12 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
   public ShiftBoardRecord saveRecord(InterestRequest request){
 
     ShiftResponse started = null;
+    TempResponse  tempHcs = null;
     ShiftBoardRecord record = new ShiftBoardRecord();
     //todo externalize
     String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=open&orderId=$orderId&resultType=json";
+    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=Jan242003!&tempIdIn="+request.getTempId()+"&resultType=json";
+
     getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
       try {
@@ -114,10 +117,15 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
         String result = restTemplate.getForObject(getShiftUrl, String.class);
         result = result.replace("[","").replace("]","");
 
-        System.out.println(result);
+        RestTemplate restTemplateTemp = new RestTemplateBuilder().build();
+        String resultTemp = restTemplateTemp.getForObject(getTempUrl, String.class);
+        resultTemp = resultTemp.replace("[","").replace("]","");
 
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         started = gson.fromJson(result, ShiftResponse.class);
+
+        gson = new Gson(); // Or use new GsonBuilder().create();
+        tempHcs = gson.fromJson(resultTemp, TempResponse.class);
 
 
       } catch (Exception e) {
@@ -135,7 +143,10 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       record.setTempid(request.getTempId().toString());
       record.setConfirmed(false);
       record.setActive(true);
-      record.setUsername(request.getUsername()); //todo replace with first and last names
+      record.setUsername(request.getUsername());
+      if(tempHcs != null) {
+        record.setFullName(tempHcs.getFirstName() + " " + tempHcs.getLastName());
+      }
 
       return shiftBoardRepository.saveAndFlush(record);
   }

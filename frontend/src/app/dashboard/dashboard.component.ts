@@ -10,17 +10,20 @@ import {map} from "rxjs/operators";
 
 
 export class Temp {
-  name: string;
+  checked: boolean;
+  user: string;
   tempid: string;
 
-  constructor(name: string, tempid: string) {
-    this.name = name;
+  constructor(checked: boolean, user: string, tempid: string) {
+    this.checked = checked;
+    this.user = user;
     this.tempid = tempid;
   }
 }
 
 export class Shift {
   user: string;
+  name: string;
   tempid: string;
   client: string;
   shiftstart: string;
@@ -28,8 +31,11 @@ export class Shift {
   orderid: string;
   confirmed: boolean;
 
-  constructor(user: string, tempid: string, client: string,  shiftstart: string, shiftend: string, orderid: string, confirmed: boolean) {
+  constructor(user: string, name: string, tempid: string, client: string,  shiftstart: string, shiftend: string, orderid: string,
+              confirmed: boolean) {
+
     this.user = user;
+    this.name = name;
     this.tempid = tempid;
     this.client = client;
     this.shiftstart = shiftstart;
@@ -55,7 +61,6 @@ export class DashboardComponent implements OnInit {
   ) {
 
   }
-  tempsFC = new FormControl();
   messageFC = new FormControl('', [
     Validators.maxLength(170)
   ]);
@@ -64,32 +69,40 @@ export class DashboardComponent implements OnInit {
   dtoShiftList: Shift[] = [];
 
   // User  Client  Shift  Location
-  displayedColumns: string[] = ['user', 'tempid', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
+  displayedColumns: string[] = ['name', 'user', 'tempid', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
+  usertableColumns: string[] = ['checked', 'user', 'tempid'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
+  usersDataSource = new MatTableDataSource<Temp>(this.tempList);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-
-    this.apiService.get(this.config.temps_url).pipe(
-      map((arr) => arr.map(x => new Temp(x.firstname  + ' ' + x.lastname, x.tempid)))).subscribe(lists => {
-      lists.forEach(temp => {
-        // console.log(temp.firstname);
-        this.tempList.push(temp);
-      });
-    });
+    this.usersDataSource.paginator = this.paginator;
     this.updateTable();
   }
 
  updateTable() {
+
+   this.tempList = [];
+   this.apiService.get(this.config.temps_url).pipe(
+     map((arr) => arr.map(x => new Temp(false, x.firstname  + ' ' + x.lastname, x.tempid)))).subscribe(lists => {
+     lists.forEach(temp => {
+       // console.log(temp.firstname);
+       this.tempList.push(temp);
+     });
+     this.usersDataSource = new MatTableDataSource(this.tempList);
+     this.usersDataSource.paginator = this.paginator;
+   });
    this.shiftList = [];
    this.apiService.get(this.config.shifts_url).pipe(
-      map((arr) => arr.map(x => new Shift(x.username, x.tempid, x.clientName, x.shiftStartTime, x.shiftEndTime, x.orderid, false))))
+      map((arr) => arr.map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTime, x.shiftEndTime, x.orderid,
+        false))))
       .subscribe(lists => {
         lists.forEach(shift => {
           this.shiftList.push(shift);
         });
         this.dataSource = new MatTableDataSource(this.shiftList);
+        this.dataSource.paginator = this.paginator;
       });
   }
 
@@ -118,13 +131,31 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  applyUserFilter(filterValue: string) {
+    this.usersDataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyShiftFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   Submit() {
-    console.log({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(this.tempsFC.value))});
-    let data = JSON.stringify(this.tempsFC.value);
+    if (this.messageFC.invalid) {
+      return;
+    }
+    let myChecked = [];
+    for (let item of this.tempList) {
+      if (item.checked) {
+        myChecked.push(item.tempid);
+      }
+    }
+    console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
+    let data = JSON.stringify(myChecked);
 
     this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, temps: JSON.parse(data)})
       .pipe(map(() => {
         console.log('Push Notify success');
+        this.updateTable();
         this.messageFC.setValue('');
       })).subscribe( item =>
       console.log('Push Notify success bugaloo')

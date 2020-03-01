@@ -6,10 +6,13 @@ import com.alto.model.Shift;
 import com.alto.model.ShiftRequest;
 import com.alto.model.*;
 import com.alto.service.AppUserService;
+import com.alto.service.NotificationService;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -29,6 +32,8 @@ public class PublicController {
     AppUserService appUserService;
     @Autowired
     ShiftBoardService shiftBoardService;
+    @Autowired
+    NotificationService notificationService;
 
     @RequestMapping( method = GET, value= "/foo")
     public Map<String, String> getFoo() {
@@ -47,6 +52,16 @@ public class PublicController {
     public ShiftBoardRecord postInterest(@RequestBody InterestRequest request) {
 
         return shiftBoardService.saveRecord(request);
+    }
+
+    @RequestMapping( method = POST, value= "/orderreturn")
+    public ResponseEntity sentHome(@RequestBody SentHomeRequest request) {
+
+        if(notificationService.sendSentHomeEmail(request)) {
+            return new ResponseEntity(HttpStatus.OK);
+        }else{
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping( method = GET, value= "/openshift/{orderid}/{tempid}")

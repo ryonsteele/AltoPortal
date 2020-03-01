@@ -26,6 +26,9 @@ public class ShiftBoardRecord implements Serializable {
   @Column(name = "username")
   private String username;
 
+  @Column(name = "full_name")
+  private String fullName;
+
   @Column(name = "temp_id")
   private String tempid;
 
@@ -48,9 +51,10 @@ public class ShiftBoardRecord implements Serializable {
 
   public ShiftBoardRecord(){}
 
-  public ShiftBoardRecord(String orderid, String username, String tempid, Timestamp shiftStartTime, Timestamp shiftEndTime, String clientName, Boolean conf, Boolean active) {
+  public ShiftBoardRecord(String orderid, String username, String fullName, String tempid, Timestamp shiftStartTime, Timestamp shiftEndTime, String clientName, Boolean conf, Boolean active) {
     this.orderid = orderid;
     this.username = username;
+    this.fullName = fullName;
     this.tempid = tempid;
     this.shiftStartTime = shiftStartTime;
     this.shiftEndTime = shiftEndTime;
@@ -131,5 +135,13 @@ public class ShiftBoardRecord implements Serializable {
 
   public void setActive(Boolean active) {
     this.active = active;
+  }
+
+  public String getFullName() {
+    return fullName;
+  }
+
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 }

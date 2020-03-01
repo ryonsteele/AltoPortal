@@ -14,6 +14,17 @@ logging:
 
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test@gmail.com
+    password: password
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -31,6 +42,7 @@ spring:
       ddl-auto: create
     show-sql: true
 
-
-
+mail:
+  smpt:
+    debug: true
 

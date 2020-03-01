@@ -1,27 +1,18 @@
 :host {
   display: block;
+  margin-top: auto;
   font-weight: 300;
   font-size: 15px;
   background-color: rgb(33, 33, 33);
-  height: 136px;
-  padding: 72px 24px;
+
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 48px;
   box-sizing: border-box;
   text-align: center;
 
-  a {
-    text-decoration: none;
-    cursor: auto;
-    color: #FFFFFF;
-    margin-top: 32px;
-  }
-
-  h3 {
-    margin: 0px;
-    padding: 0px;
-    font-weight: 300;
-    font-size: 22px;
-  }
-
 }
+
+
 
 

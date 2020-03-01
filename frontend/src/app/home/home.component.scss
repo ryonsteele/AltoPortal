@@ -4,6 +4,14 @@ app-api-card {
 }
 
 
+html,
+body {
+  min-height:100%;/*or 100vh */
+  position:relative;
+}
+.content {
+  padding-bottom: 100px;
+}
 
 @media screen and (min-width: 600px) and (max-width: 1279px) {
   app-api-card {

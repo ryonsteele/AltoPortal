@@ -9,6 +9,8 @@
   color: lightcyan;
 }
 
+
+
 button{
   font-size: 16px;
   font-weight: bold;
@@ -25,8 +27,3 @@ mat-card-content{
 }
 
 
-@media screen and (max-width: 599px) {
-  :host {
-    max-width: 999px;
-  }
-}
