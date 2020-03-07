@@ -1,7 +1,5 @@
 package com.alto.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.tools.corba.se.idl.constExpr.Times;
 
 import javax.persistence.*;
 import java.io.Serializable;

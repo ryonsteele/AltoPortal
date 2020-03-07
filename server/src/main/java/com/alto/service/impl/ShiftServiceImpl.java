@@ -8,7 +8,6 @@ import com.alto.service.ShiftService;
 import com.google.gson.Gson;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
-import com.oracle.javafx.jmx.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -220,7 +219,7 @@ public class ShiftServiceImpl implements ShiftService {
       HttpEntity<String> httpEntity = new HttpEntity<String>(json.toString(), httpHeaders);
       String response = restTemplate.postForObject(androidFcmUrl, httpEntity, String.class);
       System.out.println(response);
-    } catch (JSONException e) {
+    } catch (Exception e) {
       e.printStackTrace();
       //LOGGER.error("Error:", e);
     }
