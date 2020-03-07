@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService, UserService} from '../../service';
 import {Router} from '@angular/router';
+import {MyModalComponent} from "../../my-modal/my-modal.component";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-header',
@@ -9,10 +11,14 @@ import {Router} from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
+  name: string;
+  color: string;
+
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {
   }
 
@@ -32,6 +38,17 @@ export class HeaderComponent implements OnInit {
   userName() {
     const user = this.userService.currentUser;
     return user.firstname + ' ' + user.lastname;
+  }
+
+  sessionsDialog() {
+    const dialogRef = this.dialog.open(MyModalComponent, {
+      width: '250px',
+      data: {name: this.name, color: this.color}
+    });
+
+    dialogRef.afterClosed().subscribe(res => {
+      this.color = res;
+    });
   }
 
 }

@@ -27,6 +27,7 @@ import {MatIconRegistry,
   MatInputModule,
   MatButtonModule
 } from '@angular/material';
+import { MyModalComponent } from './my-modal/my-modal.component';
 
 @NgModule({
   declarations: [
@@ -42,8 +43,10 @@ import {MatIconRegistry,
     ForbiddenComponent,
     AdminComponent,
     DashboardComponent,
-    SignupComponent
+    SignupComponent,
+    MyModalComponent
   ],
+  entryComponents: [MyModalComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
