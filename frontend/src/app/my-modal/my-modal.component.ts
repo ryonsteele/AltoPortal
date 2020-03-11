@@ -1,5 +1,72 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MatDialogRef} from '@angular/material/dialog';
+import {FormControl, FormGroup} from "@angular/forms";
+import {ApiService} from '../service/api.service';
+import {map} from "rxjs/operators";
+import {ConfigService} from "../service";
+import {Shift} from "../dashboard";
+
+
+export class Session {
+  orderid: string;
+  name: string;
+  username: string;
+  tempid: string;
+  shiftstart: string;
+  shiftend: string;
+  status: string;
+  breakstart: string;
+  breakend: string;
+  shiftstartactual: string;
+  shiftendactual: string;
+  shiftstartsignoff: string;
+  shiftendsignoff: string;
+  clientid: string;
+  clientname: string;
+  orderSpec: string;
+  orderCert: string;
+  floor: string;
+  shiftnumber: string;
+  inaddy: string;
+  inlat: string;
+  inlon: string;
+  outaddy: string;
+  outlat: string;
+  outlon: string;
+
+  constructor( orderid: string, name: string, username: string, tempid: string, shiftstart: string, shiftend: string,
+               status: string, breakstart: string, breakend: string, shiftstartactual: string, shiftendactual: string,
+               shiftstartsignoff: string, shiftendsignoff: string, clientid: string, clientname: string, orderSpec: string,
+               orderCert: string, floor: string, shiftnumber: string, inaddy: string, inlat: string, inlon: string,
+               outaddy: string, outlat: string, outlon: string) {
+
+    this.orderid = orderid;
+    this.name = name;
+    this.username = username;
+    this.tempid = tempid;
+    this.shiftstart = shiftstart;
+    this.shiftend = shiftend;
+    this.status = status;
+    this.breakstart = breakstart;
+    this.breakend = breakend;
+    this.shiftstartactual = shiftstartactual;
+    this.shiftendactual = shiftendactual;
+    this.shiftstartsignoff = shiftstartsignoff;
+    this.shiftendsignoff = shiftendsignoff;
+    this.clientid = clientid;
+    this.clientname = clientname;
+    this.orderSpec = orderSpec;
+    this.orderCert = orderCert;
+    this.floor = floor;
+    this.shiftnumber = shiftnumber;
+    this.inaddy = inaddy;
+    this.inlat = inlat;
+    this.inlon = inlon;
+    this.outaddy = outaddy;
+    this.outlat = outlat;
+    this.outlon = outlon;
+  }
+}
 
 @Component({
   selector: 'app-my-modal',
@@ -13,9 +80,13 @@ export class MyModalComponent implements OnInit {
   maxDate: Date = new Date();
   startDate: Date = new Date();
   endDate: Date = new Date();
+  endDateform: FormControl = new FormControl(new Date());
+  startDateform: FormControl = new FormControl(new Date());
+  shiftList: Session[] = [];
+
 
   constructor(
-    public dialogRef: MatDialogRef<MyModalComponent>) { }
+    public dialogRef: MatDialogRef<MyModalComponent>, private apiService: ApiService, private config: ConfigService) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -23,14 +94,30 @@ export class MyModalComponent implements OnInit {
 
   onRangeClick(): void {
     this.dialogRef.close();
-    console.log(this.startDate);
+
+    this.startDate = this.startDateform.value;
+    this.endDate = this.endDateform.value;
+    console.log(this.startDate.toDateString());
+    console.log(this.endDate.toDateString());
+
+    console.log(JSON.stringify({start: JSON.parse(JSON.stringify(this.startDate.toISOString())), end: JSON.parse(JSON.stringify(this.endDate.toISOString()))} ));
+    this.apiService.post(this.config.sessions_url, {start: JSON.parse(JSON.stringify(this.startDate.toDateString())), end: JSON.parse(JSON.stringify(this.endDate.toDateString()))} )
+      .pipe(map((arr) => arr.map(x => new Session(x.orderid, x.tempName, x.username, x.tempid,
+        x.shiftStartTime, x.shiftEndTime, x.status, x.breakStartTime, x.breakEndTime, x.shiftStartTimeActual,
+        x.shiftEndTimeActual, x.shiftStartSignoff, x.shiftEndSignoff, x.clientId, x.clientName, x.orderSpecialty,
+        x.orderCertification, x.floor, x.shiftNumber, x.clockInAddress, x.checkinLat, x.checkinLon, x.clockoutAddress,
+        x.checkoutLat, x.checkoutLon) )))
+      .subscribe(lists => {
+        lists.forEach(shift => {
+          this.shiftList.push(shift);
+        });
+        console.log(this.shiftList);
+      });
   }
 
   ngOnInit() {
     this.minDate.setDate(this.minDate.getDate() - 180);
     this.maxDate.setDate(this.minDate.getDate() + 180);
-    this.startDate.setDate(Date.now());
-    this.endDate.setDate(Date.now());
   }
 
 }

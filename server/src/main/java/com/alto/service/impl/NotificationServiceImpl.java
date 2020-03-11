@@ -21,7 +21,6 @@ public class NotificationServiceImpl implements NotificationService {
   JavaMailSender mailSender;
 
 
-  //todo need smtp for java.mail
   @Override
   public boolean sendSentHomeEmail(SentHomeRequest request) {
 
@@ -29,19 +28,19 @@ public class NotificationServiceImpl implements NotificationService {
 
     try {
 
-//      MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-//
-//      mimeMessageHelper.setSubject("Sent Home Alert");
-//      mimeMessageHelper.setFrom(request.getUsername());
-//      mimeMessageHelper.setTo("ryonsteele@gmail.com");
-//      mimeMessageHelper.setText("User: " + request.getUsername() + " TempID: " + request.getTempId() +
-//              " is reporting being sent home from Client: " + request.getClientName());
-//
-//      mailSender.send(mimeMessageHelper.getMimeMessage());
+      MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-//    } catch (MessagingException e) {
-//      e.printStackTrace();
-//      return false;
+      mimeMessageHelper.setSubject("Sent Home Alert");
+      mimeMessageHelper.setFrom("alert@altostaffing.com");
+      mimeMessageHelper.setTo("ryonsteele@gmail.com");
+      mimeMessageHelper.setText("User: " + request.getUsername() + " TempID: " + request.getTempId() +
+              " is reporting being sent home from Client: " + request.getClientName());
+
+      mailSender.send(mimeMessageHelper.getMimeMessage());
+
+    } catch (MessagingException e) {
+      e.printStackTrace();
+      return false;
     } catch (Exception e) {
       e.printStackTrace();
       return false;

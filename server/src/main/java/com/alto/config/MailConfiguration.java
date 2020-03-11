@@ -17,11 +17,11 @@ public class MailConfiguration {
     @Bean
     public JavaMailSender getMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-
-        mailSender.setHost(env.getProperty("spring.mail.host"));
-        mailSender.setPort(Integer.valueOf(env.getProperty("spring.mail.port")));
-        mailSender.setUsername(env.getProperty("spring.mail.username"));
-        mailSender.setPassword(env.getProperty("spring.mail.password"));
+//todo externalize
+        mailSender.setHost("192.168.1.10");
+        mailSender.setPort(25);
+        mailSender.setUsername("webapps");
+        mailSender.setPassword("W3b@pps");
 
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.starttls.enable", "true");
@@ -32,5 +32,4 @@ public class MailConfiguration {
         mailSender.setJavaMailProperties(javaMailProperties);
         return mailSender;
     }
-
 }

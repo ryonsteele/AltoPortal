@@ -23,11 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
+import java.util.*;
 
 
 @Service
@@ -74,9 +70,6 @@ public class ShiftServiceImpl implements ShiftService {
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         started = gson.fromJson(result, ShiftResponse.class);
 
-        //HttpEntity<ShiftResponse> apiResponse = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, ShiftResponse.class);
-       // ShiftResponse apiResponse = restTemplate.getForObject(getShiftUrl, ShiftResponse.class);
-        //started = apiResponse;
 
       } catch (Exception e) {
         //LOGGER.error("Error getting Embed URL and Token", e);
@@ -102,9 +95,7 @@ public class ShiftServiceImpl implements ShiftService {
       saveShift.setCheckinLat(request.getLat());
       saveShift.setCheckinLon(request.getLon());
 
-
       shiftRepository.saveAndFlush(saveShift);
-
 
     } catch(Exception e) {
       e.printStackTrace();
@@ -117,7 +108,6 @@ public class ShiftServiceImpl implements ShiftService {
   public Shift updateShift(ShiftRequest request){
     ShiftResponse started = null;
     Shift updateShift = null;
-
 
     try {
 
@@ -166,6 +156,84 @@ public class ShiftServiceImpl implements ShiftService {
     return shiftRepository.findByOrderid(orderid);
   }
 
+  public List<Sessions> sessionsData(SessionsRequest request){
+
+    Timestamp fromTS1 = null;
+    Timestamp fromTS2 = null;
+    List<TempResponse>  tempHcs = null;
+    List<Sessions> results = new ArrayList<>();
+    List<Shift> shifts = new ArrayList<>();
+    //todo externalize
+    String getActiveTempsUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=Jan242003!&statusIn=Active&resultType=json";
+
+    try {
+
+      SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("E MMM dd yyyy");
+      Date lFromDate1 = datetimeFormatter1.parse(request.getStart());
+      fromTS1 = new Timestamp(lFromDate1.getTime());
+
+      SimpleDateFormat datetimeFormatter2 = new SimpleDateFormat("E MMM dd yyyy");
+      Date lFromDate2 = datetimeFormatter2.parse(request.getEnd());
+      fromTS2 = new Timestamp(lFromDate2.getTime());
+
+      RestTemplate restTemplateTemp = new RestTemplateBuilder().build();
+      String resultTemp = restTemplateTemp.getForObject(getActiveTempsUrl, String.class);
+
+      Gson gson = new Gson(); // Or use new GsonBuilder().create();
+      TempResponse[] mcArray = gson.fromJson(resultTemp, TempResponse[].class);
+      tempHcs = new ArrayList<>(Arrays.asList(mcArray));
+
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+
+    shifts = shiftRepository.findByDates(fromTS1, fromTS2);
+
+    for(Shift s : shifts){
+
+      TempResponse match = tempHcs.stream()
+              .filter(temp -> s.getTempid().equals(temp.getTempId()))
+              .findAny()
+              .orElse(null);
+
+      if(match != null) {
+
+        Sessions sess = new Sessions();
+        sess.setBreakEndTime(s.getBreakEndTime());
+        sess.setBreakStartTime(s.getBreakStartTime());
+        sess.setCheckinLat(s.getCheckinLat());
+        sess.setCheckinLon(s.getCheckinLon());
+        sess.setCheckoutLat(s.getCheckoutLat());
+        sess.setCheckoutLon(s.getCheckoutLon());
+        sess.setClientId(s.getClientId());
+        sess.setClientName(s.getClientName());
+        sess.setClockInAddress(s.getClockInAddress());
+        sess.setClockoutAddress(s.getClockoutAddress());
+        sess.setFloor(s.getFloor());
+        sess.setOrderCertification(s.getOrderCertification());
+        sess.setOrderid(s.getOrderid());
+        sess.setOrderSpecialty(s.getOrderSpecialty());
+        sess.setShiftEndSignoff(s.getShiftEndSignoff());
+        sess.setShiftEndTime(s.getShiftEndTime());
+        sess.setShiftEndTimeActual(s.getShiftEndTimeActual());
+        sess.setShiftNumber(s.getShiftNumber());
+        sess.setShiftStartSignoff(s.getShiftStartSignoff());
+        sess.setShiftStartTime(s.getShiftStartTime());
+        sess.setShiftStartTimeActual(s.getShiftStartTimeActual());
+        sess.setStatus(s.getStatus());
+        sess.setTempid(s.getTempid());
+        sess.setUsername(s.getUsername());
+        sess.setTempName(match.getFirstName() + " " + match.getLastName());
+
+        results.add(sess);
+
+      }
+        //todo else log no matching temp found for shift
+    }
+    return results;
+  }
+
+
   public void sendPushNotification(PushMessageRequest message){
 
     for(String tempid : message.getTemps()){
@@ -182,17 +250,6 @@ public class ShiftServiceImpl implements ShiftService {
       }
     }
 
-//    List<AppUser> allUsers = appUserRepository.findAll();
-//
-//    for(AppUser u : allUsers){
-//      if(u.getDevicetype().equalsIgnoreCase("Android") && u.getDevicetoken().length() > 10){
-//
-//        sendFMSNotigication(u.getDevicetoken(), message);
-//      }else if(u.getDevicetype().equalsIgnoreCase("iOS") && u.getDevicetoken().length() > 10){
-//
-//        sendAPNSNotification(u.getDevicetoken(), message);
-//      }
-//    }
   }
 
   private void sendFMSNotigication(String deviceToken, String messg) {

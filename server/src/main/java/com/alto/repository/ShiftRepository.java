@@ -2,12 +2,16 @@ package com.alto.repository;
 
 import com.alto.model.Shift;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
+import java.sql.Timestamp;
+import java.util.List;
+
+
 public interface ShiftRepository extends JpaRepository<Shift, Long> {
     Shift findByUsername(String username);
     Shift findByOrderid(String orderid);
+    @Query("from Shift s where s.shiftStartTime >= :start and s.shiftStartTime <= :end")
+    List<Shift> findByDates(Timestamp start, Timestamp end);
 }
 

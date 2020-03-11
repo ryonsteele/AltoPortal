@@ -86,5 +86,11 @@ export class ConfigService {
     return this._confirm_url;
   }
 
+  private _sessions_url = this._api_url + '/sessions';
+
+  get sessions_url(): string {
+    return this._sessions_url;
+  }
+
 
 }

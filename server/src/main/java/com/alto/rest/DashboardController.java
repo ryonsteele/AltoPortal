@@ -65,4 +65,10 @@ public class DashboardController {
      return request;
   }
 
+  @RequestMapping( method = POST, value= "/sessions")
+  public List<Sessions> postForSessions(@RequestBody SessionsRequest request) {
+
+    return shiftService.sessionsData(request);
+  }
+
 }

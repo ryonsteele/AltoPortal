@@ -1,114 +1,71 @@
 package com.alto.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
-@Entity
-@Table(name = "SHIFTS")
-public class Shift implements Serializable {
+public class Sessions implements Serializable {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  @Column(name = "order_id")
   private String orderid;
 
-  @Column(name = "username")
   private String username;
 
-  @JsonIgnore
-  @Column(name = "tempid")
   private String tempid;
 
-  @Column(name = "status")
   private String status;
 
-  @Column(name = "shift_starttime")
   private Timestamp shiftStartTime;
 
-  @Column(name = "shift_endtime")
   private Timestamp shiftEndTime;
 
-  @Column(name = "break_starttime")
   private Timestamp breakStartTime;
 
-  @Column(name = "break_endtime")
   private Timestamp breakEndTime;
 
-  @Column(name = "shift_starttime_actual")
   private Timestamp shiftStartTimeActual;
 
-  @Column(name = "shift_start_signoff")
   private String shiftStartSignoff;
 
-  @Column(name = "shift_endtime_actual")
   private Timestamp shiftEndTimeActual;
 
-  @Column(name = "shift_end_signoff")
   private String shiftEndSignoff;
 
-  @Column(name = "client_id")
   private String clientId;
 
-  @Column(name = "client_name")
   private String clientName;
 
-  @Column(name = "order_specialty")
   private String orderSpecialty;
 
-  @Column(name = "order_certification")
   private String orderCertification;
 
-  @Column(name = "floor")
   private String floor;
 
-  @Column(name = "shift_number")
   private String shiftNumber;
 
-  @Column(name = "note")
-  private String note;
-
-  @Column(name = "clockin_address")
   private String clockInAddress;
 
-  @Column(name = "checkin_lat")
   private String checkinLat;
 
-  @Column(name = "checkin_lon")
   private String checkinLon;
 
-  @Column(name = "clockout_address")
   private String clockoutAddress;
 
-  @Column(name = "checkout_lat")
   private String checkoutLat;
 
-  @Column(name = "checkout_lon")
   private String checkoutLon;
 
+  private String tempName;
 
 
-  public Shift(){}
 
-  public Shift(String orderid, String username, String tempid, String status, Timestamp shiftStartTime, Timestamp shiftEndTime,
-               Timestamp breakStartTime, Timestamp breakEndTime, Timestamp shiftStartTimeActual, Timestamp shiftEndTimeActual,
-               String shiftStartSignoff, String shiftEndSignoff, String clientId, String clientName, String orderSpecialty,
-               String orderCertification, String shiftNumber, String note, String clockInAddress, String checkinLat,
-               String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon) {
+  public Sessions(){}
+
+  public Sessions(String orderid, String username, String tempid, String status, Timestamp shiftStartTime, Timestamp shiftEndTime,
+                  Timestamp breakStartTime, Timestamp breakEndTime, Timestamp shiftStartTimeActual, Timestamp shiftEndTimeActual,
+                  String shiftStartSignoff, String shiftEndSignoff, String clientId, String clientName, String orderSpecialty,
+                  String orderCertification, String shiftNumber, String clockInAddress, String checkinLat,
+                  String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon) {
 
     this.orderid = orderid;
     this.username = username;
@@ -127,7 +84,6 @@ public class Shift implements Serializable {
     this.orderSpecialty = orderSpecialty;
     this.orderCertification = orderCertification;
     this.shiftNumber = shiftNumber;
-    this.note = note;
     this.clockInAddress = clockInAddress;
     this.checkinLat = checkinLat;
     this.checkinLon = checkinLon;
@@ -137,15 +93,6 @@ public class Shift implements Serializable {
 
   }
 
-
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
 
   public String getUsername() {
     return username;
@@ -291,14 +238,6 @@ public class Shift implements Serializable {
     this.shiftNumber = shiftNumber;
   }
 
-  public String getNote() {
-    return note;
-  }
-
-  public void setNote(String note) {
-    this.note = note;
-  }
-
   public String getClockInAddress() {
     return clockInAddress;
   }
@@ -345,5 +284,13 @@ public class Shift implements Serializable {
 
   public void setCheckoutLon(String checkoutLon) {
     this.checkoutLon = checkoutLon;
+  }
+
+  public String getTempName() {
+    return tempName;
+  }
+
+  public void setTempName(String tempName) {
+    this.tempName = tempName;
   }
 }

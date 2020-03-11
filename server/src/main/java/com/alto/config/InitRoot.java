@@ -9,6 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Component
 public class InitRoot {
@@ -23,6 +24,8 @@ public class InitRoot {
     AppUserRepository appUserRepository;
     @Autowired
     ShiftBoardRepository shiftBoardRepository;
+    @Autowired
+    ShiftRepository shiftRepository;
 
     @EventListener
     public void appReady(ApplicationReadyEvent event) {
@@ -50,5 +53,6 @@ public class InitRoot {
 
         shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true ));
 
+        shiftRepository.saveAndFlush(new Shift("123456","testy@yahoo.com","10943","filled", new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),"signoff","signoff2","555","client name","order spec", "order cert","222","note for shift","123 main st","39.477285","-84.477811","123 main st","39.477285","-84.477811"  ));
     }
 }
