@@ -1,15 +1,15 @@
 package com.alto.rest;
 
 import com.alto.model.*;
-import com.alto.repository.AppUserRepository;
+import com.alto.model.requests.ConfirmationRequest;
+import com.alto.model.requests.PushMessageRequest;
+import com.alto.model.requests.SessionsRequest;
 import com.alto.service.AppUserService;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import com.alto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

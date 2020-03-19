@@ -1,4 +1,4 @@
-package com.alto.model;
+package com.alto.model.response;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

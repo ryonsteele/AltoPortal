@@ -1,9 +1,8 @@
 package com.alto.service.impl;
 
 import com.alto.model.AppUser;
-import com.alto.model.AppUserRequest;
-import com.alto.model.TempResponse;
-import com.alto.model.*;
+import com.alto.model.requests.AppUserRequest;
+import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
 import com.alto.service.AppUserService;
 import com.alto.service.AuthorityService;

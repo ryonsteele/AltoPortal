@@ -2,27 +2,41 @@ package com.alto.service.impl;
 
 
 import com.alto.model.*;
+import com.alto.model.requests.PushMessageRequest;
+import com.alto.model.requests.SessionsRequest;
+import com.alto.model.requests.ShiftRequest;
+import com.alto.model.response.ShiftResponse;
+import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
 import com.alto.repository.ShiftRepository;
 import com.alto.service.ShiftService;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
+import com.notnoop.apns.internal.Utilities;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -38,10 +52,20 @@ public class ShiftServiceImpl implements ShiftService {
   private ShiftRepository shiftRepository;
   @Autowired
   private AppUserRepository appUserRepository;
+  @Autowired
+  ResourceLoader resourceLoader;
+
+  //List<ShiftResponse>
 
   final static int BREAK_START = 1;
   final static int BREAK_END = 2;
   final static int SHIFT_END = 3;
+
+//  @Scheduled(fixedRate = 2000)
+//  public void scheduleTaskWithFixedRate() {
+//    //logger.info("Fixed Rate Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()) );
+//    System.out.println("Scheduled load");
+//  }
 
   @Override
   public Shift findById(Long id) {
@@ -105,6 +129,69 @@ public class ShiftServiceImpl implements ShiftService {
     return saveShift;
   }
 
+  public List<ShiftResponse> getScheduled(String tempid){
+    List<ShiftResponse> results = new ArrayList<>();
+
+    //todo externalize
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",tempid);
+    //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
+
+      RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+      try {
+        String result = restTemplate.getForObject(getShiftUrl, String.class);
+        //result = result.replace("[","").replace("]","");
+
+
+        Gson gson = new Gson(); // Or use new GsonBuilder().create();
+        Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
+
+         results = gson.fromJson(result, userListType);
+         if(results == null){
+           results = new ArrayList<>();
+         }
+
+        results = pruneResults(tempid, results);
+
+      } catch (Exception e) {
+        e.printStackTrace();
+        //LOGGER.error("Error getting Embed URL and Token", e);
+      }
+
+    return results;
+  }
+
+  public List<ShiftResponse> getOpens(String tempid){
+    List<ShiftResponse> resultsOpens = new ArrayList<>();
+
+    //todo externalize
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    getOpensUrl = getOpensUrl.replace("$tempId",tempid);
+    //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
+
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+      String resultOpens = restTemplate.getForObject(getOpensUrl, String.class);
+      //result = result.replace("[","").replace("]","");
+
+
+      Gson gson = new Gson(); // Or use new GsonBuilder().create();
+      Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
+
+      resultsOpens = gson.fromJson(resultOpens, userListType);
+
+      resultsOpens = pruneResults(tempid, resultsOpens);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      //LOGGER.error("Error getting Embed URL and Token", e);
+    }
+
+    return resultsOpens;
+  }
+
   public Shift updateShift(ShiftRequest request){
     ShiftResponse started = null;
     Shift updateShift = null;
@@ -116,19 +203,19 @@ public class ShiftServiceImpl implements ShiftService {
         throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
       }
 
-
+//todo commented break stuff
       //save to repo
-      if(request.getShiftstatuskey() == BREAK_START){
-        updateShift.setBreakStartTime(new Timestamp(System.currentTimeMillis()));
-      }else if(request.getShiftstatuskey() == BREAK_END){
-        updateShift.setBreakEndTime(new Timestamp(System.currentTimeMillis()));
-      }else if(request.getShiftstatuskey() == SHIFT_END){
+//      if(request.getShiftstatuskey() == BREAK_START){
+//        updateShift.setBreakStartTime(new Timestamp(System.currentTimeMillis()));
+//      }else if(request.getShiftstatuskey() == BREAK_END){
+//        updateShift.setBreakEndTime(new Timestamp(System.currentTimeMillis()));
+//      }else if(request.getShiftstatuskey() == SHIFT_END){
         updateShift.setShiftEndTimeActual(new Timestamp(System.currentTimeMillis()));
         updateShift.setShiftEndSignoff(request.getShiftSignoff());
         updateShift.setClockoutAddress(request.getClockedAddy());
         updateShift.setCheckoutLat(request.getLat());
         updateShift.setCheckoutLon(request.getLon());
-      }
+     // }
       shiftRepository.saveAndFlush(updateShift);
 
 
@@ -154,6 +241,13 @@ public class ShiftServiceImpl implements ShiftService {
 
   public Shift getShift(String orderid){
     return shiftRepository.findByOrderid(orderid);
+  }
+
+  private List<ShiftResponse> pruneResults(String tempid, List<ShiftResponse> openShifts){
+
+
+
+    return openShifts;
   }
 
   public List<Sessions> sessionsData(SessionsRequest request){
@@ -244,9 +338,11 @@ public class ShiftServiceImpl implements ShiftService {
       if(user.getDevicetype().equalsIgnoreCase("Android") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
 
         sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
+        //sendAPNSNotification(user.getDevicetoken(), message.getMsgBody());
       }else if(user.getDevicetype().equalsIgnoreCase("iOS") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
 
         sendAPNSNotification(user.getDevicetoken(), message.getMsgBody());
+        //sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
       }
     }
 
@@ -265,7 +361,7 @@ public class ShiftServiceImpl implements ShiftService {
       JSONObject msg = new JSONObject();
       JSONObject json = new JSONObject();
 
-      msg.put("title", "Urgent Shift Opened!");
+      msg.put("title", "New message from Alto!");
       msg.put("body", messg);
       //msg.put("notificationType", "Test");
 
@@ -285,19 +381,35 @@ public class ShiftServiceImpl implements ShiftService {
   private void sendAPNSNotification(String deviceToken, String messg){
 
     try {
-      InputStream inputStream = new ClassPathResource("push.p12").getInputStream();
+
+//// See documentation on defining a message payload.
+//      Message message = Message.builder()
+//              .putData("score", "850")
+//              .putData("time", "2:45")
+//              .setToken(deviceToken)
+//              .build();
+//
+//// Send a message to the device corresponding to the provided
+//// registration token.
+//      String response = FirebaseMessaging.getInstance().send(message);
+//// Response is a message ID string.
+//      System.out.println("Successfully sent message: " + response);
+
+
       ApnsService service;
-      if (Arrays.asList(env.getActiveProfiles()).contains("pro")) {
-        service = APNS.newService().withCert(inputStream, "Password@123")
+
+      ClassLoader classLoader = new ShiftServiceImpl().getClass().getClassLoader();
+
+      File file = new File(classLoader.getResource("apns.p12").getFile());
+      InputStream targetStream = new FileInputStream(file);
+
+      service = APNS.newService().withCert(targetStream, "altoapp")
                 .withProductionDestination().build();
-      } else {
-        service = APNS.newService().withCert(inputStream, "Password@123")
-                .withSandboxDestination().build();
-      }
+
       String payload = APNS.newPayload().customField("customData",messg)
               .alertBody("Message").build();
-      service.push(deviceToken, payload);
-    } catch (IOException e) {
+      service.push(Utilities.encodeHex(deviceToken.getBytes()), payload);
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

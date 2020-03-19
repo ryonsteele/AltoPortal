@@ -22,9 +22,6 @@ import com.alto.security.auth.LogoutSuccess;
 import com.alto.security.auth.RestAuthenticationEntryPoint;
 import com.alto.security.auth.TokenAuthenticationFilter;
 
-/**
- * Created by fan.jin on 2016-10-19.
- */
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)

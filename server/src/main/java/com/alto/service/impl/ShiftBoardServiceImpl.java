@@ -2,15 +2,17 @@ package com.alto.service.impl;
 
 
 import com.alto.model.*;
-import com.alto.repository.AppUserRepository;
+import com.alto.model.requests.ConfirmationRequest;
+import com.alto.model.requests.InterestRequest;
+import com.alto.model.requests.PushMessageRequest;
+import com.alto.model.response.ShiftResponse;
+import com.alto.model.response.TempResponse;
 import com.alto.repository.ShiftBoardRepository;
-import com.alto.repository.ShiftRepository;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -103,7 +105,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
   public ShiftBoardRecord saveRecord(InterestRequest request){
 
     ShiftResponse started = null;
-    TempResponse  tempHcs = null;
+    TempResponse tempHcs = null;
     ShiftBoardRecord record = new ShiftBoardRecord();
     //todo externalize
     String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=open&orderId=$orderId&resultType=json";

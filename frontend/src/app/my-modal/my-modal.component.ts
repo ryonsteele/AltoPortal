@@ -4,6 +4,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {ApiService} from '../service/api.service';
 import {map} from "rxjs/operators";
 import {ConfigService} from "../service";
+import { AngularCsv } from 'angular7-csv/dist/Angular-csv';
 import {Shift} from "../dashboard";
 
 
@@ -97,10 +98,8 @@ export class MyModalComponent implements OnInit {
 
     this.startDate = this.startDateform.value;
     this.endDate = this.endDateform.value;
-    console.log(this.startDate.toDateString());
-    console.log(this.endDate.toDateString());
 
-    console.log(JSON.stringify({start: JSON.parse(JSON.stringify(this.startDate.toISOString())), end: JSON.parse(JSON.stringify(this.endDate.toISOString()))} ));
+    // console.log(JSON.stringify({start: JSON.parse(JSON.stringify(this.startDate.toISOString())), end: JSON.parse(JSON.stringify(this.endDate.toISOString()))} ));
     this.apiService.post(this.config.sessions_url, {start: JSON.parse(JSON.stringify(this.startDate.toDateString())), end: JSON.parse(JSON.stringify(this.endDate.toDateString()))} )
       .pipe(map((arr) => arr.map(x => new Session(x.orderid, x.tempName, x.username, x.tempid,
         x.shiftStartTime, x.shiftEndTime, x.status, x.breakStartTime, x.breakEndTime, x.shiftStartTimeActual,
@@ -111,7 +110,24 @@ export class MyModalComponent implements OnInit {
         lists.forEach(shift => {
           this.shiftList.push(shift);
         });
+
+        let options = {
+          fieldSeparator: ',',
+          quoteStrings: '"',
+          decimalseparator: '.',
+          showLabels: true,
+          showTitle: true,
+          title: 'Full Sessions',
+          useBom: true,
+          noDownload: false,
+          headers: ['OrderId', 'TempName', 'Username', 'TempId', 'ShiftStart', 'ShiftEnd', 'ShiftStatus', 'BreakStart', 'BreakEnd',
+                    'ClockIn', 'ClockOut', 'ClockInSignoff', 'ClockOutSignoff', 'ClientId', 'ClientName', 'OrderSpec', 'OrderCert',
+                    'floor', 'ShiftNumber', 'ClockInAddress', 'CheckInLat', 'CheckInLon', 'ClockOutAddress', 'CheckOutLat', 'CheckOutLon']
+        };
+
         console.log(this.shiftList);
+        new AngularCsv(this.shiftList, 'full_sessions', options);
+
       });
   }
 

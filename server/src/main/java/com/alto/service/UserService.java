@@ -3,7 +3,7 @@ package com.alto.service;
 import java.util.List;
 
 import com.alto.model.User;
-import com.alto.model.UserRequest;
+import com.alto.model.requests.UserRequest;
 
 /**
  * Created by fan.jin on 2016-10-15.

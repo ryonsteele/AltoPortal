@@ -1,10 +1,13 @@
 package com.alto.rest;
 
 import com.alto.model.AppUser;
-import com.alto.model.AppUserRequest;
+import com.alto.model.requests.AppUserRequest;
 import com.alto.model.Shift;
-import com.alto.model.ShiftRequest;
+import com.alto.model.requests.ShiftRequest;
 import com.alto.model.*;
+import com.alto.model.requests.InterestRequest;
+import com.alto.model.requests.SentHomeRequest;
+import com.alto.model.response.ShiftResponse;
 import com.alto.service.AppUserService;
 import com.alto.service.NotificationService;
 import com.alto.service.ShiftBoardService;
@@ -87,6 +90,18 @@ public class PublicController {
     public AppUser postLogin(@RequestBody AppUserRequest request) {
 
         return appUserService.save(request);
+    }
+
+    @RequestMapping( method = GET, value= "/mobileshifts/scheduled/{tempid}")
+    public List<ShiftResponse> getHCSSchedShifts(@PathVariable String tempid) {
+
+        return shiftService.getScheduled(tempid);
+    }
+
+    @RequestMapping( method = GET, value= "/mobileshifts/open/{tempid}")
+    public List<ShiftResponse> getHCSOpenShifts(@PathVariable String tempid) {
+
+        return shiftService.getOpens(tempid);
     }
 
 }

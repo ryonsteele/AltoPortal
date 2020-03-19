@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.alto.model.UserRequest;
+import com.alto.model.requests.UserRequest;
 import com.alto.service.AuthorityService;
 import com.alto.service.UserService;
 

@@ -1,6 +1,6 @@
 package com.alto.service;
 
-import com.alto.model.AppUserRequest;
+import com.alto.model.requests.AppUserRequest;
 import com.alto.model.AppUser;
 
 import java.util.List;

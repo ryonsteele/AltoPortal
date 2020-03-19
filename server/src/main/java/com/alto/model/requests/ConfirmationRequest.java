@@ -1,6 +1,8 @@
-package com.alto.model;
+package com.alto.model.requests;
 
 import java.util.List;
+
+import com.alto.model.ShiftBoardRecord;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

@@ -1,4 +1,4 @@
-package com.alto.model;
+package com.alto.model.response;
 
 public class TempResponse {
     private String tempId;

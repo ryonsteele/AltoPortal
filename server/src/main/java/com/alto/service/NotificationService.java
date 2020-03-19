@@ -1,9 +1,6 @@
 package com.alto.service;
 
-import com.alto.model.PushMessageRequest;
-import com.alto.model.SentHomeRequest;
-import com.alto.model.Shift;
-import com.alto.model.ShiftRequest;
+import com.alto.model.requests.SentHomeRequest;
 
 
 public interface NotificationService {

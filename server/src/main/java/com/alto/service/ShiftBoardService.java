@@ -1,8 +1,8 @@
 package com.alto.service;
 
 
-import com.alto.model.ConfirmationRequest;
-import com.alto.model.InterestRequest;
+import com.alto.model.requests.ConfirmationRequest;
+import com.alto.model.requests.InterestRequest;
 import com.alto.model.ShiftBoardRecord;
 
 import java.util.List;
