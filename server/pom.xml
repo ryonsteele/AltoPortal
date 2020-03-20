@@ -123,6 +123,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<environmentVariables>
+						<ENV1>GOOGLE_APPLICATION_CREDENTIALS=/home/webapps/Repo/alto-api-firebase-adminsdk-w44pi-a3b4d341bd.json</ENV1>
+					</environmentVariables>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
