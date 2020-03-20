@@ -97,7 +97,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     //todo implement sessionkey
     //todo externalize
-    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=Jan242003!&emailLike=$email&resultType=json";
+    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&emailLike=$email&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim());
     try {
 

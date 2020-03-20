@@ -12,6 +12,9 @@ logging:
     org.springframework.web: ERROR
     com.bfwg: DEBUG
 
+server:
+  address: 192.168.1.13
+  port: 8080
 
 spring:
   mail:

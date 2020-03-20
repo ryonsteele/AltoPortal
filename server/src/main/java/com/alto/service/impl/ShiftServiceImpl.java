@@ -77,7 +77,7 @@ public class ShiftServiceImpl implements ShiftService {
     Shift saveShift = new Shift();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",request.getTempId().toString());
     getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
     try {
@@ -133,7 +133,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> results = new ArrayList<>();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -166,7 +166,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
     //todo externalize
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=Jan242003!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -258,7 +258,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<Sessions> results = new ArrayList<>();
     List<Shift> shifts = new ArrayList<>();
     //todo externalize
-    String getActiveTempsUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=Jan242003!&statusIn=Active&resultType=json";
+    String getActiveTempsUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&statusIn=Active&resultType=json";
 
     try {
 
