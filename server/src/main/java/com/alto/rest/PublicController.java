@@ -1,12 +1,9 @@
 package com.alto.rest;
 
 import com.alto.model.AppUser;
-import com.alto.model.requests.AppUserRequest;
+import com.alto.model.requests.*;
 import com.alto.model.Shift;
-import com.alto.model.requests.ShiftRequest;
 import com.alto.model.*;
-import com.alto.model.requests.InterestRequest;
-import com.alto.model.requests.SentHomeRequest;
 import com.alto.model.response.ShiftResponse;
 import com.alto.service.AppUserService;
 import com.alto.service.NotificationService;
@@ -56,6 +53,18 @@ public class PublicController {
     public ShiftBoardRecord postInterest(@RequestBody InterestRequest request) {
 
         return shiftBoardService.saveRecord(request);
+    }
+
+    @RequestMapping( method = POST, value= "/userprefs")
+    public UserPreferences postUserPreferences(@RequestBody PreferencesRequest request) {
+
+        return appUserService.saveUserPrefs(request);
+    }
+
+    @RequestMapping( method = GET, value= "/userprefs/{tempid}")
+    public UserPreferences getUserPreferences(@PathVariable String tempid) {
+
+        return appUserService.fetchUserPrefs(tempid);
     }
 
     @RequestMapping( method = POST, value= "/orderreturn")

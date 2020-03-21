@@ -1,9 +1,12 @@
 package com.alto.service.impl;
 
 import com.alto.model.AppUser;
+import com.alto.model.UserPreferences;
 import com.alto.model.requests.AppUserRequest;
+import com.alto.model.requests.PreferencesRequest;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
+import com.alto.repository.UserPreferencesRepository;
 import com.alto.service.AppUserService;
 import com.alto.service.AuthorityService;
 import com.google.gson.Gson;
@@ -35,6 +38,9 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Autowired
   private AuthorityService authService;
+
+  @Autowired
+  private UserPreferencesRepository userPreferencesRepository;
 
   public void resetCredentials() {
     List<AppUser> users = userRepository.findAll();
@@ -89,6 +95,29 @@ public class AppUserServiceImpl implements AppUserService {
     user.setDevicetype(userRequest.getDevicetype());
 
     return userRepository.saveAndFlush(user);
+  }
+
+  @Override
+  public UserPreferences saveUserPrefs(PreferencesRequest request){
+
+    UserPreferences prefs = new UserPreferences();
+    prefs.setTempid(request.getTempId());
+    prefs.setUsername(request.getUsername());
+    prefs.setMonday(request.getMon());
+    prefs.setTuesday(request.getTue());
+    prefs.setWednesday(request.getWed());
+    prefs.setThursday(request.getThur());
+    prefs.setFriday(request.getFri());
+    prefs.setSaturday(request.getSat());
+    prefs.setSunday(request.getSun());
+
+    return userPreferencesRepository.saveAndFlush(prefs);
+
+  }
+
+  @Override
+  public UserPreferences fetchUserPrefs(String tempid){
+    return userPreferencesRepository.findByTempid(Long.parseLong(tempid));
   }
 
   private AppUserRequest getTempByUsername(AppUserRequest userRequest){

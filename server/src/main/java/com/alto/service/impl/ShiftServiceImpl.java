@@ -9,12 +9,16 @@ import com.alto.model.response.ShiftResponse;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
 import com.alto.repository.ShiftRepository;
+import com.alto.repository.UserPreferencesRepository;
 import com.alto.service.ShiftService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.internal.Utilities;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,10 +37,11 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 
 
@@ -54,6 +59,8 @@ public class ShiftServiceImpl implements ShiftService {
   private AppUserRepository appUserRepository;
   @Autowired
   ResourceLoader resourceLoader;
+  @Autowired
+  UserPreferencesRepository userPreferencesRepository;
 
   //List<ShiftResponse>
 
@@ -133,7 +140,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> results = new ArrayList<>();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -152,7 +159,7 @@ public class ShiftServiceImpl implements ShiftService {
            results = new ArrayList<>();
          }
 
-        results = pruneResults(tempid, results);
+        //results = pruneResults(tempid, results);
 
       } catch (Exception e) {
         e.printStackTrace();
@@ -166,7 +173,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
     //todo externalize
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -245,9 +252,47 @@ public class ShiftServiceImpl implements ShiftService {
 
   private List<ShiftResponse> pruneResults(String tempid, List<ShiftResponse> openShifts){
 
+    UserPreferences prefs =  userPreferencesRepository.findByTempid(Long.parseLong(tempid));
+    if(prefs == null) return openShifts;
+
+    List<ShiftResponse> results = new ArrayList<>();
 
 
-    return openShifts;
+
+    for(ShiftResponse shift : openShifts){
+      DateTime dt = new DateTime( shift.getShiftStartTime() ) ;
+      DateTimeFormatter fmt = DateTimeFormat.forPattern("EEE"); // use 'E' for short abbreviation (Mon, Tues, etc)
+      String strEnglish = fmt.print(dt);
+
+      switch(strEnglish)
+      {
+        case "Sun":
+          if(prefs.getSunday()) results.add(shift);
+          break;
+        case "Mon":
+          if(prefs.getMonday()) results.add(shift);
+          break;
+        case "Tue":
+          if(prefs.getTuesday()) results.add(shift);
+          break;
+        case "Wed":
+          if(prefs.getWednesday()) results.add(shift);
+          break;
+        case "Thu":
+          if(prefs.getThursday()) results.add(shift);
+          break;
+        case "Fri":
+          if(prefs.getFriday()) results.add(shift);
+          break;
+        case "Sat":
+          if(prefs.getSaturday()) results.add(shift);
+          break;
+        default:
+          results.add(shift);
+      }
+    }
+
+    return results;
   }
 
   public List<Sessions> sessionsData(SessionsRequest request){
