@@ -17,25 +17,6 @@ server:
   port: 8080
 
 spring:
-#  mail:
-#    host: 192.168.1.10
-#    port: 25
-#    username: webapps
-#    password: W3b@pps
-#    properties:
-#      mail:
-#        smtp:
-#          starttls:
-#            enable: true
-#            #ssl:
-#              #enable: true
-#          auth: true
-#          ehlo: false
-#          debug: true
-#          host: 192.168.1.10
-#          protocol: smtps
-          #ssl:
-            #enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -54,23 +35,3 @@ spring:
        ddl-auto: create
     show-sql: true
 
-#mail:
-#  smpt:
-#  host: 192.168.1.10
-#  port: 25
-#  username: webapps
-#  password: W3b@pps
-#    properties:
-#      mail:
-#        smtp:
-#          starttls:
-#            enable: true
-#              #ssl:
-#            #enable: true
-#          auth: true
-#          ehlo: false
-#          debug: true
-#          host: 192.168.1.10
-#          protocol: smtps
-            #ssl:
-          #enabled: true

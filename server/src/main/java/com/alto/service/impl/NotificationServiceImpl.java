@@ -33,22 +33,17 @@ public class NotificationServiceImpl implements NotificationService {
     props.put("mail.smtp.auth", "false");
     props.put("mail.smtp.port", "25");
     props.put("mail.debug", "true");
-    Session session = Session.getDefaultInstance(props,
-            new javax.mail.Authenticator() {
-              @Override
-              protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("webapps@altostaffing.com","W3b@pps");
-              }
-            });
+    Session session = Session.getDefaultInstance(props);
 
     try {
 
       Message message = new MimeMessage(session);
-      message.setFrom(new InternetAddress("test@gmail.com"));
+      message.setFrom(new InternetAddress("alerts@altostaffing.com"));
       message.setRecipients(Message.RecipientType.TO,
               InternetAddress.parse("ryonsteele@gmail.com"));
-      message.setSubject("Testing Subject");
-      message.setText("Test Mail");
+      message.setSubject("Sent Home Alert");
+      message.setText("User: " + request.getUsername() + " TempID: " + request.getTempId() +
+              " is reporting being sent home from Client: " + request.getClientName());
 
       Transport.send(message);
 
