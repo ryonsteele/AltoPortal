@@ -29,7 +29,7 @@ spring:
             enable: false
             ssl:
               enable: true
-          auth: false
+          auth: true
           ehlo: false
           debug: true
           host: 192.168.1.10
