@@ -25,10 +25,10 @@ spring:
     properties:
       mail:
         smtp:
-          starttls:
-            enable: true
-            ssl:
-              enable: true
+          #starttls:
+            #enable: true
+            #ssl:
+              #enable: true
           auth: true
           ehlo: false
           debug: true
