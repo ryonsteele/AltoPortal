@@ -49,4 +49,6 @@ spring:
 mail:
   smpt:
     debug: true
+    ehlo: false
+    auth: false
 
