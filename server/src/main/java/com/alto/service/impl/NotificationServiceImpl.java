@@ -30,7 +30,7 @@ public class NotificationServiceImpl implements NotificationService {
     Properties props = new Properties();
     props.put("mail.smtp.host", "192.168.1.10");
     props.put("mail.smtp.socketFactory.port", "25");
-    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.auth", "false");
     props.put("mail.smtp.port", "25");
     props.put("mail.debug", "true");
     Session session = Session.getDefaultInstance(props,
