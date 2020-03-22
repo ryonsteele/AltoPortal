@@ -16,24 +16,24 @@ server:
   address: 192.168.1.13
   port: 8080
 
-spring:
-  mail:
-    host: 192.168.1.10
-    port: 25
-    username: webapps
-    password: W3b@pps
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-            #ssl:
-              #enable: true
-          auth: true
-          ehlo: false
-          debug: true
-          host: 192.168.1.10
-          protocol: smtps
+#spring:
+#  mail:
+#    host: 192.168.1.10
+#    port: 25
+#    username: webapps
+#    password: W3b@pps
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: true
+#            #ssl:
+#              #enable: true
+#          auth: true
+#          ehlo: false
+#          debug: true
+#          host: 192.168.1.10
+#          protocol: smtps
           #ssl:
             #enabled: true
   datasource:
@@ -54,23 +54,23 @@ spring:
        ddl-auto: create
     show-sql: true
 
-mail:
-  smpt:
-  host: 192.168.1.10
-  port: 25
-  username: webapps
-  password: W3b@pps
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-              #ssl:
-            #enable: true
-          auth: true
-          ehlo: false
-          debug: true
-          host: 192.168.1.10
-          protocol: smtps
+#mail:
+#  smpt:
+#  host: 192.168.1.10
+#  port: 25
+#  username: webapps
+#  password: W3b@pps
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: true
+#              #ssl:
+#            #enable: true
+#          auth: true
+#          ehlo: false
+#          debug: true
+#          host: 192.168.1.10
+#          protocol: smtps
             #ssl:
           #enabled: true
