@@ -34,7 +34,7 @@ spring:
           debug: true
           host: 192.168.1.10
           protocol: smtp
-          ssl: true
+          ssl:
             enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
