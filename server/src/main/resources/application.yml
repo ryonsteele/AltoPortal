@@ -16,7 +16,7 @@ server:
   address: 192.168.1.13
   port: 8080
 
-#spring:
+spring:
 #  mail:
 #    host: 192.168.1.10
 #    port: 25
