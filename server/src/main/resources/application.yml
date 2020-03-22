@@ -27,7 +27,9 @@ spring:
         smtp:
           starttls:
             enable: true
-          auth: true
+          auth: false
+          ehlo: false
+          debug: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -49,6 +51,4 @@ spring:
 mail:
   smpt:
     debug: true
-    ehlo: false
-    auth: false
 

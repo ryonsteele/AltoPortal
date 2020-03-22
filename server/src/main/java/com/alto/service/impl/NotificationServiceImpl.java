@@ -29,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
       MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
       mimeMessageHelper.setSubject("Sent Home Alert");
-      mimeMessageHelper.setFrom("alert@altostaffing.com");
+      mimeMessageHelper.setFrom("webapps@altostaffing.com");
       mimeMessageHelper.setTo("ryonsteele@gmail.com");
       mimeMessageHelper.setText("User: " + request.getUsername() + " TempID: " + request.getTempId() +
               " is reporting being sent home from Client: " + request.getClientName());
