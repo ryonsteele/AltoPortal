@@ -33,7 +33,7 @@ public class NotificationServiceImpl implements NotificationService {
       mimeMessageHelper.setTo("ryonsteele@gmail.com");
       mimeMessageHelper.setText("User: " + request.getUsername() + " TempID: " + request.getTempId() +
               " is reporting being sent home from Client: " + request.getClientName());
-
+      
       mailSender.send(mimeMessageHelper.getMimeMessage());
 
     } catch (MessagingException e) {
