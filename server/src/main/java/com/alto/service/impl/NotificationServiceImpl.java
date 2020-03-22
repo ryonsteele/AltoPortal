@@ -32,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     props.put("mail.smtp.socketFactory.port", "25");
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.port", "25");
-    props.put("mail.smpt.debug", "true");
+    props.put("mail.debug", "true");
     Session session = Session.getDefaultInstance(props,
             new javax.mail.Authenticator() {
               @Override
