@@ -5,6 +5,8 @@ import com.alto.model.*;
 import com.alto.model.requests.PushMessageRequest;
 import com.alto.model.requests.SessionsRequest;
 import com.alto.model.requests.ShiftRequest;
+import com.alto.model.response.ClientResponse;
+import com.alto.model.response.GeoCodeResponse;
 import com.alto.model.response.ShiftResponse;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
@@ -79,7 +81,7 @@ public class ShiftServiceImpl implements ShiftService {
     return null;
   }
 
-  public Shift addShift(ShiftRequest request){
+  public ResponseEntity addShift(ShiftRequest request){
     ShiftResponse started = null;
     Shift saveShift = new Shift();
 
@@ -98,9 +100,11 @@ public class ShiftServiceImpl implements ShiftService {
 
         System.out.println(result);
 
-        Gson gson = new Gson(); // Or use new GsonBuilder().create();
+        Gson gson = new Gson();
         started = gson.fromJson(result, ShiftResponse.class);
-
+        if(!checkGeoFence(request)){
+          return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
 
       } catch (Exception e) {
         //LOGGER.error("Error getting Embed URL and Token", e);
@@ -133,7 +137,7 @@ public class ShiftServiceImpl implements ShiftService {
       //LOGGER.error("Error getting Embed URL and Token", e);
     }
 
-    return saveShift;
+    return new ResponseEntity(saveShift, HttpStatus.OK);
   }
 
   public List<ShiftResponse> getScheduled(String tempid){
@@ -173,7 +177,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
     //todo externalize
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(30).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -199,7 +203,7 @@ public class ShiftServiceImpl implements ShiftService {
     return resultsOpens;
   }
 
-  public Shift updateShift(ShiftRequest request){
+  public ResponseEntity updateShift(ShiftRequest request){
     ShiftResponse started = null;
     Shift updateShift = null;
 
@@ -208,6 +212,9 @@ public class ShiftServiceImpl implements ShiftService {
       updateShift = shiftRepository.findByOrderid(request.getOrderId());
       if(updateShift == null){
         throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+      }
+      if(!checkGeoFence(request)){
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
       }
 
 //todo commented break stuff
@@ -231,7 +238,7 @@ public class ShiftServiceImpl implements ShiftService {
       //LOGGER.error("Error getting Embed URL and Token", e);
     }
 
-    return updateShift;
+    return new ResponseEntity(updateShift, HttpStatus.OK);
   }
 
   private Timestamp convertFromString(String input){
@@ -293,6 +300,63 @@ public class ShiftServiceImpl implements ShiftService {
     }
 
     return results;
+  }
+
+  private Boolean checkGeoFence(ShiftRequest request){
+
+    ClientResponse client = null;
+    List<GeoCodeResponse> geoList = new ArrayList<>();
+
+    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=rsteele&password=altoApp1!&clientIdIn="+request.getClientId()+"&resultType=json";
+    String getCoordsURL = "https://us1.locationiq.com/v1/search.php?key=01564e14da0703&q=$searchstring&format=json";
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+      try {
+
+        String result = restTemplate.getForObject(getClientUrl, String.class);
+        result = result.replace("[","").replace("]","");
+
+        System.out.println(result);
+
+        Gson gson = new Gson(); // Or use new GsonBuilder().create();
+        client = gson.fromJson(result, ClientResponse.class);
+
+       // getCoordsURL = getCoordsURL.replace("$searchstring",client.getAddress());
+        getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " " +client.getCity()+ " " + client.getState());
+
+        //1010 Taywood Rd
+        String goeResp= restTemplate.getForObject(getCoordsURL, String.class);
+        Type userListType = new TypeToken<ArrayList<GeoCodeResponse>>(){}.getType();
+
+        geoList = gson.fromJson(goeResp, userListType);
+
+        for(GeoCodeResponse geo : geoList){
+          //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
+          Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
+          if(dist < 0.3){
+            return true;
+          }
+        }
+
+
+
+      } catch (Exception e) { //todo logger
+        //LOGGER.error("Error getting Embed URL and Token", e);
+      }
+
+    return false;
+  }
+
+  public static final double R = 6372.8; // In kilometers
+  public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+    double dLat = Math.toRadians(lat2 - lat1);
+    double dLon = Math.toRadians(lon2 - lon1);
+    lat1 = Math.toRadians(lat1);
+    lat2 = Math.toRadians(lat2);
+
+    double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+    double c = 2 * Math.asin(Math.sqrt(a));
+    return R * c;
   }
 
   public List<Sessions> sessionsData(SessionsRequest request){

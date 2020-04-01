@@ -32,6 +32,12 @@ export class ConfigService {
     return this._change_password_url;
   }
 
+  private _add_user_url = this._api_url + '/signup';
+
+  get add_user_url(): string {
+    return this._add_user_url;
+  }
+
   private _whoami_url = this._api_url + '/whoami';
 
   get whoami_url(): string {
@@ -84,6 +90,12 @@ export class ConfigService {
 
   get confirm_url(): string {
     return this._confirm_url;
+  }
+
+  private _clock_url = this._api_url + '/shiftchange';
+
+  get clock_url(): string {
+    return this._clock_url;
   }
 
   private _sessions_url = this._api_url + '/sessions';

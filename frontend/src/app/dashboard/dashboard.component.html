@@ -116,8 +116,15 @@
     showFirstLastButtons
   ></mat-paginator>
 </div>
+<div *ngIf="InvalidClockVal == true" class="alert-danger my-error">
+  <p>Invalid Selection: Must only select one User to change Shift status</p>
+</div>
 
-<form (ngSubmit)="Submit()">
+<button class="btn btn-primary clockbtn"
+        (click)="openModal(template)">Clock IN/OUT</button>
+
+
+<form (ngSubmit)="Submit()" class="pushcontent">
 
 <!--  <mat-form-field>-->
 <!--    <mat-label>Recipients</mat-label>-->
@@ -126,7 +133,7 @@
 <!--    </mat-select>-->
 <!--  </mat-form-field>-->
 
-  <div class="pushcontent">
+
     <mat-form-field class="myTextArea">
       <mat-label>Notification Message</mat-label>
       <textarea matInput
@@ -138,5 +145,34 @@
     <div class="pushbutton">
       <button mat-raised-button type="submit" color="primary">SEND</button>
     </div>
-  </div>
 </form>
+
+
+<div class="my-modal-wrapper">
+<ng-template #template>
+
+  <div class="modal-header">
+
+    <h4 class="modal-title pull-left">Enter Order ID</h4>
+
+    <button type="button"
+            class="close pull-right"
+            (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <form (ngSubmit)="Clock()">
+      <input [formControl]="clockFC" matInput placeholder="Order ID" required type="text">
+      <button mat-raised-button type="submit" color="primary">Clock</button>
+    <br>
+      <p>The OrderId is found at the top of the Shift Details Screen of the Users Alto App.
+        Ask the User to provide it to check into or out of Shift.</p>
+    </form>
+
+  </div>
+
+</ng-template>
+</div>

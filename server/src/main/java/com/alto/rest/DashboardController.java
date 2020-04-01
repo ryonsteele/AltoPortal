@@ -1,6 +1,7 @@
 package com.alto.rest;
 
 import com.alto.model.*;
+import com.alto.model.requests.ClockRequest;
 import com.alto.model.requests.ConfirmationRequest;
 import com.alto.model.requests.PushMessageRequest;
 import com.alto.model.requests.SessionsRequest;
@@ -10,6 +11,7 @@ import com.alto.service.ShiftService;
 import com.alto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +52,13 @@ public class DashboardController {
   //@PreAuthorize("hasRole('USER')")
   public ConfirmationRequest user(@RequestBody ConfirmationRequest request) {
     shiftBoardService.processConfirmation(request);
+    return request;
+  }
+
+  @RequestMapping(method = POST, value = "/shiftchange")
+  //@PreAuthorize("hasRole('USER')")
+  public ClockRequest shiftChange(@RequestBody ClockRequest request) {
+    //shiftBoardService.processConfirmation(request);
     return request;
   }
 

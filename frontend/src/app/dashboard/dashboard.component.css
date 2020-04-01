@@ -6,7 +6,7 @@ button {
 
 form {
   padding-top: 40px;
-  margin-bottom: 500px;
+  /*margin-bottom: 500px;*/
 }
 
 mat-select{
@@ -39,14 +39,37 @@ textarea{
 }
 
 .pushcontent{
-  display: inline;
+  display: block;
   padding-left: 50px;
+  padding-bottom: 500px !important;
+  padding-top: 40px;
 }
 
 .pushbutton{
   padding-left: 450px;
   display: block;
 }
+
+.clockbtn{
+   margin-left: 50px;
+ }
+
+.my-error{
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.my-modal-wrapper{
+  width: 200px !important;
+  height: 50px !important;
+  background-color: #407b87 !important;
+}
+
+/*modal-container{*/
+/*  width: 200px !important;*/
+/*  height: 100px !important;*/
+/*  background-color: #407b87 !important;*/
+/*}*/
 
 
 .divider {								/* minor cosmetics */

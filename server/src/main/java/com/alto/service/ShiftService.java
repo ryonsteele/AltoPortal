@@ -6,6 +6,7 @@ import com.alto.model.*;
 import com.alto.model.requests.PushMessageRequest;
 import com.alto.model.requests.SessionsRequest;
 import com.alto.model.response.ShiftResponse;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -13,8 +14,8 @@ import java.util.List;
 public interface ShiftService {
 
   Shift findById(Long id);
-  Shift addShift(ShiftRequest request);
-  Shift updateShift(ShiftRequest request);
+  ResponseEntity addShift(ShiftRequest request);
+  ResponseEntity updateShift(ShiftRequest request);
   List<Sessions> sessionsData(SessionsRequest request);
   Shift getShift(String orderid);
   List<ShiftResponse>getScheduled(String tempid);

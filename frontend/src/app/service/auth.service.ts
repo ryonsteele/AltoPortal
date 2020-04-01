@@ -53,4 +53,8 @@ export class AuthService {
     return this.apiService.post(this.config.change_password_url, passwordChanger);
   }
 
+  addUser(adduser) {
+    return this.apiService.post(this.config.add_user_url, adduser);
+  }
+
 }

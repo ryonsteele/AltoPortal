@@ -1,0 +1,29 @@
+<div class="content" fxLayout="row" fxLayoutAlign="center">
+  <mat-card elevation="5" fxFlex>
+    <mat-card-subtitle>Add Dashboard User</mat-card-subtitle>
+    <p *ngIf="notification" [class]="notification.msgType">{{notification.msgBody}}</p>
+    <mat-card-content>
+      <form #addUserForm="ngForm" (ngSubmit)="onSubmit()" *ngIf="!submitted" [formGroup]="form">
+        <mat-form-field>
+          <input formControlName="userName" matInput placeholder="Username" required type="text">
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="newPassword" matInput placeholder="Password" required type="password">
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="firstName" matInput placeholder="First Name" required type="text">
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="lastName" matInput placeholder="Last Name" required type="text">
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="email" matInput placeholder="Email Address" required type="email">
+        </mat-form-field>
+        <button [disabled]="!addUserForm.form.valid" color="primary" mat-raised-button type="submit">Add
+          User
+        </button>
+      </form>
+      <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+    </mat-card-content>
+  </mat-card>
+</div>

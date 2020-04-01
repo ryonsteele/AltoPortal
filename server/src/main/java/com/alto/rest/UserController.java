@@ -55,7 +55,7 @@ public class UserController {
   public ResponseEntity<?> addUser(@RequestBody UserRequest userRequest,
       UriComponentsBuilder ucBuilder) {
 
-    User existUser = this.userService.findByUsername(userRequest.getUsername());
+    User existUser = this.userService.findByUsername(userRequest.getUserName());
     if (existUser != null) {
       throw new ResourceConflictException(userRequest.getId(), "Username already exists");
     }

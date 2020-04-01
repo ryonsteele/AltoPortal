@@ -57,13 +57,13 @@ public class AppUserServiceImpl implements AppUserService {
     return u;
   }
 
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('USER')")
   public AppUser findById(Long id) throws AccessDeniedException {
     AppUser u = userRepository.getOne(id);
     return u;
   }
 
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('USER')")
   public List<AppUser> findAll() throws AccessDeniedException {
     List<AppUser> result = userRepository.findAll();
     return result;

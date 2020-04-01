@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alto.model.Authority;
 import com.alto.model.User;
+import com.alto.model.UserRoleName;
 import com.alto.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -61,11 +62,11 @@ public class UserServiceImpl implements UserService {
   @Override
   public User save(UserRequest userRequest) {
     User user = new User();
-    user.setUsername(userRequest.getUsername());
-    user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-    user.setFirstname(userRequest.getFirstname());
-    user.setLastname(userRequest.getLastname());
-    List<Authority> auth = authService.findByname("ROLE_USER");
+    user.setUsername(userRequest.getUserName());
+    user.setPassword(passwordEncoder.encode(userRequest.getNewPassword()));
+    user.setFirstname(userRequest.getFirstName());
+    user.setLastname(userRequest.getLastName());
+    List<Authority> auth = authService.findByname(UserRoleName.ROLE_USER);
     user.setAuthorities(auth);
     this.userRepository.save(user);
     return user;

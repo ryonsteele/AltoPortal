@@ -9,6 +9,7 @@ import {ChangePasswordComponent} from './change-password';
 import {ForbiddenComponent} from './forbidden';
 import {SignupComponent} from './signup';
 import {DashboardComponent} from './dashboard';
+import {AddUserComponent} from './add-user';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [LoginGuard]
+  },
+  {
+    path: 'add-user',
+    component: AddUserComponent,
     canActivate: [LoginGuard]
   },
   {

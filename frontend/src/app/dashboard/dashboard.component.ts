@@ -1,11 +1,12 @@
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ApiService} from '../service/api.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {ConfigService} from "../service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 
 
@@ -17,6 +18,16 @@ export class Temp {
   constructor(checked: boolean, user: string, tempid: string) {
     this.checked = checked;
     this.user = user;
+    this.tempid = tempid;
+  }
+}
+
+export class Clock {
+  orderid: string;
+  tempid: string;
+
+  constructor(orderid: string, tempid: string) {
+    this.orderid = orderid;
     this.tempid = tempid;
   }
 }
@@ -52,17 +63,23 @@ export class Shift {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  modalRef: BsModalRef;
+  InvalidClockVal: boolean;
 
   constructor(
     private apiService: ApiService,
     private config: ConfigService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private modalService: BsModalService
   ) {
 
   }
   messageFC = new FormControl('', [
     Validators.maxLength(170)
+  ]);
+  clockFC = new FormControl('', [
+    Validators.required, Validators.pattern('^[0-9]*$')
   ]);
   tempList: Temp[] = [];
   shiftList: Shift[] = [];
@@ -78,7 +95,23 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.usersDataSource.paginator = this.paginator;
+    this.InvalidClockVal = false;
     this.updateTable();
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.InvalidClockVal = false;
+    let myChecked = [];
+    for (let item of this.tempList) {
+      if (item.checked) {
+        myChecked.push(item.tempid);
+      }
+    }
+    if (myChecked.length == 1) {
+      this.modalRef = this.modalService.show(template);
+    } else {
+      this.InvalidClockVal = true;
+    }
   }
 
  updateTable() {
@@ -139,7 +172,24 @@ export class DashboardComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  Clock() {
+    console.log('Clock Submit');
+    if (this.clockFC.invalid) {
+      return;
+    }
+
+    console.log(JSON.stringify( JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) ) );
+    this.apiService.post(this.config.clock_url, JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) )
+      .pipe(map(() => {
+        console.log('Clock success');
+      })).subscribe( item =>
+        this.modalRef.hide()
+    );
+
+  }
+
   Submit() {
+    console.log('Message Submit');
     if (this.messageFC.invalid) {
       return;
     }

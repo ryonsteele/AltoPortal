@@ -21,6 +21,8 @@ public class ShiftRequest {
 
   private String clockedAddy;
 
+  private String clientId;
+
   public Long getTempId() {
     return tempId;
   }
@@ -83,5 +85,13 @@ public class ShiftRequest {
 
   public void setClockedAddy(String clockedAddy) {
     this.clockedAddy = clockedAddy;
+  }
+
+  public String getClientId() {
+    return clientId;
+  }
+
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 }

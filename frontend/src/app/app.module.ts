@@ -18,6 +18,7 @@ import {ChangePasswordComponent} from './change-password/change-password.compone
 import {ForbiddenComponent} from './forbidden/forbidden.component';
 import {AdminComponent} from './admin/admin.component';
 import {SignupComponent} from './signup/signup.component';
+import {AddUserComponent} from './add-user/add-user.component';
 import {AngularMaterialModule} from './angular-material/angular-material.module';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {MatIconRegistry,
@@ -28,6 +29,7 @@ import {MatIconRegistry,
   MatButtonModule
 } from '@angular/material';
 import { MyModalComponent } from './my-modal/my-modal.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { MyModalComponent } from './my-modal/my-modal.component';
     AdminComponent,
     DashboardComponent,
     SignupComponent,
-    MyModalComponent
+    MyModalComponent,
+    AddUserComponent
   ],
   entryComponents: [MyModalComponent],
   imports: [
@@ -61,7 +64,8 @@ import { MyModalComponent } from './my-modal/my-modal.component';
     MatInputModule,
     MatButtonModule,
     MatInputModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    ModalModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

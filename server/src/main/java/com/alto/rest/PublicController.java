@@ -44,7 +44,7 @@ public class PublicController {
     }
 
     @RequestMapping( method = POST, value= "/shift")
-    public Shift postShift(@RequestBody ShiftRequest request) {
+    public ResponseEntity postShift(@RequestBody ShiftRequest request) {
 
         return shiftService.addShift(request);
     }
@@ -90,7 +90,7 @@ public class PublicController {
     }
 
     @RequestMapping( method = PATCH, value= "/shift")
-    public Shift patchShift(@RequestBody ShiftRequest request) {
+    public ResponseEntity patchShift(@RequestBody ShiftRequest request) {
 
         return shiftService.updateShift(request);
     }
@@ -111,6 +111,19 @@ public class PublicController {
     public List<ShiftResponse> getHCSOpenShifts(@PathVariable String tempid) {
 
         return shiftService.getOpens(tempid);
+    }
+
+    @RequestMapping( method = POST, value= "/apply")
+    public ResponseEntity postApplication(@RequestBody ApplyRequest request) {
+
+        //return appUserService.save(request);
+        //return notificationService.sendApplicationEmail(request);
+
+        if(notificationService.sendApplicationEmail(request)) {
+            return new ResponseEntity(HttpStatus.OK);
+        }else{
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
