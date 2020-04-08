@@ -7,6 +7,7 @@ import {ConfigService} from "../service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import {HttpErrorResponse} from "@angular/common/http";
 
 
 
@@ -57,6 +58,7 @@ export class Shift {
 }
 
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -65,6 +67,7 @@ export class Shift {
 export class DashboardComponent implements OnInit {
   modalRef: BsModalRef;
   InvalidClockVal: boolean;
+  InvalidClockResp: boolean;
 
   constructor(
     private apiService: ApiService,
@@ -96,6 +99,7 @@ export class DashboardComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.usersDataSource.paginator = this.paginator;
     this.InvalidClockVal = false;
+    this.InvalidClockResp = false;
     this.updateTable();
   }
 
@@ -108,6 +112,7 @@ export class DashboardComponent implements OnInit {
       }
     }
     if (myChecked.length == 1) {
+      this.InvalidClockResp = false;
       this.modalRef = this.modalService.show(template);
     } else {
       this.InvalidClockVal = true;
@@ -173,19 +178,44 @@ export class DashboardComponent implements OnInit {
   }
 
   Clock() {
+    this.InvalidClockResp = false;
     console.log('Clock Submit');
     if (this.clockFC.invalid) {
       return;
     }
 
+    let myChecked = [];
+    for (let item of this.tempList) {
+      if (item.checked) {
+        myChecked.push(item.tempid);
+      }
+    }
+    // let data = JSON.stringify(myChecked);
+
     console.log(JSON.stringify( JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) ) );
-    this.apiService.post(this.config.clock_url, JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) )
-      .pipe(map(() => {
-        console.log('Clock success');
+    this.apiService.post(this.config.clock_url, JSON.parse(JSON.stringify(new Clock(this.clockFC.value, myChecked[0]) ) ) )
+      .pipe(map((response: Response) => {
+        console.log('Clock map');
+        console.log(response.status);
       })).subscribe( item =>
-        this.modalRef.hide()
+        this.Handle(item),
+      error => this.HandleError(error)
     );
 
+  }
+
+  Handle(resp: any) {
+    this.modalRef.hide();
+    console.log(resp);
+  }
+
+  HandleError(error: any) {
+    // this.modalRef.hide();
+    if (error.status === 400) {
+      this.InvalidClockResp = true;
+    } else if ( error.status === 200) {
+      this.modalRef.hide();
+    }
   }
 
   Submit() {

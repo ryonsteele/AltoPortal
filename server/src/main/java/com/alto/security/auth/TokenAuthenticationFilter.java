@@ -46,6 +46,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     public static final String IMG_MATCHER = "/images/*";
     public static final String LOGIN_MATCHER = "/auth/login";
     public static final String LOGOUT_MATCHER = "/auth/logout";
+    public static final String MOBILE_MATCHER = "*/mobile/*";
 
     private List<String> pathsToSkip = Arrays.asList(
             ROOT_MATCHER,
@@ -55,7 +56,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             JS_MATCHER,
             IMG_MATCHER,
             LOGIN_MATCHER,
-            LOGOUT_MATCHER
+            LOGOUT_MATCHER,
+            MOBILE_MATCHER
     );
 
     @Override

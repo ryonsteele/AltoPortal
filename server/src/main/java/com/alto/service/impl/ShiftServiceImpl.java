@@ -2,6 +2,7 @@ package com.alto.service.impl;
 
 
 import com.alto.model.*;
+import com.alto.model.requests.ClockRequest;
 import com.alto.model.requests.PushMessageRequest;
 import com.alto.model.requests.SessionsRequest;
 import com.alto.model.requests.ShiftRequest;
@@ -79,6 +80,76 @@ public class ShiftServiceImpl implements ShiftService {
   @Override
   public Shift findById(Long id) {
     return null;
+  }
+
+  public ResponseEntity manualShiftClock(ClockRequest req){
+
+    boolean checkout = true;
+    ShiftResponse hcsFound = null;
+    Shift found = shiftRepository.findByOrderid(req.getOrderid());
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",req.getTempid());
+    getShiftUrl = getShiftUrl.replace("$orderId",req.getOrderid());
+
+    if(found == null){
+      found = new Shift();
+      checkout = false;
+    }
+    if(found.getShiftEndTimeActual() != null){
+      return new ResponseEntity("invalid", HttpStatus.BAD_REQUEST);
+    }
+    AppUser user = appUserRepository.findByTempid(req.getTempid());
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+
+      String result = restTemplate.getForObject(getShiftUrl, String.class);
+      result = result.replace("[","").replace("]","");
+
+      System.out.println(result);
+
+      Gson gson = new Gson();
+      hcsFound = gson.fromJson(result, ShiftResponse.class);
+
+      if(hcsFound == null){
+        return new ResponseEntity("invalid", HttpStatus.BAD_REQUEST);
+        //todo logger
+      }
+
+    } catch (Exception e) {
+      //todo logger
+      //LOGGER.error("Error getting Embed URL and Token", e);
+    }
+
+    found.setClientId(hcsFound.getClientId());
+    found.setClientName(hcsFound.getClientName());
+    found.setFloor(hcsFound.getFloor());
+    found.setOrderid(hcsFound.getOrderId());
+    found.setTempid(req.getTempid());
+    found.setUsername(user.getUsername());
+    if(hcsFound.getShiftStartTime() != null) {
+      found.setShiftStartTime(convertFromString(hcsFound.getShiftStartTime()));
+    }
+    if(hcsFound.getShiftEndTime() != null) {
+      found.setShiftEndTime(convertFromString(hcsFound.getShiftEndTime()));
+    }
+    if(checkout){
+      found.setShiftEndTimeActual(new Timestamp(System.currentTimeMillis()));
+      found.setShiftEndSignoff("Alto Dashboard");
+    }else{
+      found.setShiftStartTimeActual(new Timestamp(System.currentTimeMillis()));
+      found.setShiftStartSignoff("Alto Dashboard");
+    }
+    found.setStatus(hcsFound.getStatus());
+    found.setShiftNumber(hcsFound.getShiftNumber());
+    found.setOrderCertification(hcsFound.getOrderCertification());
+    found.setOrderSpecialty(hcsFound.getOrderSpecialty());
+    found.setNote(hcsFound.getNote());
+
+    shiftRepository.saveAndFlush(found);
+
+
+    return new ResponseEntity("success", HttpStatus.OK);
   }
 
   public ResponseEntity addShift(ShiftRequest request){
@@ -177,7 +248,8 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
     //todo externalize
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(30).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    //String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(7).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(7).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -333,9 +405,9 @@ public class ShiftServiceImpl implements ShiftService {
         for(GeoCodeResponse geo : geoList){
           //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
           Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
-          if(dist < 0.3){
+          //if(dist < 0.3){
             return true;
-          }
+          //}
         }
 
 

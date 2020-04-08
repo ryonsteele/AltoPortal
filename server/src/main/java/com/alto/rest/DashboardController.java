@@ -11,6 +11,7 @@ import com.alto.service.ShiftService;
 import com.alto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +58,8 @@ public class DashboardController {
 
   @RequestMapping(method = POST, value = "/shiftchange")
   //@PreAuthorize("hasRole('USER')")
-  public ClockRequest shiftChange(@RequestBody ClockRequest request) {
-    //shiftBoardService.processConfirmation(request);
-    return request;
+  public ResponseEntity shiftChange(@RequestBody ClockRequest request) {
+    return shiftService.manualShiftClock(request);
   }
 
 
