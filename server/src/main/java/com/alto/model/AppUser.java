@@ -32,7 +32,7 @@ public class AppUser implements Serializable {
   @Column(name = "lastname")
   private String lastname;
 
-  @Column(name = "tempid")
+  @Column(name = "tempid", unique=true)
   private String tempid;
 
   @Column(name = "devicetoken")

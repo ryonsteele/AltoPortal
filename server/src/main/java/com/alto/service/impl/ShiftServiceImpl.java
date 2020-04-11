@@ -6,10 +6,7 @@ import com.alto.model.requests.ClockRequest;
 import com.alto.model.requests.PushMessageRequest;
 import com.alto.model.requests.SessionsRequest;
 import com.alto.model.requests.ShiftRequest;
-import com.alto.model.response.ClientResponse;
-import com.alto.model.response.GeoCodeResponse;
-import com.alto.model.response.ShiftResponse;
-import com.alto.model.response.TempResponse;
+import com.alto.model.response.*;
 import com.alto.repository.AppUserRepository;
 import com.alto.repository.ShiftRepository;
 import com.alto.repository.UserPreferencesRepository;
@@ -20,8 +17,10 @@ import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.internal.Utilities;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -39,9 +38,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -234,8 +233,6 @@ public class ShiftServiceImpl implements ShiftService {
            results = new ArrayList<>();
          }
 
-        //results = pruneResults(tempid, results);
-
       } catch (Exception e) {
         e.printStackTrace();
         //LOGGER.error("Error getting Embed URL and Token", e);
@@ -249,7 +246,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     //todo externalize
     //String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(7).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(7).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
     //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
@@ -374,6 +371,39 @@ public class ShiftServiceImpl implements ShiftService {
     return results;
   }
 
+  public ClientAddressResponse getClient (String clientid){
+
+    ClientResponse client = null;
+    ClientAddressResponse addy = new ClientAddressResponse();
+    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=rsteele&password=altoApp1!&clientIdIn="+clientid+"&resultType=json";
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+
+      String result = restTemplate.getForObject(getClientUrl, String.class);
+      result = result.replace("[","").replace("]","");
+
+      System.out.println(result);
+
+      Gson gson = new Gson(); // Or use new GsonBuilder().create();
+      client = gson.fromJson(result, ClientResponse.class);
+
+      if(client != null){
+        addy.setClientId(clientid);
+        addy.setAddress(client.getAddress());
+        addy.setAddress2(client.getAddress2());
+        addy.setState(client.getState());
+        addy.setCity(client.getCity());
+        addy.setZip(client.getZip());
+        addy.setCounty(client.getCounty());
+      }
+
+    } catch (Exception e) { //todo logger
+      //LOGGER.error("Error getting Embed URL and Token", e);
+    }
+    return addy;
+  }
+
   private Boolean checkGeoFence(ShiftRequest request){
 
     ClientResponse client = null;
@@ -382,6 +412,7 @@ public class ShiftServiceImpl implements ShiftService {
     String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=rsteele&password=altoApp1!&clientIdIn="+request.getClientId()+"&resultType=json";
     String getCoordsURL = "https://us1.locationiq.com/v1/search.php?key=01564e14da0703&q=$searchstring&format=json";
     RestTemplate restTemplate = new RestTemplateBuilder().build();
+
 
       try {
 
@@ -474,8 +505,8 @@ public class ShiftServiceImpl implements ShiftService {
       if(match != null) {
 
         Sessions sess = new Sessions();
-        sess.setBreakEndTime(s.getBreakEndTime());
-        sess.setBreakStartTime(s.getBreakStartTime());
+        sess.setBreakEndTime(convertEastern(s.getBreakEndTime()));
+        sess.setBreakStartTime(convertEastern(s.getBreakStartTime()));
         sess.setCheckinLat(s.getCheckinLat());
         sess.setCheckinLon(s.getCheckinLon());
         sess.setCheckoutLat(s.getCheckoutLat());
@@ -489,12 +520,12 @@ public class ShiftServiceImpl implements ShiftService {
         sess.setOrderid(s.getOrderid());
         sess.setOrderSpecialty(s.getOrderSpecialty());
         sess.setShiftEndSignoff(s.getShiftEndSignoff());
-        sess.setShiftEndTime(s.getShiftEndTime());
-        sess.setShiftEndTimeActual(s.getShiftEndTimeActual());
+        sess.setShiftEndTime(convertEastern(s.getShiftEndTime()));
+        sess.setShiftEndTimeActual(convertEastern(s.getShiftEndTimeActual()));
         sess.setShiftNumber(s.getShiftNumber());
         sess.setShiftStartSignoff(s.getShiftStartSignoff());
-        sess.setShiftStartTime(s.getShiftStartTime());
-        sess.setShiftStartTimeActual(s.getShiftStartTimeActual());
+        sess.setShiftStartTime(convertEastern(s.getShiftStartTime()));
+        sess.setShiftStartTimeActual(convertEastern(s.getShiftStartTimeActual()));
         sess.setStatus(s.getStatus());
         sess.setTempid(s.getTempid());
         sess.setUsername(s.getUsername());
@@ -506,6 +537,20 @@ public class ShiftServiceImpl implements ShiftService {
         //todo else log no matching temp found for shift
     }
     return results;
+  }
+
+  private String convertEastern(Timestamp iso){
+
+    long time = iso.getTime();
+    Date currentDate = new Date(time);
+    DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+
+    TimeZone zoneNewYork = TimeZone.getTimeZone("America/New_York");
+    df.setTimeZone(zoneNewYork);
+    String finale = df.format(currentDate);
+    System.out.println(finale);
+
+    return finale;
   }
 
 

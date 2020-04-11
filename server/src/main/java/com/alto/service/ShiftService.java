@@ -6,6 +6,7 @@ import com.alto.model.requests.ShiftRequest;
 import com.alto.model.*;
 import com.alto.model.requests.PushMessageRequest;
 import com.alto.model.requests.SessionsRequest;
+import com.alto.model.response.ClientAddressResponse;
 import com.alto.model.response.ShiftResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -22,6 +23,7 @@ public interface ShiftService {
   Shift getShift(String orderid);
   List<ShiftResponse>getScheduled(String tempid);
   List<ShiftResponse>getOpens(String tempid);
+  ClientAddressResponse getClient(String clientid);
   void sendPushNotification(PushMessageRequest message);
 
 }

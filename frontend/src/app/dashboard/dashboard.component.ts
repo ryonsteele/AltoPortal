@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit {
   }
 
   filter(data) {
-    console.log(data.value);
+    // console.log(data.value);
   }
 
   confirmDialog(obj) {
@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit {
         this.dtoShiftList.push(item);
       }
     }
-    console.log(JSON.stringify({records: JSON.parse(JSON.stringify(this.dtoShiftList))}));
+    // console.log(JSON.stringify({records: JSON.parse(JSON.stringify(this.dtoShiftList))}));
     this.apiService.post(this.config.confirm_url, {records: JSON.parse(JSON.stringify(this.dtoShiftList))})
       .pipe(map(() => {
         console.log('Confirm success');
@@ -192,7 +192,7 @@ export class DashboardComponent implements OnInit {
     }
     // let data = JSON.stringify(myChecked);
 
-    console.log(JSON.stringify( JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) ) );
+    // console.log(JSON.stringify( JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) ) );
     this.apiService.post(this.config.clock_url, JSON.parse(JSON.stringify(new Clock(this.clockFC.value, myChecked[0]) ) ) )
       .pipe(map((response: Response) => {
         console.log('Clock map');
@@ -229,7 +229,7 @@ export class DashboardComponent implements OnInit {
         myChecked.push(item.tempid);
       }
     }
-    console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
+    // console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
     let data = JSON.stringify(myChecked);
 
     this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, temps: JSON.parse(data)})

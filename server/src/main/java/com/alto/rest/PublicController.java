@@ -4,6 +4,7 @@ import com.alto.model.AppUser;
 import com.alto.model.requests.*;
 import com.alto.model.Shift;
 import com.alto.model.*;
+import com.alto.model.response.ClientAddressResponse;
 import com.alto.model.response.ShiftResponse;
 import com.alto.service.AppUserService;
 import com.alto.service.NotificationService;
@@ -65,6 +66,12 @@ public class PublicController {
     public UserPreferences getUserPreferences(@PathVariable String tempid) {
 
         return appUserService.fetchUserPrefs(tempid);
+    }
+
+    @RequestMapping( method = GET, value= "/client/{clientid}")
+    public ClientAddressResponse getClient(@PathVariable String clientid) {
+
+        return shiftService.getClient(clientid);
     }
 
     @RequestMapping( method = POST, value= "/orderreturn")

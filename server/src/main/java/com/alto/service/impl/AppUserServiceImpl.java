@@ -85,7 +85,10 @@ public class AppUserServiceImpl implements AppUserService {
       }
     }
     userRequest = getTempByUsername(userRequest);
-
+    AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
+    if(existsCheck != null){
+      return existsCheck;
+    }
 
     user.setUsername(userRequest.getUsername());
     user.setPassword(passwordEncoder.encode(userRequest.getPassword().trim()));
@@ -126,7 +129,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     //todo implement sessionkey
     //todo externalize
-    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&emailLike=$email&resultType=json";
+    //todo add is active
+    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&emailLike=$email&statusIn=Active&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim());
     try {
 

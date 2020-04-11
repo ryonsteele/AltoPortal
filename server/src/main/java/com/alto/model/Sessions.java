@@ -15,19 +15,19 @@ public class Sessions implements Serializable {
 
   private String status;
 
-  private Timestamp shiftStartTime;
+  private String shiftStartTime;
 
-  private Timestamp shiftEndTime;
+  private String shiftEndTime;
 
-  private Timestamp breakStartTime;
+  private String breakStartTime;
 
-  private Timestamp breakEndTime;
+  private String breakEndTime;
 
-  private Timestamp shiftStartTimeActual;
+  private String shiftStartTimeActual;
 
   private String shiftStartSignoff;
 
-  private Timestamp shiftEndTimeActual;
+  private String shiftEndTimeActual;
 
   private String shiftEndSignoff;
 
@@ -61,8 +61,8 @@ public class Sessions implements Serializable {
 
   public Sessions(){}
 
-  public Sessions(String orderid, String username, String tempid, String status, Timestamp shiftStartTime, Timestamp shiftEndTime,
-                  Timestamp breakStartTime, Timestamp breakEndTime, Timestamp shiftStartTimeActual, Timestamp shiftEndTimeActual,
+  public Sessions(String orderid, String username, String tempid, String status, String shiftStartTime, String shiftEndTime,
+                  String breakStartTime, String breakEndTime, String shiftStartTimeActual, String shiftEndTimeActual,
                   String shiftStartSignoff, String shiftEndSignoff, String clientId, String clientName, String orderSpecialty,
                   String orderCertification, String shiftNumber, String clockInAddress, String checkinLat,
                   String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon) {
@@ -126,51 +126,51 @@ public class Sessions implements Serializable {
     this.status = status;
   }
 
-  public Timestamp getShiftStartTime() {
+  public String getShiftStartTime() {
     return shiftStartTime;
   }
 
-  public void setShiftStartTime(Timestamp shiftStartTime) {
+  public void setShiftStartTime(String shiftStartTime) {
     this.shiftStartTime = shiftStartTime;
   }
 
-  public Timestamp getShiftEndTime() {
+  public String getShiftEndTime() {
     return shiftEndTime;
   }
 
-  public void setShiftEndTime(Timestamp shiftEndTime) {
+  public void setShiftEndTime(String shiftEndTime) {
     this.shiftEndTime = shiftEndTime;
   }
 
-  public Timestamp getBreakStartTime() {
+  public String getBreakStartTime() {
     return breakStartTime;
   }
 
-  public void setBreakStartTime(Timestamp breakStartTime) {
+  public void setBreakStartTime(String breakStartTime) {
     this.breakStartTime = breakStartTime;
   }
 
-  public Timestamp getBreakEndTime() {
+  public String getBreakEndTime() {
     return breakEndTime;
   }
 
-  public void setBreakEndTime(Timestamp breakEndTime) {
+  public void setBreakEndTime(String breakEndTime) {
     this.breakEndTime = breakEndTime;
   }
 
-  public Timestamp getShiftStartTimeActual() {
+  public String getShiftStartTimeActual() {
     return shiftStartTimeActual;
   }
 
-  public void setShiftStartTimeActual(Timestamp shiftStartTimeActual) {
+  public void setShiftStartTimeActual(String shiftStartTimeActual) {
     this.shiftStartTimeActual = shiftStartTimeActual;
   }
 
-  public Timestamp getShiftEndTimeActual() {
+  public String getShiftEndTimeActual() {
     return shiftEndTimeActual;
   }
 
-  public void setShiftEndTimeActual(Timestamp shiftEndTimeActual) {
+  public void setShiftEndTimeActual(String shiftEndTimeActual) {
     this.shiftEndTimeActual = shiftEndTimeActual;
   }
 
