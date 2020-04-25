@@ -110,12 +110,14 @@ public class ShiftServiceImpl implements ShiftService {
       Gson gson = new Gson();
       hcsFound = gson.fromJson(result, ShiftResponse.class);
 
-      if(hcsFound == null){
+      if(hcsFound == null || hcsFound.getOrderId() == null ||
+              (!hcsFound.getStatus().equalsIgnoreCase("open") && !hcsFound.getStatus().equalsIgnoreCase("filled")) ){
         return new ResponseEntity("invalid", HttpStatus.BAD_REQUEST);
         //todo logger
       }
 
     } catch (Exception e) {
+      e.printStackTrace();
       //todo logger
       //LOGGER.error("Error getting Embed URL and Token", e);
     }
@@ -216,14 +218,11 @@ public class ShiftServiceImpl implements ShiftService {
     //todo externalize
     String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
-    //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
 
       try {
         String result = restTemplate.getForObject(getShiftUrl, String.class);
-        //result = result.replace("[","").replace("]","");
-
 
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
@@ -245,17 +244,13 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
     //todo externalize
-    //String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(7).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
-    //getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     try {
       String resultOpens = restTemplate.getForObject(getOpensUrl, String.class);
-      //result = result.replace("[","").replace("]","");
-
 
       Gson gson = new Gson(); // Or use new GsonBuilder().create();
       Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
@@ -298,6 +293,7 @@ public class ShiftServiceImpl implements ShiftService {
         updateShift.setClockoutAddress(request.getClockedAddy());
         updateShift.setCheckoutLat(request.getLat());
         updateShift.setCheckoutLon(request.getLon());
+        updateShift.setBreaks(request.getBreaks());
      // }
       shiftRepository.saveAndFlush(updateShift);
 
@@ -434,8 +430,8 @@ public class ShiftServiceImpl implements ShiftService {
         geoList = gson.fromJson(goeResp, userListType);
 
         for(GeoCodeResponse geo : geoList){
-          //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
-          Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
+          Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
+          //Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
           if(dist < 0.3){
             return true;
           }
@@ -505,8 +501,8 @@ public class ShiftServiceImpl implements ShiftService {
       if(match != null) {
 
         Sessions sess = new Sessions();
-        sess.setBreakEndTime(convertEastern(s.getBreakEndTime()));
-        sess.setBreakStartTime(convertEastern(s.getBreakStartTime()));
+//        sess.setBreakEndTime(convertEastern(s.getBreakEndTime()));
+//        sess.setBreakStartTime(convertEastern(s.getBreakStartTime()));
         sess.setCheckinLat(s.getCheckinLat());
         sess.setCheckinLon(s.getCheckinLon());
         sess.setCheckoutLat(s.getCheckoutLat());
@@ -530,6 +526,7 @@ public class ShiftServiceImpl implements ShiftService {
         sess.setTempid(s.getTempid());
         sess.setUsername(s.getUsername());
         sess.setTempName(match.getFirstName() + " " + match.getLastName());
+        sess.setBreaks(s.getBreaks());
 
         results.add(sess);
 

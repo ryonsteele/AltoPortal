@@ -1,19 +1,11 @@
 package com.alto.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @Entity
 @Table(name = "SHIFTS")
@@ -43,11 +35,11 @@ public class Shift implements Serializable {
   @Column(name = "shift_endtime")
   private Timestamp shiftEndTime;
 
-  @Column(name = "break_starttime")
-  private Timestamp breakStartTime;
-
-  @Column(name = "break_endtime")
-  private Timestamp breakEndTime;
+//  @Column(name = "break_starttime")
+//  private Timestamp breakStartTime;
+//
+//  @Column(name = "break_endtime")
+//  private Timestamp breakEndTime;
 
   @Column(name = "shift_starttime_actual")
   private Timestamp shiftStartTimeActual;
@@ -100,15 +92,18 @@ public class Shift implements Serializable {
   @Column(name = "checkout_lon")
   private String checkoutLon;
 
+  @Column(name = "breaks")
+  private Boolean breaks;
+
 
 
   public Shift(){}
 
   public Shift(String orderid, String username, String tempid, String status, Timestamp shiftStartTime, Timestamp shiftEndTime,
-               Timestamp breakStartTime, Timestamp breakEndTime, Timestamp shiftStartTimeActual, Timestamp shiftEndTimeActual,
+               Timestamp shiftStartTimeActual, Timestamp shiftEndTimeActual,
                String shiftStartSignoff, String shiftEndSignoff, String clientId, String clientName, String orderSpecialty,
                String orderCertification, String shiftNumber, String note, String clockInAddress, String checkinLat,
-               String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon) {
+               String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon, Boolean breaks) {
 
     this.orderid = orderid;
     this.username = username;
@@ -116,8 +111,8 @@ public class Shift implements Serializable {
     this.status = status;
     this.shiftStartTime = shiftStartTime;
     this.shiftEndTime = shiftEndTime;
-    this.breakStartTime = breakStartTime;
-    this.breakEndTime = breakEndTime;
+//    this.breakStartTime = breakStartTime;
+//    this.breakEndTime = breakEndTime;
     this.shiftStartTimeActual = shiftStartTimeActual;
     this.shiftEndTimeActual = shiftEndTimeActual;
     this.shiftStartSignoff = shiftStartSignoff;
@@ -134,10 +129,17 @@ public class Shift implements Serializable {
     this.clockoutAddress = clockoutAddress;
     this.checkoutLat = checkoutLat;
     this.checkoutLon = checkoutLon;
+    this.breaks = breaks;
 
   }
 
+  public Boolean getBreaks() {
+    return breaks;
+  }
 
+  public void setBreaks(Boolean breaks) {
+    this.breaks = breaks;
+  }
 
   public Long getId() {
     return id;
@@ -195,21 +197,21 @@ public class Shift implements Serializable {
     this.shiftEndTime = shiftEndTime;
   }
 
-  public Timestamp getBreakStartTime() {
-    return breakStartTime;
-  }
-
-  public void setBreakStartTime(Timestamp breakStartTime) {
-    this.breakStartTime = breakStartTime;
-  }
-
-  public Timestamp getBreakEndTime() {
-    return breakEndTime;
-  }
-
-  public void setBreakEndTime(Timestamp breakEndTime) {
-    this.breakEndTime = breakEndTime;
-  }
+//  public Timestamp getBreakStartTime() {
+//    return breakStartTime;
+//  }
+//
+//  public void setBreakStartTime(Timestamp breakStartTime) {
+//    this.breakStartTime = breakStartTime;
+//  }
+//
+//  public Timestamp getBreakEndTime() {
+//    return breakEndTime;
+//  }
+//
+//  public void setBreakEndTime(Timestamp breakEndTime) {
+//    this.breakEndTime = breakEndTime;
+//  }
 
   public Timestamp getShiftStartTimeActual() {
     return shiftStartTimeActual;

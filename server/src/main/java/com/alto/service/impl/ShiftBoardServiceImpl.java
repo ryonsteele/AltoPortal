@@ -5,14 +5,18 @@ import com.alto.model.*;
 import com.alto.model.requests.ConfirmationRequest;
 import com.alto.model.requests.InterestRequest;
 import com.alto.model.requests.PushMessageRequest;
+import com.alto.model.requests.SessionUpdateRequest;
 import com.alto.model.response.ShiftResponse;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.ShiftBoardRepository;
+import com.alto.repository.ShiftRepository;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,6 +37,9 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
   @Autowired
   private ShiftBoardRepository shiftBoardRepository;
+
+  @Autowired
+  private ShiftRepository shiftRepository;
 
   @Override
   public List<ShiftBoardRecord> findAll(){
@@ -153,8 +160,36 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       return shiftBoardRepository.saveAndFlush(record);
   }
 
+  public ResponseEntity<?> updateSession(String orderid, SessionUpdateRequest request){
+
+    Shift update = shiftService.getShift(orderid);
+
+    if(request.getShiftstart() != null && !request.getShiftstart().isEmpty()) {
+      update.setShiftStartTimeActual(convertFromString(request.getShiftstart()));
+    }
+
+    if(request.getShiftend() != null && !request.getShiftend().isEmpty()) {
+      update.setShiftEndTimeActual(convertFromString(request.getShiftend()));
+    }
+    shiftRepository.saveAndFlush(update);
+
+    return new ResponseEntity<Shift>(update, HttpStatus.OK);
+  }
+
 
   private Timestamp convertFromString(String input){
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+      Date parsedDate = dateFormat.parse(input);
+      return new java.sql.Timestamp(parsedDate.getTime());
+    } catch(Exception e) { //this generic but you can control another types of exception
+      // look the origin of excption
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private Timestamp convertFromUTCString(String input){
     try {
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
       Date parsedDate = dateFormat.parse(input);

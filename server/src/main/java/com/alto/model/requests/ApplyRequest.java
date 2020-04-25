@@ -15,6 +15,7 @@ public class ApplyRequest {
     ArrayList < String > specs = new ArrayList < String > ();
     private String primary;
     private String secondary;
+    private String filekey;
 
 
     // Getter Methods
@@ -107,5 +108,13 @@ public class ApplyRequest {
 
     public void setSpecs(ArrayList<String> specs) {
         this.specs = specs;
+    }
+
+    public String getFilekey() {
+        return filekey;
+    }
+
+    public void setFilekey(String filekey) {
+        this.filekey = filekey;
     }
 }

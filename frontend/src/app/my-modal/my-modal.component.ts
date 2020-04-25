@@ -16,8 +16,7 @@ export class Session {
   shiftstart: string;
   shiftend: string;
   status: string;
-  breakstart: string;
-  breakend: string;
+  breaks: string;
   shiftstartactual: string;
   shiftendactual: string;
   shiftstartsignoff: string;
@@ -36,7 +35,7 @@ export class Session {
   outlon: string;
 
   constructor( orderid: string, name: string, username: string, tempid: string, shiftstart: string, shiftend: string,
-               status: string, breakstart: string, breakend: string, shiftstartactual: string, shiftendactual: string,
+               status: string, breaks: string, shiftstartactual: string, shiftendactual: string,
                shiftstartsignoff: string, shiftendsignoff: string, clientid: string, clientname: string, orderSpec: string,
                orderCert: string, floor: string, shiftnumber: string, inaddy: string, inlat: string, inlon: string,
                outaddy: string, outlat: string, outlon: string) {
@@ -48,8 +47,7 @@ export class Session {
     this.shiftstart = shiftstart;
     this.shiftend = shiftend;
     this.status = status;
-    this.breakstart = breakstart;
-    this.breakend = breakend;
+    this.breaks = breaks;
     this.shiftstartactual = shiftstartactual;
     this.shiftendactual = shiftendactual;
     this.shiftstartsignoff = shiftstartsignoff;
@@ -102,7 +100,7 @@ export class MyModalComponent implements OnInit {
     // console.log(JSON.stringify({start: JSON.parse(JSON.stringify(this.startDate.toISOString())), end: JSON.parse(JSON.stringify(this.endDate.toISOString()))} ));
     this.apiService.post(this.config.sessions_url, {start: JSON.parse(JSON.stringify(this.startDate.toDateString())), end: JSON.parse(JSON.stringify(this.endDate.toDateString()))} )
       .pipe(map((arr) => arr.map(x => new Session(x.orderid, x.tempName, x.username, x.tempid,
-        x.shiftStartTime, x.shiftEndTime, x.status, x.breakStartTime, x.breakEndTime, x.shiftStartTimeActual,
+        x.shiftStartTime, x.shiftEndTime, x.status, x.breaks, x.shiftStartTimeActual,
         x.shiftEndTimeActual, x.shiftStartSignoff, x.shiftEndSignoff, x.clientId, x.clientName, x.orderSpecialty,
         x.orderCertification, x.floor, x.shiftNumber, x.clockInAddress, x.checkinLat, x.checkinLon, x.clockoutAddress,
         x.checkoutLat, x.checkoutLon) )))
@@ -120,7 +118,7 @@ export class MyModalComponent implements OnInit {
           title: 'Full Sessions',
           useBom: true,
           noDownload: false,
-          headers: ['OrderId', 'TempName', 'Username', 'TempId', 'ShiftStart', 'ShiftEnd', 'ShiftStatus', 'BreakStart', 'BreakEnd',
+          headers: ['OrderId', 'TempName', 'Username', 'TempId', 'ShiftStart', 'ShiftEnd', 'ShiftStatus', 'Breaks',
                     'ClockIn', 'ClockOut', 'ClockInSignoff', 'ClockOutSignoff', 'ClientId', 'ClientName', 'OrderSpec', 'OrderCert',
                     'floor', 'ShiftNumber', 'ClockInAddress', 'CheckInLat', 'CheckInLon', 'ClockOutAddress', 'CheckOutLat', 'CheckOutLon']
         };

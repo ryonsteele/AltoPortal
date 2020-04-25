@@ -12,6 +12,7 @@ import {AdminGuard, GuestGuard, LoginGuard} from './guard';
 import {NotFoundComponent} from './not-found';
 import {AccountMenuComponent} from './component/header/account-menu/account-menu.component';
 import {ApiCardComponent, FooterComponent, HeaderComponent} from './component';
+import { Md2DatepickerModule, MdNativeDateModule } from 'md2';
 
 import {ApiService, AuthService, ConfigService, FooService, UserService} from './service';
 import {ChangePasswordComponent} from './change-password/change-password.component';
@@ -52,6 +53,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
   entryComponents: [MyModalComponent],
   imports: [
     BrowserAnimationsModule,
+    Md2DatepickerModule,
+    MdNativeDateModule,
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,

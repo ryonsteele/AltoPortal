@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -123,14 +124,22 @@ public class PublicController {
     @RequestMapping( method = POST, value= "/apply")
     public ResponseEntity postApplication(@RequestBody ApplyRequest request) {
 
-        //return appUserService.save(request);
-        //return notificationService.sendApplicationEmail(request);
-
-        if(notificationService.sendApplicationEmail(request)) {
+        if(notificationService.saveApplication(request)) {
             return new ResponseEntity(HttpStatus.OK);
         }else{
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping( method = POST, value= "/fileupload")
+    public ResponseEntity fileUpload(@RequestParam("file[]") MultipartFile file, @RequestParam("filekey") String filekey) {
+
+        if(notificationService.uploadResume(file, filekey)) {
+            return new ResponseEntity(HttpStatus.OK);
+        }else{
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

@@ -2,7 +2,6 @@ package com.alto.model;
 
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 
 public class Sessions implements Serializable {
@@ -19,9 +18,9 @@ public class Sessions implements Serializable {
 
   private String shiftEndTime;
 
-  private String breakStartTime;
-
-  private String breakEndTime;
+//  private String breakStartTime;
+//
+//  private String breakEndTime;
 
   private String shiftStartTimeActual;
 
@@ -57,15 +56,17 @@ public class Sessions implements Serializable {
 
   private String tempName;
 
+  private Boolean breaks;
+
 
 
   public Sessions(){}
 
   public Sessions(String orderid, String username, String tempid, String status, String shiftStartTime, String shiftEndTime,
-                  String breakStartTime, String breakEndTime, String shiftStartTimeActual, String shiftEndTimeActual,
+                  String shiftStartTimeActual, String shiftEndTimeActual,
                   String shiftStartSignoff, String shiftEndSignoff, String clientId, String clientName, String orderSpecialty,
                   String orderCertification, String shiftNumber, String clockInAddress, String checkinLat,
-                  String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon) {
+                  String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon, Boolean breaks) {
 
     this.orderid = orderid;
     this.username = username;
@@ -73,8 +74,8 @@ public class Sessions implements Serializable {
     this.status = status;
     this.shiftStartTime = shiftStartTime;
     this.shiftEndTime = shiftEndTime;
-    this.breakStartTime = breakStartTime;
-    this.breakEndTime = breakEndTime;
+//    this.breakStartTime = breakStartTime;
+//    this.breakEndTime = breakEndTime;
     this.shiftStartTimeActual = shiftStartTimeActual;
     this.shiftEndTimeActual = shiftEndTimeActual;
     this.shiftStartSignoff = shiftStartSignoff;
@@ -93,6 +94,13 @@ public class Sessions implements Serializable {
 
   }
 
+  public Boolean getBreaks() {
+    return breaks;
+  }
+
+  public void setBreaks(Boolean breaks) {
+    this.breaks = breaks;
+  }
 
   public String getUsername() {
     return username;
@@ -142,21 +150,21 @@ public class Sessions implements Serializable {
     this.shiftEndTime = shiftEndTime;
   }
 
-  public String getBreakStartTime() {
-    return breakStartTime;
-  }
-
-  public void setBreakStartTime(String breakStartTime) {
-    this.breakStartTime = breakStartTime;
-  }
-
-  public String getBreakEndTime() {
-    return breakEndTime;
-  }
-
-  public void setBreakEndTime(String breakEndTime) {
-    this.breakEndTime = breakEndTime;
-  }
+//  public String getBreakStartTime() {
+//    return breakStartTime;
+//  }
+//
+//  public void setBreakStartTime(String breakStartTime) {
+//    this.breakStartTime = breakStartTime;
+//  }
+//
+//  public String getBreakEndTime() {
+//    return breakEndTime;
+//  }
+//
+//  public void setBreakEndTime(String breakEndTime) {
+//    this.breakEndTime = breakEndTime;
+//  }
 
   public String getShiftStartTimeActual() {
     return shiftStartTimeActual;

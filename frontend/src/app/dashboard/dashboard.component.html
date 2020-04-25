@@ -70,6 +70,10 @@
 </div>
 
 
+<button class="btn btn-primary clockbtn"
+        (click)="openUpdateSessionModal(template2)">Update Session</button>
+
+
 
 
 <!--Users Table-->
@@ -79,13 +83,10 @@
     <input type="text" (keyup)="applyUserFilter($event.target.value)" placeholder="search... " class="searchbox">
   </div>
 
-
-
   <mat-table [dataSource]="usersDataSource" class="mat-elevation-z8" matSort matSortActive="user"
              matSortDirection="asc" matSortDisableClear>>
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
-
 
     <!-- Position Column -->
     <ng-container matColumnDef="checked">
@@ -107,7 +108,6 @@
       <mat-cell *matCellDef="let element"> {{element.tempid}} </mat-cell>
     </ng-container>
 
-
     <mat-header-row *matHeaderRowDef="usertableColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: usertableColumns;"></mat-row>
   </mat-table>
@@ -125,14 +125,6 @@
 
 
 <form (ngSubmit)="Submit()" class="pushcontent">
-
-<!--  <mat-form-field>-->
-<!--    <mat-label>Recipients</mat-label>-->
-<!--    <mat-select [formControl]="tempsFC" multiple>-->
-<!--      <mat-option *ngFor="let temp of tempList" [value]="temp.tempid">{{temp.name}}</mat-option>-->
-<!--    </mat-select>-->
-<!--  </mat-form-field>-->
-
 
     <mat-form-field class="myTextArea">
       <mat-label>Notification Message</mat-label>
@@ -152,7 +144,6 @@
 <ng-template #template>
 
   <div class="modal-header">
-
     <h4 class="modal-title pull-left">Enter Order ID</h4>
 
     <button type="button"
@@ -166,6 +157,8 @@
   <div class="modal-body">
     <form (ngSubmit)="Clock()">
       <input [formControl]="clockFC" matInput placeholder="Order ID" required type="text">
+      <br>
+      <br>
       <button mat-raised-button type="submit" color="primary">Clock</button>
       <br>
       <br>
@@ -176,8 +169,66 @@
     <div *ngIf="InvalidClockResp == true" class="alert-danger my-error">
       <p>OrderID either doesn't exist or has already been fulfilled!</p>
     </div>
-
   </div>
-
 </ng-template>
+</div>
+
+<div class="my-modal-wrapper">
+  <ng-template #template2>
+
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Enter Order ID</h4>
+
+      <button type="button"
+              class="close pull-right"
+              (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <form (ngSubmit)="UpdateShift()">
+        <input [formControl]="updateFC" matInput placeholder="Order ID" required type="text">
+        <br>
+        <br>
+        <button mat-raised-button type="submit" color="primary">Clock</button>
+        <br>
+        <br>
+        <p>The OrderId is found at the top of the Shift Details Screen of the Users Alto App.
+          Or can be found in CSS / Healthcare Source</p>
+      </form>
+
+      <div *ngIf="InvalidUpdateResp == true" class="alert-danger my-error">
+        <p>OrderID doesn't exist!</p>
+      </div>
+
+      <div *ngIf="showSessionUpdate == true">
+      <h1 mat-dialog-title>Shift Sessions File</h1>
+      <div mat-dialog-content>
+        <p>Select a date range for based on shift start times</p>
+
+          <md2-datepicker mdInput
+                          id="sDate"
+                          name="sDate"
+                          [(ngModel)]="startDate"
+                          placeholder="Shift Begin"
+                          format = 'MM/dd/y HH:mm a'
+                          type="datetime"></md2-datepicker>
+
+          <md2-datepicker mdInput
+                          id="eDate"
+                          name="eDate"
+                          [(ngModel)]="endDate"
+                          placeholder="Shift End"
+                          format = 'MM/dd/y HH:mm a'
+                          type="datetime"></md2-datepicker>
+      </div>
+      <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">Cancel</button>
+        <button mat-button (click)="onRangeClick()">Update</button>
+      </div>
+      </div>
+    </div>
+  </ng-template>
 </div>

@@ -23,6 +23,16 @@ public class ShiftRequest {
 
   private String clientId;
 
+  private Boolean breaks;
+
+  public Boolean getBreaks() {
+    return breaks;
+  }
+
+  public void setBreaks(Boolean breaks) {
+    this.breaks = breaks;
+  }
+
   public Long getTempId() {
     return tempId;
   }

@@ -1,10 +1,7 @@
 package com.alto.rest;
 
 import com.alto.model.*;
-import com.alto.model.requests.ClockRequest;
-import com.alto.model.requests.ConfirmationRequest;
-import com.alto.model.requests.PushMessageRequest;
-import com.alto.model.requests.SessionsRequest;
+import com.alto.model.requests.*;
 import com.alto.service.AppUserService;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
@@ -47,6 +44,18 @@ public class DashboardController {
   //@PreAuthorize("hasRole('USER')")
   public List<ShiftBoardRecord> loadAllOpenShifts() {
     return this.shiftBoardService.findAll();
+  }
+
+  @RequestMapping(method = GET, value = "/shifts/{orderid}")
+  //@PreAuthorize("hasRole('USER')")
+  public Shift loadShift(@PathVariable String orderid){
+  return this.shiftService.getShift(orderid);
+  }
+
+  @RequestMapping(method = POST, value = "/shifts/{orderid}")
+  //@PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> updateShift(@PathVariable String orderid, @RequestBody SessionUpdateRequest request){
+    return this.shiftBoardService.updateSession(orderid, request);
   }
 
   @RequestMapping(method = POST, value = "/confirmation")

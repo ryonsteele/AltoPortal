@@ -8,6 +8,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import {HttpErrorResponse} from "@angular/common/http";
+import {AngularCsv} from "angular7-csv";
+import {Session} from "../my-modal/my-modal.component";
+import {DatePipe} from "@angular/common";
 
 
 
@@ -57,6 +60,19 @@ export class Shift {
   }
 }
 
+export class SessionUpdate {
+  shiftstart: string;
+  shiftend: string;
+  orderid: string;
+
+  constructor(shiftstart: string, shiftend: string, orderid: string) {
+    this.shiftstart = shiftstart;
+    this.shiftend = shiftend;
+    this.orderid = orderid;
+  }
+}
+
+
 
 
 @Component({
@@ -68,6 +84,15 @@ export class DashboardComponent implements OnInit {
   modalRef: BsModalRef;
   InvalidClockVal: boolean;
   InvalidClockResp: boolean;
+  InvalidUpdateResp: boolean;
+  showSessionUpdate: boolean;
+
+  updateOrderId: string;
+
+  startDate: Date = new Date();
+  endDate: Date = new Date();
+  endDateform: FormControl = new FormControl(new Date());
+  startDateform: FormControl = new FormControl(new Date());
 
   constructor(
     private apiService: ApiService,
@@ -82,6 +107,9 @@ export class DashboardComponent implements OnInit {
     Validators.maxLength(170)
   ]);
   clockFC = new FormControl('', [
+    Validators.required, Validators.pattern('^[0-9]*$')
+  ]);
+  updateFC = new FormControl('', [
     Validators.required, Validators.pattern('^[0-9]*$')
   ]);
   tempList: Temp[] = [];
@@ -100,6 +128,8 @@ export class DashboardComponent implements OnInit {
     this.usersDataSource.paginator = this.paginator;
     this.InvalidClockVal = false;
     this.InvalidClockResp = false;
+    this.InvalidUpdateResp = false;
+    this.showSessionUpdate = false;
     this.updateTable();
   }
 
@@ -117,6 +147,10 @@ export class DashboardComponent implements OnInit {
     } else {
       this.InvalidClockVal = true;
     }
+  }
+
+  openUpdateSessionModal(template: TemplateRef<any>) {
+      this.modalRef = this.modalService.show(template);
   }
 
  updateTable() {
@@ -144,9 +178,6 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  filter(data) {
-    // console.log(data.value);
-  }
 
   confirmDialog(obj) {
     console.log(obj);
@@ -204,6 +235,49 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  UpdateShift() {
+    this.InvalidClockResp = false;
+    console.log('Update Shift Submit');
+    if (this.updateFC.invalid) {
+      return;
+    }
+    this.apiService.get(this.config.shifts_url + '/' + this.updateFC.value)
+      .pipe(map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTimeActual, x.shiftEndTimeActual, x.orderid,
+        false))).subscribe(data => {
+        console.log(data);
+        this.startDate = new Date(data.shiftstart);
+        this.endDate = new Date(data.shiftend);
+        this.showSessionUpdate = true;
+        this.updateOrderId = data.orderid;
+        },
+      error => this.HandleShiftUpdateError(error)
+    );
+
+  }
+
+  onNoClick(): void {
+    this.modalRef.hide();
+    this.showSessionUpdate = false;
+  }
+
+  onRangeClick(): void {
+    this.modalRef.hide();
+    this.showSessionUpdate = false;
+
+    let datePipe = new DatePipe('en-US');
+    let startvalue = datePipe.transform(this.startDate, 'yyyy-MM-dd\'T\'HH:mm:ss');
+    let endvalue = datePipe.transform(this.endDate, 'yyyy-MM-dd\'T\'HH:mm:ss');
+    let session = new SessionUpdate(startvalue, endvalue, this.updateOrderId);
+
+    // console.log(JSON.stringify(JSON.parse(JSON.stringify(session))));
+    this.apiService.post(this.config.shifts_url + '/' + this.updateOrderId,  JSON.parse(JSON.stringify(session)))
+      .pipe(map(() => {
+        console.log('update session success');
+      })).subscribe( item =>
+      console.log('update session sub')
+    );
+  }
+
   Handle(resp: any) {
     this.modalRef.hide();
     console.log(resp);
@@ -213,6 +287,15 @@ export class DashboardComponent implements OnInit {
     // this.modalRef.hide();
     if (error.status === 400) {
       this.InvalidClockResp = true;
+    } else if ( error.status === 200) {
+      this.modalRef.hide();
+    }
+  }
+
+  HandleShiftUpdateError(error: any) {
+    // this.modalRef.hide();
+    if (error.status === 400) {
+      this.InvalidUpdateResp = true;
     } else if ( error.status === 200) {
       this.modalRef.hide();
     }

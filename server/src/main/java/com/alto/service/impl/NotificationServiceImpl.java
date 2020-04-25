@@ -3,8 +3,14 @@ package com.alto.service.impl;
 
 import com.alto.model.requests.ApplyRequest;
 import com.alto.model.requests.SentHomeRequest;
+import com.alto.repository.CandidateRepository;
 import com.alto.service.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -16,6 +22,8 @@ import java.util.Properties;
 public class NotificationServiceImpl implements NotificationService {
 
 
+  @Autowired
+  CandidateRepository candidateRepository;
 
   @Override
   public boolean sendSentHomeEmail(SentHomeRequest request) {
@@ -33,7 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
       Message message = new MimeMessage(session);
       message.setFrom(new InternetAddress("alerts@altostaffing.com"));
       message.setRecipients(Message.RecipientType.TO,
-              InternetAddress.parse("aharris@altostaffing.com"));
+              InternetAddress.parse("scheduling@altostaffing.com"));
       message.setSubject("Sent Home Alert");
       message.setText("User: " + request.getUsername() + " TempID: " + request.getTempId() +
               " is reporting being sent home from Client: " + request.getClientName());
@@ -50,6 +58,140 @@ public class NotificationServiceImpl implements NotificationService {
     return true;
   }
 
+
+  public boolean saveApplication(ApplyRequest request){
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+    sb.append(" <soap:Envelope");
+    sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+    sb.append(" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"");
+    sb.append(" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+    sb.append(" <soap:Body>");
+    sb.append(" <tssRequest>");
+    sb.append(" <requestXmlString xsi:type=\"xsd:string\">");
+    sb.append(" <![CDATA[ ");
+    sb.append(" <clearviewRequest>");
+    sb.append(" <username>rsteele</username>");
+    sb.append(" <password>altoApp1!</password>");
+    sb.append(" <action>insertTempCandidate</action>");
+    sb.append(" <resultType>xml</resultType>");
+    sb.append(" <tempRecords>");
+    sb.append(" <tempRecord>");
+    sb.append(" <firstName>").append(request.getFirstname()).append("</firstName>");
+    sb.append(" <lastName>").append(request.getLastname()).append("</lastName>");
+    sb.append(" <homeRegion>27</homeRegion>");
+    sb.append(" <status>Pending</status>");
+    sb.append(" <certification>").append(request.getCerts().get(0)).append("</certification>");
+    String allSpecs = "";
+    for(String spec : request.getSpecs()){
+      allSpecs += spec + ",";
+    }
+    allSpecs = allSpecs.trim().substring(0, allSpecs.length() - 1);
+    sb.append(" <specialty>").append(allSpecs).append("</specialty>");
+    sb.append(" <email>").append(request.getEmail()).append("</email>");
+    sb.append(" <address>").append(request.getStreet()).append("</address>");
+    sb.append(" <city>").append(request.getCity()).append("</city>");
+    sb.append(" <state>").append(request.getState()).append("</state>");
+    sb.append(" <zip>").append(request.getZip()).append("</zip>");
+    sb.append(" <phoneNumber>").append(request.getPrimary()).append("</phoneNumber>");
+    sb.append(" <cell_phone>").append(request.getSecondary()).append("</cell_phone>");
+    sb.append(" <sendWelcome>0</sendWelcome>");
+    sb.append(" </tempRecord>").append(" </tempRecords>");
+    sb.append(" </clearviewRequest>").append("]]>");
+    sb.append(" </requestXmlString>").append(" </tssRequest>");
+    sb.append(" </soap:Body>").append(" </soap:Envelope>");
+
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_XML);
+      headers.add("SOAPAction","http://ctms.contingenttalentmanagement.com/cirrusconcept/clearConnect/2_0/webService.cfc?wsdl");
+      HttpEntity<String> requestRSS = new HttpEntity<String>(sb.toString(), headers);
+      ResponseEntity<String> response = restTemplate.postForEntity("https://ctms.contingenttalentmanagement.com/cirrusconcept/clearConnect/2_0/webService.cfc", requestRSS, String.class);
+
+      System.out.println(response.toString());
+
+      if(response.getStatusCode().is2xxSuccessful()){
+        return sendApplicationEmail(request);
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+      //todo logger
+      //LOGGER.error("Error getting Embed URL and Token", e);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean uploadResume(MultipartFile file, String filekey){
+
+//    Candidate can = candidateRepository.findCandidateByFilekey(filekey);
+//    if(can == null) return false;
+//
+//    StringBuilder sb = new StringBuilder();
+//    sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+//    sb.append(" <soap:Envelope");
+//    sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+//    sb.append(" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"");
+//    sb.append(" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+//    sb.append(" <soap:Body>");
+//    sb.append(" <tssRequest>");
+//    sb.append(" <requestXmlString xsi:type=\"xsd:string\">");
+//    sb.append(" <![CDATA[ ");
+//    sb.append(" <clearviewRequest>");
+//    sb.append(" <username>rsteele</username>");
+//    sb.append(" <password>altoApp1!</password>");
+//    sb.append(" <action>insertTempCandidate</action>");
+//    sb.append(" <resultType>xml</resultType>");
+//    sb.append(" <tempRecords>");
+//    sb.append(" <tempRecord>");
+//    sb.append(" <firstName>").append(can.getFirstname()).append("</firstName>");
+//    sb.append(" <lastName>").append(can.getLastname()).append("</lastName>");
+//    sb.append(" <homeRegion>27</homeRegion>");
+//    sb.append(" <status>Pending</status>");
+//    sb.append(" <certification>").append(can.getCerts()).append("</certification>");
+//    sb.append(" <specialty>").append(can.getSpecs()).append("</specialty>");
+//    sb.append(" <email>").append(can.getEmail()).append("</email>");
+//    sb.append(" <address>").append(can.getStreet()).append("</address>");
+//    sb.append(" <city>").append(can.getCity()).append("</city>");
+//    sb.append(" <state>").append(can.getState()).append("</state>");
+//    sb.append(" <zip>").append(can.getZip()).append("</zip>");
+//    sb.append(" <phoneNumber>").append(can.getPrimary()).append("</phoneNumber>");
+//    sb.append(" <cell_phone>").append(can.getSecondary()).append("</cell_phone>");
+//    sb.append(" <sendWelcome>0</sendWelcome>");
+//    sb.append(" </tempRecord>").append(" </tempRecords>");
+//    sb.append(" </clearviewRequest>").append("]]>");
+//    sb.append(" </requestXmlString>").append(" </tssRequest>");
+//    sb.append(" </soap:Body>").append(" </soap:Envelope>");
+//
+//    RestTemplate restTemplate = new RestTemplateBuilder().build();
+//
+//    try {
+//      HttpHeaders headers = new HttpHeaders();
+//      headers.setContentType(MediaType.APPLICATION_XML);
+//      HttpEntity<String> request = new HttpEntity<String>(sb.toString(), headers);
+//      ResponseEntity<String> response = restTemplate.postForEntity("https://ctms.contingenttalentmanagement.com/cirrusconcept/clearConnect/2_0/webService.cfc", request, String.class);
+//
+//      System.out.println(response.toString());
+//
+//      if(response.getStatusCode().is2xxSuccessful()){
+//        return true;
+//      }
+//
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//      return false;
+//      //todo logger
+//      //LOGGER.error("Error getting Embed URL and Token", e);
+//    }
+
+    return false;
+
+  }
 
     @Override
     public boolean sendApplicationEmail(ApplyRequest request) {
@@ -95,7 +237,7 @@ public class NotificationServiceImpl implements NotificationService {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("alerts@altostaffing.com"));
         message.setRecipients(Message.RecipientType.TO,
-                InternetAddress.parse("aharris@altostaffing.com"));
+                InternetAddress.parse("scheduling@altostaffing.com"));
         message.setSubject("Mobile App Application Received");
         message.setText(builder.toString());
 
