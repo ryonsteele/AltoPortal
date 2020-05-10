@@ -10,6 +10,7 @@ import com.alto.service.AppUserService;
 import com.alto.service.NotificationService;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -104,15 +105,25 @@ public class PublicController {
     }
 
     @RequestMapping( method = POST, value= "/login")
-    public AppUser postLogin(@RequestBody AppUserRequest request) {
+    public ResponseEntity<?> postLogin(@RequestBody AppUserRequest request) {
 
-        return appUserService.save(request);
+        if(StringUtils.isEmpty(request.getUsername()) || StringUtils.isEmpty(request.getPassword())){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            return new ResponseEntity<>(appUserService.save(request), HttpStatus.OK);
+        }
     }
 
     @RequestMapping( method = GET, value= "/mobileshifts/scheduled/{tempid}")
     public List<ShiftResponse> getHCSSchedShifts(@PathVariable String tempid) {
 
         return shiftService.getScheduled(tempid);
+    }
+
+    @RequestMapping( method = GET, value= "/mobileshifts/history/{tempid}")
+    public ResponseEntity<?> getHCSHistory(@PathVariable String tempid) {
+
+        return new ResponseEntity(shiftService.getHistoricals(tempid), HttpStatus.OK);
     }
 
     @RequestMapping( method = GET, value= "/mobileshifts/open/{tempid}")
@@ -122,7 +133,7 @@ public class PublicController {
     }
 
     @RequestMapping( method = POST, value= "/apply")
-    public ResponseEntity postApplication(@RequestBody ApplyRequest request) {
+    public ResponseEntity<?> postApplication(@RequestBody ApplyRequest request) {
 
         if(notificationService.saveApplication(request)) {
             return new ResponseEntity(HttpStatus.OK);
@@ -132,7 +143,7 @@ public class PublicController {
     }
 
     @RequestMapping( method = POST, value= "/fileupload")
-    public ResponseEntity fileUpload(@RequestParam("file[]") MultipartFile file, @RequestParam("filekey") String filekey) {
+    public ResponseEntity<?> fileUpload(@RequestParam("file[]") MultipartFile file, @RequestParam("filekey") String filekey) {
 
         if(notificationService.uploadResume(file, filekey)) {
             return new ResponseEntity(HttpStatus.OK);

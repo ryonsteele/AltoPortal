@@ -114,7 +114,8 @@ public class NotificationServiceImpl implements NotificationService {
       System.out.println(response.toString());
 
       if(response.getStatusCode().is2xxSuccessful()){
-        return sendApplicationEmail(request);
+        return true;
+        //return sendApplicationEmail(request);
       }
 
     } catch (Exception e) {

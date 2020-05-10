@@ -108,6 +108,12 @@
       <mat-cell *matCellDef="let element"> {{element.tempid}} </mat-cell>
     </ng-container>
 
+    <!-- Position Column -->
+    <ng-container matColumnDef="certs">
+      <mat-header-cell *matHeaderCellDef> Certs </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.certs}} </mat-cell>
+    </ng-container>
+
     <mat-header-row *matHeaderRowDef="usertableColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: usertableColumns;"></mat-row>
   </mat-table>

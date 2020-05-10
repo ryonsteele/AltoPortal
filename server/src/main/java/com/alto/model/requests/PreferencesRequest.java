@@ -1,6 +1,8 @@
 package com.alto.model.requests;
 
 
+import java.util.List;
+
 public class PreferencesRequest {
 
   private Long tempId;
@@ -20,6 +22,8 @@ public class PreferencesRequest {
   private Boolean sat;
 
   private Boolean sun;
+
+  private List<String> certs;
 
 
   public Long getTempId() {
@@ -92,5 +96,13 @@ public class PreferencesRequest {
 
   public void setSun(Boolean sun) {
     this.sun = sun;
+  }
+
+  public List<String> getCerts() {
+    return certs;
+  }
+
+  public void setCerts(List<String> certs) {
+    this.certs = certs;
   }
 }

@@ -13,5 +13,6 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
     Shift findByOrderid(String orderid);
     @Query("from Shift s where s.shiftStartTime >= :start and s.shiftStartTime <= :end")
     List<Shift> findByDates(Timestamp start, Timestamp end);
+    List<Shift> findByTempid(String Tempid);
 }
 

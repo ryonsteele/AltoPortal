@@ -63,7 +63,7 @@ public class AppUserServiceImpl implements AppUserService {
     return u;
   }
 
-  @PreAuthorize("hasRole('USER')")
+  //@PreAuthorize("hasRole('USER')")
   public List<AppUser> findAll() throws AccessDeniedException {
     List<AppUser> result = userRepository.findAll();
     return result;
@@ -84,7 +84,7 @@ public class AppUserServiceImpl implements AppUserService {
         return exists;
       }
     }
-    userRequest = getTempByUsername(userRequest);
+    userRequest = getTempByUsername(userRequest.getUsername(), userRequest.getPassword());
     AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
     if(existsCheck != null){
       return existsCheck;
@@ -96,6 +96,7 @@ public class AppUserServiceImpl implements AppUserService {
     user.setLastname(userRequest.getLastname());
     user.setTempid(userRequest.getTempId());
     user.setDevicetype(userRequest.getDevicetype());
+    user.setCerts(userRequest.getCerts());
 
     return userRepository.saveAndFlush(user);
   }
@@ -103,7 +104,10 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public UserPreferences saveUserPrefs(PreferencesRequest request){
 
-    UserPreferences prefs = new UserPreferences();
+    UserPreferences prefs;
+
+    prefs = userPreferencesRepository.findByTempid(request.getTempId());
+    if(prefs == null) prefs = new UserPreferences();
     prefs.setTempid(request.getTempId());
     prefs.setUsername(request.getUsername());
     prefs.setMonday(request.getMon());
@@ -114,6 +118,18 @@ public class AppUserServiceImpl implements AppUserService {
     prefs.setSaturday(request.getSat());
     prefs.setSunday(request.getSun());
 
+    StringBuilder sb = new StringBuilder();
+    for(String cert : request.getCerts()){
+      if(sb.length() != 0){
+        sb.append(",");
+      }
+      sb.append(cert);
+    }
+    prefs.setCerts(sb.toString());
+
+    AppUserRequest temp = getTempByUsername(request.getUsername());
+    prefs.setRegion(temp.getRegion());
+
     return userPreferencesRepository.saveAndFlush(prefs);
 
   }
@@ -123,9 +139,11 @@ public class AppUserServiceImpl implements AppUserService {
     return userPreferencesRepository.findByTempid(Long.parseLong(tempid));
   }
 
-  private AppUserRequest getTempByUsername(AppUserRequest userRequest){
+  private AppUserRequest getTempByUsername(String username){
 
     TempResponse started = null;
+    AppUserRequest userRequest = new AppUserRequest();
+    userRequest.setUsername(username);
 
     //todo implement sessionkey
     //todo externalize
@@ -154,16 +172,26 @@ public class AppUserServiceImpl implements AppUserService {
         userRequest.setTempId(started.getTempId());
         userRequest.setFirstname(started.getFirstName());
         userRequest.setLastname(started.getLastName());
+        userRequest.setCerts(started.getCertification());
+        userRequest.setRegion(started.getHomeRegion());
 
         //HttpEntity<ShiftResponse> apiResponse = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, ShiftResponse.class);
         // ShiftResponse apiResponse = restTemplate.getForObject(getShiftUrl, ShiftResponse.class);
         //started = apiResponse;
 
       } catch (Exception e) {
+      e.printStackTrace();
         //LOGGER.error("Error getting Embed URL and Token", e);
       }
 
     return userRequest;
+  }
+
+  private AppUserRequest getTempByUsername(String username, String password){
+
+    AppUserRequest temp = getTempByUsername( username);
+    temp.setPassword(password);
+    return temp;
   }
 
 }

@@ -18,11 +18,13 @@ export class Temp {
   checked: boolean;
   user: string;
   tempid: string;
+  certs: string;
 
-  constructor(checked: boolean, user: string, tempid: string) {
+  constructor(checked: boolean, user: string, tempid: string, certs: string) {
     this.checked = checked;
     this.user = user;
     this.tempid = tempid;
+    this.certs = certs;
   }
 }
 
@@ -118,7 +120,7 @@ export class DashboardComponent implements OnInit {
 
   // User  Client  Shift  Location
   displayedColumns: string[] = ['name', 'user', 'tempid', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
-  usertableColumns: string[] = ['checked', 'user', 'tempid'];
+  usertableColumns: string[] = ['checked', 'user', 'tempid', 'certs'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
   usersDataSource = new MatTableDataSource<Temp>(this.tempList);
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -157,7 +159,7 @@ export class DashboardComponent implements OnInit {
 
    this.tempList = [];
    this.apiService.get(this.config.temps_url).pipe(
-     map((arr) => arr.map(x => new Temp(false, x.firstname  + ' ' + x.lastname, x.tempid)))).subscribe(lists => {
+     map((arr) => arr.map(x => new Temp(false, x.firstname  + ' ' + x.lastname, x.tempid, x.certs)))).subscribe(lists => {
      lists.forEach(temp => {
        // console.log(temp.firstname);
        this.tempList.push(temp);

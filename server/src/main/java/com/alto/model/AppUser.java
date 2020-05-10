@@ -41,9 +41,12 @@ public class AppUser implements Serializable {
   @Column(name = "devicetype")
   private String devicetype;
 
+  @Column(name = "certs")
+  private String certs;
+
   public AppUser(){}
 
-  public AppUser(String firstName, String lastName, String username, String password, String tempid, String devicetoken, String devicetype) {
+  public AppUser(String firstName, String lastName, String username, String password, String tempid, String devicetoken, String devicetype, String certs) {
     this.firstname = firstName;
     this.lastname = lastName;
     this.username = username;
@@ -51,6 +54,7 @@ public class AppUser implements Serializable {
     this.tempid = tempid;
     this.devicetoken = devicetoken;
     this.devicetype = devicetype;
+    this.certs = certs;
   }
 
 
@@ -118,5 +122,13 @@ public class AppUser implements Serializable {
 
   public void setDevicetype(String devicetype) {
     this.devicetype = devicetype;
+  }
+
+  public String getCerts() {
+    return certs;
+  }
+
+  public void setCerts(String certs) {
+    this.certs = certs;
   }
 }

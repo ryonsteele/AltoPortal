@@ -22,6 +22,7 @@ public interface ShiftService {
   List<Sessions> sessionsData(SessionsRequest request);
   Shift getShift(String orderid);
   List<ShiftResponse>getScheduled(String tempid);
+  Historicals getHistoricals(String tempid);
   List<ShiftResponse>getOpens(String tempid);
   ClientAddressResponse getClient(String clientid);
   void sendPushNotification(PushMessageRequest message);

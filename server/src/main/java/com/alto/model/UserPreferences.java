@@ -4,6 +4,7 @@ package com.alto.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 
 @Entity
@@ -41,6 +42,12 @@ public class UserPreferences implements Serializable {
 
   @Column(name = "sunday")
   private Boolean sunday;
+
+  @Column(name = "certs")
+  private String certs;
+
+  @Column(name = "region")
+  private String region;
 
 
 
@@ -131,5 +138,21 @@ public class UserPreferences implements Serializable {
 
   public void setSunday(Boolean sunday) {
     this.sunday = sunday;
+  }
+
+  public String getCerts() {
+    return certs;
+  }
+
+  public void setCerts(String certs) {
+    this.certs = certs;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public void setRegion(String region) {
+    this.region = region;
   }
 }

@@ -17,7 +17,7 @@ import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.internal.Utilities;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -41,15 +41,30 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 import java.util.*;
+
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.time.temporal.TemporalAdjusters.next;
+import static java.time.temporal.TemporalAdjusters.previous;
+
+
+
 
 
 @Service
 public class ShiftServiceImpl implements ShiftService {
 
+  private final static  String CINCY_REGION_TEMP_ID ="7";
+  private final static  String CINCY_REGION_TEMP_NAME ="Clinical Temp Cincinnati";
+  private final static  String DAYTON_REGION_TEMP_ID ="23";
+  private final static  String DAYTON_REGION_TEMP_NAME ="Clinical Temp Dayton";
+  private final static  String COLUMBUS_REGION_TEMP_ID ="30";
+  private final static  String COLUMBUS_REGION_TEMP_NAME ="Clinical Temp Columbus";
+  private final static  String ALL_REGION_TEMP_ID ="27";
+  private final static  String ALL_REGION_TEMP_NAME ="All";
 
   @Autowired
   Environment env;
@@ -64,7 +79,6 @@ public class ShiftServiceImpl implements ShiftService {
   @Autowired
   UserPreferencesRepository userPreferencesRepository;
 
-  //List<ShiftResponse>
 
   final static int BREAK_START = 1;
   final static int BREAK_END = 2;
@@ -231,18 +245,83 @@ public class ShiftServiceImpl implements ShiftService {
          if(results == null){
            results = new ArrayList<>();
          }
-
+        results.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
       } catch (Exception e) {
         e.printStackTrace();
         //LOGGER.error("Error getting Embed URL and Token", e);
       }
-
     return results;
+  }
+
+  public Historicals getHistoricals(String tempid){
+    List<ShiftResponse> results = new ArrayList<>();
+    Historicals history = new Historicals();
+    List<Shift> worked = new ArrayList<>();
+    LocalDateTime nextSaturday;
+    LocalDateTime thisPastSunday;
+
+    LocalDateTime today = LocalDateTime.now().with(LocalTime.MIDNIGHT);
+    if(today.getDayOfWeek() != SATURDAY) {
+       nextSaturday = today.with(next(SATURDAY));
+    }else{
+      nextSaturday = today;
+    }
+    if(today.getDayOfWeek() != SUNDAY) {
+       thisPastSunday = today.with(previous(SUNDAY));
+    }else{
+      thisPastSunday =today;
+    }
+
+    //todo externalize
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",tempid);
+
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+      String result = restTemplate.getForObject(getShiftUrl, String.class);
+
+      Gson gson = new Gson(); // Or use new GsonBuilder().create();
+      Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
+
+      results = gson.fromJson(result, userListType);
+      if(results == null){
+        results = new ArrayList<>();
+      }
+      history.setDateWindowBegin(thisPastSunday.toString());
+      history.setDateWindowEnd(nextSaturday.toString());
+
+      double hoursScheduled = 0.0;
+      for(ShiftResponse sh : results){
+
+        DateTime start = new DateTime( sh.getShiftStartTime() ) ;
+        DateTime end = new DateTime( sh.getShiftEndTime() ) ;
+
+        hoursScheduled += Minutes.minutesBetween(start, end).getMinutes() / 60;
+      }
+      history.setHoursScheduled(String.valueOf(hoursScheduled));
+
+      worked = shiftRepository.findByTempid(tempid);
+      double hoursWorked = 0.0;
+      for(Shift sh : worked){
+
+        DateTime start = new DateTime(sh.getShiftStartTimeActual());
+        DateTime end = new DateTime( sh.getShiftEndTimeActual() ) ;
+
+        hoursWorked += Minutes.minutesBetween(start, end).getMinutes() / 60;
+      }
+      history.setHoursWorked(String.valueOf(hoursWorked));
+
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      //LOGGER.error("Error getting Embed URL and Token", e);
+    }
+    return history;
   }
 
   public List<ShiftResponse> getOpens(String tempid){
     List<ShiftResponse> resultsOpens = new ArrayList<>();
-
     //todo externalize
     String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
@@ -258,6 +337,7 @@ public class ShiftServiceImpl implements ShiftService {
       resultsOpens = gson.fromJson(resultOpens, userListType);
 
       resultsOpens = pruneResults(tempid, resultsOpens);
+      resultsOpens.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -322,16 +402,69 @@ public class ShiftServiceImpl implements ShiftService {
     return shiftRepository.findByOrderid(orderid);
   }
 
+  private boolean findMatch(List<String> userCerts, String search){
+    for(String s : userCerts) {
+      if (s.toUpperCase().trim().contains(search.toUpperCase().trim())) return true;
+    }
+    return false;
+  }
+
   private List<ShiftResponse> pruneResults(String tempid, List<ShiftResponse> openShifts){
 
     UserPreferences prefs =  userPreferencesRepository.findByTempid(Long.parseLong(tempid));
     if(prefs == null) return openShifts;
 
     List<ShiftResponse> results = new ArrayList<>();
+    List<ShiftResponse> certMatches = new ArrayList<>();
+    List<ShiftResponse> regionMatches = new ArrayList<>();
+    List<String> userCerts = new ArrayList<>();
 
+    String region = prefs.getRegion();
 
+    //Get certifications from user preferences
+    if(prefs.getCerts() != null && !prefs.getCerts().isEmpty()){
+      StringTokenizer tokenizer = new StringTokenizer(prefs.getCerts(), ",", false);
+      while (tokenizer.hasMoreTokens()) {
+        userCerts.add(tokenizer.nextToken().trim());
+      }
+    }
 
-    for(ShiftResponse shift : openShifts){
+    //filter based on home region compared against shift region
+    for(ShiftResponse shift : openShifts) {
+      switch(shift.getRegionName())
+      {
+        case CINCY_REGION_TEMP_NAME:
+          if(prefs.getRegion().equals(CINCY_REGION_TEMP_ID) || prefs.getRegion().equals(ALL_REGION_TEMP_ID)) regionMatches.add(shift);
+          break;
+        case DAYTON_REGION_TEMP_NAME:
+          if(prefs.getRegion().equals(DAYTON_REGION_TEMP_ID) || prefs.getRegion().equals(ALL_REGION_TEMP_ID)) regionMatches.add(shift);
+          break;
+        case COLUMBUS_REGION_TEMP_NAME:
+          if(prefs.getRegion().equals(COLUMBUS_REGION_TEMP_ID) || prefs.getRegion().equals(ALL_REGION_TEMP_ID)) regionMatches.add(shift);
+          break;
+        default:
+          regionMatches.add(shift);
+      }
+    }
+
+    //Filter shifts based on certification
+    for(ShiftResponse shift : regionMatches) {
+
+      if (shift.getOrderCertification() != null && !shift.getOrderCertification().isEmpty()) {
+        StringTokenizer tokenizer = new StringTokenizer(shift.getOrderCertification(), ",", false);
+        while (tokenizer.hasMoreTokens()) {
+          //userCerts.add(tokenizer.nextToken());
+          if (findMatch(userCerts, tokenizer.nextToken())) certMatches.add(shift);
+        }
+      } else {
+        certMatches = openShifts;
+      }
+
+    }
+
+    //filter based on days of week from user preferences
+    for(ShiftResponse shift : certMatches) {
+
       DateTime dt = new DateTime( shift.getShiftStartTime() ) ;
       DateTimeFormatter fmt = DateTimeFormat.forPattern("EEE"); // use 'E' for short abbreviation (Mon, Tues, etc)
       String strEnglish = fmt.print(dt);

@@ -19,6 +19,10 @@ public class AppUserRequest {
 
   private String devicetype;
 
+  private String certs;
+
+  private String region;
+
 
   public String getUsername() {
     return username;
@@ -82,5 +86,21 @@ public class AppUserRequest {
 
   public void setDevicetype(String devicetype) {
     this.devicetype = devicetype;
+  }
+
+  public String getCerts() {
+    return certs;
+  }
+
+  public void setCerts(String certs) {
+    this.certs = certs;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public void setRegion(String region) {
+    this.region = region;
   }
 }
