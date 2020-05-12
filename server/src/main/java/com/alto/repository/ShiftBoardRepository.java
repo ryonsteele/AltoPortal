@@ -10,7 +10,7 @@ import java.util.List;
  * Created by fan.jin on 2016-10-15.
  */
 public interface ShiftBoardRepository extends JpaRepository<ShiftBoardRecord, Long> {
-    ShiftBoardRecord findByOrOrderidAndTempid(String orderid, String tempid);
+    ShiftBoardRecord findFirstByByOrderidAndTempid(String orderid, String tempid);
     List<ShiftBoardRecord> findByActiveTrue();
     List<ShiftBoardRecord> findAllByOrderid(String orderid);
 }

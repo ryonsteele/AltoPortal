@@ -689,7 +689,7 @@ public class ShiftServiceImpl implements ShiftService {
     for(String tempid : message.getTemps()){
       AppUser user = appUserRepository.findByTempid(tempid);
 
-      if(user == null) continue;
+      if(user == null || user.getDevicetype() == null || user.getDevicetoken() == null ) continue;
 
       if(user.getDevicetype().equalsIgnoreCase("Android") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
 

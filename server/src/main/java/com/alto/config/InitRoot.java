@@ -51,7 +51,7 @@ public class InitRoot {
             // INSERT INTO user_authority (user_id, authority_id) VALUES (2, 2);
 
             userRepository.saveAndFlush(new User("Test", "User", "user@test.com", "user", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_USER"));
-            userRepository.saveAndFlush(new User("Ryon", "Steele", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
+            userRepository.saveAndFlush(new User("Leslie", "Khan", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
             authorityRepository.saveAndFlush(new Authority(1L, UserRoleName.ROLE_USER));
             authorityRepository.saveAndFlush(new Authority(2L, UserRoleName.ROLE_ADMIN));
             userAuthorityRepository.saveAndFlush(new UserAuthority(1L, 1L));
