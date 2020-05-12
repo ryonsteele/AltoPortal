@@ -9,6 +9,11 @@ export class LoginGuard implements CanActivate {
   }
 
   canActivate(): boolean {
+    if (localStorage.getItem('currentUser')) {
+      return true;
+    } else {
+      return false;
+    }
     if (this.userService.currentUser) {
       return true;
     } else {

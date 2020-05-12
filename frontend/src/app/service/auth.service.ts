@@ -43,6 +43,7 @@ export class AuthService {
   }
 
   logout() {
+    localStorage.clear();
     return this.apiService.post(this.config.logout_url, {})
       .pipe(map(() => {
         this.userService.currentUser = null;

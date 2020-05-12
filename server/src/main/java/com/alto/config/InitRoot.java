@@ -50,13 +50,16 @@ public class InitRoot {
             // INSERT INTO user_authority (user_id, authority_id) VALUES (2, 1);
             // INSERT INTO user_authority (user_id, authority_id) VALUES (2, 2);
 
-            userRepository.saveAndFlush(new User("Test", "User", "user@test.com", "user", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_USER"));
-            userRepository.saveAndFlush(new User("Leslie", "Khan", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
-            authorityRepository.saveAndFlush(new Authority(1L, UserRoleName.ROLE_USER));
-            authorityRepository.saveAndFlush(new Authority(2L, UserRoleName.ROLE_ADMIN));
-            userAuthorityRepository.saveAndFlush(new UserAuthority(1L, 1L));
-            userAuthorityRepository.saveAndFlush(new UserAuthority(2L, 1L));
-            userAuthorityRepository.saveAndFlush(new UserAuthority(2L, 2L));
+            User admin =userRepository.findByUsername("admin");
+            if(admin == null) {
+                userRepository.saveAndFlush(new User("Test", "User", "user@test.com", "user", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_USER"));
+                userRepository.saveAndFlush(new User("Leslie", "Khan", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
+                authorityRepository.saveAndFlush(new Authority(1L, UserRoleName.ROLE_USER));
+                authorityRepository.saveAndFlush(new Authority(2L, UserRoleName.ROLE_ADMIN));
+                userAuthorityRepository.saveAndFlush(new UserAuthority(1L, 1L));
+                userAuthorityRepository.saveAndFlush(new UserAuthority(2L, 1L));
+                userAuthorityRepository.saveAndFlush(new UserAuthority(2L, 2L));
+            }
 
 
             //appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "9919", "abc123", "Android"));

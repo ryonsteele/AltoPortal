@@ -36,7 +36,10 @@ export class UserService {
 
   getMyInfo() {
     return this.apiService.get(this.config.whoami_url)
-      .pipe(map(user => this.currentUser = user));
+      .pipe(map(user => {
+        this.currentUser = user;
+        localStorage.setItem('currentUser', user);
+      }));
   }
 
   getAll() {

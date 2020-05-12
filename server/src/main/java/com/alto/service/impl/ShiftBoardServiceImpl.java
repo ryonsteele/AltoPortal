@@ -50,7 +50,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
   @Override
   public ShiftBoardRecord getRecord(String orderid, String tempid){
 
-    return shiftBoardRepository.findFirstByByOrderidAndTempid(orderid,tempid);
+    return shiftBoardRepository.findFirstByOrderidAndTempid(orderid,tempid);
   }
 
   @Override
@@ -67,7 +67,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
 
     for(ShiftBoardRecord rec : request.getRecords()){
-      ShiftBoardRecord currRec = shiftBoardRepository.findFirstByByOrderidAndTempid(rec.getOrderid(),rec.getTempid());
+      ShiftBoardRecord currRec = shiftBoardRepository.findFirstByOrderidAndTempid(rec.getOrderid(),rec.getTempid());
       if(currRec == null || !rec.getOrderid().equalsIgnoreCase(processOrderId))  continue;
 
       if(rec.getConfirmed()) {
@@ -90,7 +90,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
     for(ShiftBoardRecord rec : remainder){
       if(!rec.getOrderid().equalsIgnoreCase(processOrderId))  continue;
-      ShiftBoardRecord currRec = shiftBoardRepository.findFirstByByOrderidAndTempid(rec.getOrderid(),rec.getTempid());
+      ShiftBoardRecord currRec = shiftBoardRepository.findFirstByOrderidAndTempid(rec.getOrderid(),rec.getTempid());
       if(currRec == null)  continue;
 
       if(!rec.getConfirmed()) {
