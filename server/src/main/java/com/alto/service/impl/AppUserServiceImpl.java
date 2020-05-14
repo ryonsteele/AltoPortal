@@ -10,6 +10,7 @@ import com.alto.repository.UserPreferencesRepository;
 import com.alto.service.AppUserService;
 import com.alto.service.AuthorityService;
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -72,14 +73,17 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public AppUser save(AppUserRequest userRequest) {
 
+    if(userRequest.getUsername() == null){
+      throw new ResponseStatusException(BAD_REQUEST);
+    }
     AppUser user = new AppUser();
     AppUser exists = findByUsername(userRequest.getUsername().trim());
     if(exists != null){
       if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword() ) ){
         throw new ResponseStatusException(UNAUTHORIZED);
       }else{
-        exists.setDevicetoken(userRequest.getDevicetoken());
-        exists.setDevicetype(userRequest.getDevicetype());
+        if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
+        if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         userRepository.saveAndFlush(exists);
         return exists;
       }

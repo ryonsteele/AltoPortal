@@ -1,5 +1,5 @@
 
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {ApiService} from '../service/api.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
@@ -11,6 +11,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AngularCsv} from "angular7-csv";
 import {Session} from "../my-modal/my-modal.component";
 import {DatePipe} from "@angular/common";
+import {MatSort} from "@angular/material/sort";
 
 
 
@@ -123,11 +124,12 @@ export class DashboardComponent implements OnInit {
   usertableColumns: string[] = ['checked', 'user', 'tempid', 'certs'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
   usersDataSource = new MatTableDataSource<Temp>(this.tempList);
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
+  @ViewChildren(MatSort) sort = new QueryList<MatSort>();
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.usersDataSource.paginator = this.paginator;
+    this.dataSource.paginator = this.paginator.toArray()[0];
+    this.usersDataSource.paginator = this.paginator.toArray()[1];
     this.InvalidClockVal = false;
     this.InvalidClockResp = false;
     this.InvalidUpdateResp = false;
@@ -165,7 +167,7 @@ export class DashboardComponent implements OnInit {
        this.tempList.push(temp);
      });
      this.usersDataSource = new MatTableDataSource(this.tempList);
-     this.usersDataSource.paginator = this.paginator;
+     this.usersDataSource.paginator = this.paginator.toArray()[1];
    });
    this.shiftList = [];
    this.apiService.get(this.config.shifts_url).pipe(
@@ -176,7 +178,7 @@ export class DashboardComponent implements OnInit {
           this.shiftList.push(shift);
         });
         this.dataSource = new MatTableDataSource(this.shiftList);
-        this.dataSource.paginator = this.paginator;
+        this.dataSource.paginator = this.paginator.toArray()[0];
       });
   }
 

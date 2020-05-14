@@ -62,10 +62,29 @@ public class InitRoot {
             }
 
 
-            //appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "9919", "abc123", "Android"));
-            //appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "736", "abc123", "Android"));
-
-            //shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "9919", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "736", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "1234", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "5678", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "4321", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "8765", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "2323", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "5656", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "3232", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "6565", "abc123", "Android", "LPN"));
+//
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
+//            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
 
             //shiftRepository.saveAndFlush(new Shift("123456", "testy@yahoo.com", "10943", "filled", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "signoff", "signoff2", "555", "client name", "order spec", "order cert", "222", "note for shift", "123 main st", "39.477285", "-84.477811", "123 main st", "39.477285", "-84.477811", true));
 

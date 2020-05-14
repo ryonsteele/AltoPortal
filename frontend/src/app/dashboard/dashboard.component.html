@@ -4,7 +4,8 @@
     <div class="thead">
       <input type="text" (keyup)="applyShiftFilter($event.target.value)" placeholder="search... " class="searchbox">
     </div>
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort matSortActive="shift"
+           matSortDirection="asc" matSortDisableClear>
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -84,7 +85,7 @@
   </div>
 
   <mat-table [dataSource]="usersDataSource" class="mat-elevation-z8" matSort matSortActive="user"
-             matSortDirection="asc" matSortDisableClear>>
+             matSortDirection="asc" matSortDisableClear>
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 
