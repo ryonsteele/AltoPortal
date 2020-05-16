@@ -23,6 +23,8 @@ public class AppUserRequest {
 
   private String region;
 
+  private Boolean firstTime;
+
 
   public String getUsername() {
     return username;
@@ -102,5 +104,13 @@ public class AppUserRequest {
 
   public void setRegion(String region) {
     this.region = region;
+  }
+
+  public Boolean getFirstTime() {
+    return firstTime;
+  }
+
+  public void setFirstTime(Boolean firstTime) {
+    this.firstTime = firstTime;
   }
 }

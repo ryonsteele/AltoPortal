@@ -142,6 +142,12 @@ public class PublicController {
         }
     }
 
+    @RequestMapping( method = POST, value= "/token")
+    public ResponseEntity<?> postTokenUpdate(@RequestBody TokenRequest request) {
+
+        return appUserService.updateToken(request.getUsername(), request.getDevicetoken());
+    }
+
     @RequestMapping( method = POST, value= "/fileupload")
     public ResponseEntity<?> fileUpload(@RequestParam("file[]") MultipartFile file, @RequestParam("filekey") String filekey) {
 

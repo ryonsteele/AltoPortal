@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -71,6 +72,19 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
+  public ResponseEntity updateToken(String user, String token) {
+
+    AppUser userRec = userRepository.findByUsername(user);
+
+    if(userRec != null){
+      userRec.setDevicetoken(token);
+      userRepository.saveAndFlush(userRec);
+    }
+
+    return new ResponseEntity(BAD_REQUEST);
+  }
+
+  @Override
   public AppUser save(AppUserRequest userRequest) {
 
     if(userRequest.getUsername() == null){
@@ -79,9 +93,16 @@ public class AppUserServiceImpl implements AppUserService {
     AppUser user = new AppUser();
     AppUser exists = findByUsername(userRequest.getUsername().trim());
     if(exists != null){
-      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword() ) ){
+      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword() ) && !userRequest.getFirstTime() ){
         throw new ResponseStatusException(UNAUTHORIZED);
-      }else{
+      }else if(userRequest.getFirstTime() ){
+        if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
+        if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
+        if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(userRequest.getPassword());
+        userRepository.saveAndFlush(exists);
+        return exists;
+       }
+      else{
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         userRepository.saveAndFlush(exists);
@@ -123,16 +144,27 @@ public class AppUserServiceImpl implements AppUserService {
     prefs.setSunday(request.getSun());
 
     StringBuilder sb = new StringBuilder();
-    for(String cert : request.getCerts()){
-      if(sb.length() != 0){
-        sb.append(",");
+    if(request.getCerts() != null) {
+      for (String cert : request.getCerts()) {
+        if (sb.length() != 0) {
+          sb.append(",");
+        }
+        sb.append(cert);
       }
-      sb.append(cert);
+      prefs.setCerts(sb.toString());
     }
-    prefs.setCerts(sb.toString());
 
-    AppUserRequest temp = getTempByUsername(request.getUsername());
-    prefs.setRegion(temp.getRegion());
+    if(request.getRegions() != null) {
+      StringBuilder sbRegions = new StringBuilder();
+      for (String reg : request.getRegions()) {
+        if (sbRegions.length() != 0) {
+          sbRegions.append(",");
+        }
+        sbRegions.append(reg);
+      }
+      prefs.setRegion(sbRegions.toString());
+    }
+
 
     return userPreferencesRepository.saveAndFlush(prefs);
 

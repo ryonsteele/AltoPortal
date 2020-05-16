@@ -25,6 +25,8 @@ public class PreferencesRequest {
 
   private List<String> certs;
 
+  private List<String> regions;
+
 
   public Long getTempId() {
     return tempId;
@@ -104,5 +106,13 @@ public class PreferencesRequest {
 
   public void setCerts(List<String> certs) {
     this.certs = certs;
+  }
+
+  public List<String> getRegions() {
+    return regions;
+  }
+
+  public void setRegions(List<String> regions) {
+    this.regions = regions;
   }
 }

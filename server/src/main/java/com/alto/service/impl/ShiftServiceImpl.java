@@ -20,14 +20,12 @@ import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -63,6 +61,8 @@ public class ShiftServiceImpl implements ShiftService {
   private final static  String DAYTON_REGION_TEMP_NAME ="Clinical Temp Dayton";
   private final static  String COLUMBUS_REGION_TEMP_ID ="30";
   private final static  String COLUMBUS_REGION_TEMP_NAME ="Clinical Temp Columbus";
+  private final static  String MEDICAL_OFF_REGION_TEMP_NAME ="Medical Business Division";
+  private final static  String CONTRACT_TRV_REGION_TEMP_NAME ="Clinical Contract Travel";
   private final static  String ALL_REGION_TEMP_ID ="27";
   private final static  String ALL_REGION_TEMP_NAME ="All";
 
@@ -434,13 +434,19 @@ public class ShiftServiceImpl implements ShiftService {
       switch(shift.getRegionName())
       {
         case CINCY_REGION_TEMP_NAME:
-          if(prefs.getRegion().equals(CINCY_REGION_TEMP_ID) || prefs.getRegion().equals(ALL_REGION_TEMP_ID)) regionMatches.add(shift);
+          if(prefs.getRegion().contains("Cincinnati")) regionMatches.add(shift);
           break;
         case DAYTON_REGION_TEMP_NAME:
-          if(prefs.getRegion().equals(DAYTON_REGION_TEMP_ID) || prefs.getRegion().equals(ALL_REGION_TEMP_ID)) regionMatches.add(shift);
+          if(prefs.getRegion().contains("Dayton")) regionMatches.add(shift);
           break;
         case COLUMBUS_REGION_TEMP_NAME:
-          if(prefs.getRegion().equals(COLUMBUS_REGION_TEMP_ID) || prefs.getRegion().equals(ALL_REGION_TEMP_ID)) regionMatches.add(shift);
+          if(prefs.getRegion().contains("Columbus")) regionMatches.add(shift);
+          break;
+        case MEDICAL_OFF_REGION_TEMP_NAME:
+          if(prefs.getRegion().contains("Medical Business")) regionMatches.add(shift);
+          break;
+        case CONTRACT_TRV_REGION_TEMP_NAME:
+          if(prefs.getRegion().contains("Contract Travel")) regionMatches.add(shift);
           break;
         default:
           regionMatches.add(shift);

@@ -44,9 +44,10 @@ public class AppUser implements Serializable {
   @Column(name = "certs")
   private String certs;
 
+
   public AppUser(){}
 
-  public AppUser(String firstName, String lastName, String username, String password, String tempid, String devicetoken, String devicetype, String certs) {
+  public AppUser(String firstName, String lastName, String username, String password, String tempid, String devicetoken, String devicetype, String certs, String regions) {
     this.firstname = firstName;
     this.lastname = lastName;
     this.username = username;
@@ -131,4 +132,5 @@ public class AppUser implements Serializable {
   public void setCerts(String certs) {
     this.certs = certs;
   }
+
 }
