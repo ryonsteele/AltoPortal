@@ -676,7 +676,7 @@ public class ShiftServiceImpl implements ShiftService {
   }
 
   private String convertEastern(Timestamp iso){
-
+    if(iso == null) return "";
     long time = iso.getTime();
     Date currentDate = new Date(time);
     DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
