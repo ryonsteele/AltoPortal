@@ -679,7 +679,7 @@ public class ShiftServiceImpl implements ShiftService {
     if(iso == null) return "";
     long time = iso.getTime();
     Date currentDate = new Date(time);
-    DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+    DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss");
 
     TimeZone zoneNewYork = TimeZone.getTimeZone("America/New_York");
     df.setTimeZone(zoneNewYork);

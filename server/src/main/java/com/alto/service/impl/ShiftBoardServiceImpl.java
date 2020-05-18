@@ -21,11 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 @Service
@@ -72,10 +70,10 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
       if(rec.getConfirmed()) {
         currRec.setConfirmed(true);
-        pushReq.setMsgBody("You have been CONFIRMED for shift starting: " + currRec.getShiftStartTime() + " For: " + currRec.getClientName());
+        pushReq.setMsgBody("You have been CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
 
       }else{
-        pushReq.setMsgBody("You were NOT CONFIRMED for shift starting: " + currRec.getShiftStartTime() + " For: " + currRec.getClientName());
+        pushReq.setMsgBody("You were NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
 
       }
       List<String> tempid =  new ArrayList<>();
@@ -106,6 +104,20 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     }
 
     return true;
+  }
+
+  private String convertEastern(Timestamp iso){
+    if(iso == null) return "";
+    long time = iso.getTime();
+    Date currentDate = new Date(time);
+    DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss");
+
+    TimeZone zoneNewYork = TimeZone.getTimeZone("America/New_York");
+    df.setTimeZone(zoneNewYork);
+    String finale = df.format(currentDate);
+    System.out.println(finale);
+
+    return finale;
   }
 
   @Override

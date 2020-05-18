@@ -1,5 +1,5 @@
 
-import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {ApiService} from '../service/api.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
@@ -83,12 +83,13 @@ export class SessionUpdate {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   modalRef: BsModalRef;
   InvalidClockVal: boolean;
   InvalidClockResp: boolean;
   InvalidUpdateResp: boolean;
   showSessionUpdate: boolean;
+  interval: any;
 
   updateOrderId: string;
 
@@ -135,6 +136,16 @@ export class DashboardComponent implements OnInit {
     this.InvalidUpdateResp = false;
     this.showSessionUpdate = false;
     this.updateTable();
+
+    this.interval = setInterval(() => {
+      this.updateTable();
+    }, 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   openModal(template: TemplateRef<any>) {

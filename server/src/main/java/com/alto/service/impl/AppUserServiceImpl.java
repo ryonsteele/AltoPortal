@@ -94,12 +94,12 @@ public class AppUserServiceImpl implements AppUserService {
     AppUser user = new AppUser();
     AppUser exists = findByUsername(userRequest.getUsername().trim());
     if(exists != null){
-      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword() ) && (userRequest.getFirstTime() == null || !userRequest.getFirstTime() ) ){
+      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword().trim() ) && (userRequest.getFirstTime() == null || !userRequest.getFirstTime() ) ){
         throw new ResponseStatusException(UNAUTHORIZED);
       }else if(userRequest.getFirstTime() != null && userRequest.getFirstTime() ){
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
-        if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(userRequest.getPassword());
+        if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRepository.saveAndFlush(exists);
         return exists;
 
@@ -111,10 +111,15 @@ public class AppUserServiceImpl implements AppUserService {
       }
     }
     userRequest = getTempByUsername(userRequest.getUsername(), userRequest.getPassword());
+    if(userRequest.getFirstname() == null || userRequest.getLastname() == null){
+      throw new ResponseStatusException(BAD_REQUEST);
+    }
+
     AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
     if(existsCheck != null){
       return existsCheck;
     }
+
 
     user.setUsername(userRequest.getUsername());
     user.setPassword(passwordEncoder.encode(userRequest.getPassword().trim()));
