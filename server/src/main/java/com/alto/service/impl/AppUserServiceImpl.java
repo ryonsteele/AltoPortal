@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -78,7 +79,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     if(userRec != null){
       userRec.setDevicetoken(token);
-      userRepository.saveAndFlush(userRec);
+      return new ResponseEntity(userRepository.saveAndFlush(userRec), OK);
     }
 
     return new ResponseEntity(BAD_REQUEST);
