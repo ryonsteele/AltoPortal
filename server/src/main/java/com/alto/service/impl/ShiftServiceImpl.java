@@ -230,7 +230,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> results = new ArrayList<>();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(2).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
