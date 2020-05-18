@@ -84,10 +84,12 @@ public class NotificationServiceImpl implements NotificationService {
     sb.append(" <status>Pending</status>");
     sb.append(" <certification>").append(request.getCerts().get(0)).append("</certification>");
     String allSpecs = "";
-    for(String spec : request.getSpecs()){
-      allSpecs += spec + ",";
+    if(request.getSpecs() != null && !request.getSpecs().isEmpty()) {
+      for (String spec : request.getSpecs()) {
+        allSpecs += spec + ",";
+      }
+      allSpecs = allSpecs.trim().substring(0, allSpecs.length() - 1);
     }
-    allSpecs = allSpecs.trim().substring(0, allSpecs.length() - 1);
     sb.append(" <specialty>").append(allSpecs).append("</specialty>");
     sb.append(" <email>").append(request.getEmail()).append("</email>");
     sb.append(" <address>").append(request.getStreet()).append("</address>");

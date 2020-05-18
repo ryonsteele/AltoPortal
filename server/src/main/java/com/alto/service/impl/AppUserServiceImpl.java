@@ -93,16 +93,16 @@ public class AppUserServiceImpl implements AppUserService {
     AppUser user = new AppUser();
     AppUser exists = findByUsername(userRequest.getUsername().trim());
     if(exists != null){
-      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword() ) && !userRequest.getFirstTime() ){
+      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword() ) && (userRequest.getFirstTime() == null || !userRequest.getFirstTime() ) ){
         throw new ResponseStatusException(UNAUTHORIZED);
-      }else if(userRequest.getFirstTime() ){
+      }else if(userRequest.getFirstTime() != null && userRequest.getFirstTime() ){
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(userRequest.getPassword());
         userRepository.saveAndFlush(exists);
         return exists;
-       }
-      else{
+
+       } else{
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         userRepository.saveAndFlush(exists);
