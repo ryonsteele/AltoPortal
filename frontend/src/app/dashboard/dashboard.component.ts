@@ -135,11 +135,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.InvalidClockResp = false;
     this.InvalidUpdateResp = false;
     this.showSessionUpdate = false;
-    this.updateTable();
+    this.updateShiftsTable();
+    this.updateTempsTable();
 
     this.interval = setInterval(() => {
-      this.updateTable();
-    }, 5000);
+      this.updateShiftsTable();
+    }, 60000);
   }
 
   ngOnDestroy() {
@@ -168,18 +169,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.modalRef = this.modalService.show(template);
   }
 
- updateTable() {
+ updateShiftsTable() {
 
-   this.tempList = [];
-   this.apiService.get(this.config.temps_url).pipe(
-     map((arr) => arr.map(x => new Temp(false, x.firstname  + ' ' + x.lastname, x.tempid, x.certs)))).subscribe(lists => {
-     lists.forEach(temp => {
-       // console.log(temp.firstname);
-       this.tempList.push(temp);
-     });
-     this.usersDataSource = new MatTableDataSource(this.tempList);
-     this.usersDataSource.paginator = this.paginator.toArray()[1];
-   });
    this.shiftList = [];
    this.apiService.get(this.config.shifts_url).pipe(
       map((arr) => arr.map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTime, x.shiftEndTime, x.orderid,
@@ -191,6 +182,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.dataSource = new MatTableDataSource(this.shiftList);
         this.dataSource.paginator = this.paginator.toArray()[0];
       });
+  }
+
+  updateTempsTable() {
+
+    this.tempList = [];
+    this.apiService.get(this.config.temps_url).pipe(
+      map((arr) => arr.map(x => new Temp(false, x.firstname  + ' ' + x.lastname, x.tempid, x.certs)))).subscribe(lists => {
+      lists.forEach(temp => {
+        // console.log(temp.firstname);
+        this.tempList.push(temp);
+      });
+      this.usersDataSource = new MatTableDataSource(this.tempList);
+      this.usersDataSource.paginator = this.paginator.toArray()[1];
+    });
   }
 
 
@@ -208,7 +213,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.apiService.post(this.config.confirm_url, {records: JSON.parse(JSON.stringify(this.dtoShiftList))})
       .pipe(map(() => {
         console.log('Confirm success');
-        this.updateTable();
+        this.updateShiftsTable();
       })).subscribe( item =>
       console.log('Confirm success bugaloo')
     );
@@ -333,7 +338,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, temps: JSON.parse(data)})
       .pipe(map(() => {
         console.log('Push Notify success');
-        this.updateTable();
+        this.updateTempsTable();
         this.messageFC.setValue('');
       })).subscribe( item =>
       console.log('Push Notify success bugaloo')

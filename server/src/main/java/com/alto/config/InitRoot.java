@@ -53,7 +53,7 @@ public class InitRoot {
             User admin =userRepository.findByUsername("admin");
             if(admin == null) {
                 userRepository.saveAndFlush(new User("Test", "User", "user@test.com", "user", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_USER"));
-                userRepository.saveAndFlush(new User("Leslie", "Khan", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
+                userRepository.saveAndFlush(new User("Leslie", "Kahn", "admin@test.com", "admin", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "ROLE_ADMIN"));
                 authorityRepository.saveAndFlush(new Authority(1L, UserRoleName.ROLE_USER));
                 authorityRepository.saveAndFlush(new Authority(2L, UserRoleName.ROLE_ADMIN));
                 userAuthorityRepository.saveAndFlush(new UserAuthority(1L, 1L));
