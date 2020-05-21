@@ -91,8 +91,14 @@ public class AppUserServiceImpl implements AppUserService {
     if(userRequest.getUsername() == null){
       throw new ResponseStatusException(BAD_REQUEST);
     }
+    userRequest = getTempByUsername(userRequest.getUsername(), userRequest.getPassword());
+    if(userRequest.getFirstname() == null || userRequest.getLastname() == null){
+      throw new ResponseStatusException(BAD_REQUEST);
+    }
+
     AppUser user = new AppUser();
     AppUser exists = findByUsername(userRequest.getUsername().trim());
+
     if(exists != null){
       if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword().trim() ) && (userRequest.getFirstTime() == null || !userRequest.getFirstTime() ) ){
         throw new ResponseStatusException(UNAUTHORIZED);
@@ -110,10 +116,7 @@ public class AppUserServiceImpl implements AppUserService {
         return exists;
       }
     }
-    userRequest = getTempByUsername(userRequest.getUsername(), userRequest.getPassword());
-    if(userRequest.getFirstname() == null || userRequest.getLastname() == null){
-      throw new ResponseStatusException(BAD_REQUEST);
-    }
+
 
     AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
     if(existsCheck != null){
@@ -189,7 +192,6 @@ public class AppUserServiceImpl implements AppUserService {
 
     //todo implement sessionkey
     //todo externalize
-    //todo add is active
     String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&emailLike=$email&statusIn=Active&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim());
     try {
