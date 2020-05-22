@@ -106,6 +106,26 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     return true;
   }
 
+  @Override
+  public boolean processRemoval(ConfirmationRequest request){
+    PushMessageRequest pushReq = new PushMessageRequest();
+
+    for(ShiftBoardRecord rec : request.getRecords()){
+      ShiftBoardRecord currRec = shiftBoardRepository.findFirstByOrderidAndTempid(rec.getOrderid(),rec.getTempid());
+      if(currRec == null)  continue;
+      shiftBoardRepository.delete(currRec);
+
+      pushReq.setMsgBody("You were NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
+
+      List<String> tempid =  new ArrayList<>();
+      tempid.add(rec.getTempid());
+      pushReq.setTemps(tempid);
+      shiftService.sendPushNotification(pushReq);
+    }
+
+    return true;
+  }
+
   private String convertEastern(Timestamp iso){
     if(iso == null) return "";
     long time = iso.getTime();

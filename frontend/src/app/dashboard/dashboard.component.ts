@@ -220,6 +220,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
+  removeDialog(obj) {
+    console.log(obj);
+    this.dtoShiftList = [];
+    this.dtoShiftList.push(obj);
+    for (let item of this.shiftList) {
+      if (item.tempid != obj.tempid && item.orderid != obj.orderid) {
+        this.dtoShiftList.push(item);
+      }
+    }
+    // console.log(JSON.stringify({records: JSON.parse(JSON.stringify(this.dtoShiftList))}));
+    this.apiService.post(this.config.remove_url, {records: JSON.parse(JSON.stringify(this.dtoShiftList))})
+      .pipe(map(() => {
+        console.log('Remove success');
+        this.updateShiftsTable();
+      })).subscribe( item =>
+      console.log('Remove success bugaloo')
+    );
+
+  }
+
   applyUserFilter(filterValue: string) {
     this.usersDataSource.filter = filterValue.trim().toLowerCase();
   }

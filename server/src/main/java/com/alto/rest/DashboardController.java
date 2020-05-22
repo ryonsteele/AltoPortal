@@ -65,6 +65,13 @@ public class DashboardController {
     return request;
   }
 
+  @RequestMapping(method = POST, value = "/removal")
+  //@PreAuthorize("hasRole('USER')")
+  public ConfirmationRequest userremove(@RequestBody ConfirmationRequest request) {
+    shiftBoardService.processRemoval(request);
+    return request;
+  }
+
   @RequestMapping(method = POST, value = "/shiftchange")
   //@PreAuthorize("hasRole('USER')")
   public ResponseEntity shiftChange(@RequestBody ClockRequest request) {

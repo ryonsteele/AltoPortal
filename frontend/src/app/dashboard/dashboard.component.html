@@ -57,6 +57,7 @@
     <mat-header-cell  *matHeaderCellDef > Action </mat-header-cell>
     <mat-cell *matCellDef="let element" >
       <button mat-button (click)="confirmDialog(element)">Confirm</button>
+      <button mat-button (click)="removeDialog(element)">Remove</button>
     </mat-cell>
   </ng-container>
 

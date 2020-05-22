@@ -14,5 +14,6 @@ public interface ShiftBoardService {
     ShiftBoardRecord getRecord(String orderid, String tempid);
     List<ShiftBoardRecord> findAll();
     boolean processConfirmation(ConfirmationRequest request);
+    boolean processRemoval(ConfirmationRequest request);
     ResponseEntity<?> updateSession(String orderid, SessionUpdateRequest request);
 }

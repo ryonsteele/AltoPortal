@@ -92,6 +92,12 @@ export class ConfigService {
     return this._confirm_url;
   }
 
+  private _remove_url = this._api_url + '/removal';
+
+  get remove_url(): string {
+    return this._remove_url;
+  }
+
   private _clock_url = this._api_url + '/shiftchange';
 
   get clock_url(): string {
