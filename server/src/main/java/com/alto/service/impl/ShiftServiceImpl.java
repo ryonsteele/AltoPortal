@@ -21,6 +21,8 @@ import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
@@ -54,6 +56,8 @@ import static java.time.temporal.TemporalAdjusters.previous;
 
 @Service
 public class ShiftServiceImpl implements ShiftService {
+
+  public static final Logger logger = LoggerFactory.getLogger(ShiftServiceImpl.class);
 
   private final static  String CINCY_REGION_TEMP_ID ="7";
   private final static  String CINCY_REGION_TEMP_NAME ="Clinical Temp Cincinnati";
@@ -247,8 +251,7 @@ public class ShiftServiceImpl implements ShiftService {
          }
         results.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
       } catch (Exception e) {
-        e.printStackTrace();
-        //LOGGER.error("Error getting Embed URL and Token", e);
+        logger.error("Error getting scheduled shifts for tempid: "+ tempid, e);
       }
     return results;
   }
@@ -314,8 +317,7 @@ public class ShiftServiceImpl implements ShiftService {
 
 
     } catch (Exception e) {
-      e.printStackTrace();
-      //LOGGER.error("Error getting Embed URL and Token", e);
+      logger.error("Error getting historicals for tempid: "+ tempid, e);
     }
     return history;
   }
@@ -340,8 +342,7 @@ public class ShiftServiceImpl implements ShiftService {
       resultsOpens.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
 
     } catch (Exception e) {
-      e.printStackTrace();
-      //LOGGER.error("Error getting Embed URL and Token", e);
+      logger.error("Error getting open shifts for tempid: "+ tempid, e);
     }
 
     return resultsOpens;
@@ -379,8 +380,7 @@ public class ShiftServiceImpl implements ShiftService {
 
 
     } catch(Exception e) {
-      e.printStackTrace();
-      //LOGGER.error("Error getting Embed URL and Token", e);
+        logger.error("Error updarting shift for: "+ request.getUsername(), e);
     }
 
     return new ResponseEntity(updateShift, HttpStatus.OK);
@@ -392,8 +392,7 @@ public class ShiftServiceImpl implements ShiftService {
       Date parsedDate = dateFormat.parse(input);
       return new java.sql.Timestamp(parsedDate.getTime());
     } catch(Exception e) { //this generic but you can control another types of exception
-      // look the origin of excption
-      e.printStackTrace();
+      logger.error("Conversion error", e);
     }
     return null;
   }
@@ -434,19 +433,19 @@ public class ShiftServiceImpl implements ShiftService {
       switch(shift.getRegionName())
       {
         case CINCY_REGION_TEMP_NAME:
-          if(prefs.getRegion().contains("Cincinnati")) regionMatches.add(shift);
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Cincinnati")) regionMatches.add(shift);
           break;
         case DAYTON_REGION_TEMP_NAME:
-          if(prefs.getRegion().contains("Dayton")) regionMatches.add(shift);
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Dayton")) regionMatches.add(shift);
           break;
         case COLUMBUS_REGION_TEMP_NAME:
-          if(prefs.getRegion().contains("Columbus")) regionMatches.add(shift);
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Columbus")) regionMatches.add(shift);
           break;
         case MEDICAL_OFF_REGION_TEMP_NAME:
-          if(prefs.getRegion().contains("Medical Business")) regionMatches.add(shift);
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Medical Business")) regionMatches.add(shift);
           break;
         case CONTRACT_TRV_REGION_TEMP_NAME:
-          if(prefs.getRegion().contains("Contract Travel")) regionMatches.add(shift);
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Contract Travel")) regionMatches.add(shift);
           break;
         default:
           regionMatches.add(shift);
@@ -534,7 +533,7 @@ public class ShiftServiceImpl implements ShiftService {
       }
 
     } catch (Exception e) { //todo logger
-      //LOGGER.error("Error getting Embed URL and Token", e);
+      logger.error("Error getting client record from HCS", e);
     }
     return addy;
   }
@@ -578,8 +577,8 @@ public class ShiftServiceImpl implements ShiftService {
 
 
 
-      } catch (Exception e) { //todo logger
-        //LOGGER.error("Error getting Embed URL and Token", e);
+      } catch (Exception e) {
+        logger.error("Error when checking geofence", e);
       }
 
     return false;
@@ -625,7 +624,7 @@ public class ShiftServiceImpl implements ShiftService {
       tempHcs = new ArrayList<>(Arrays.asList(mcArray));
 
     }catch(Exception e){
-      e.printStackTrace();
+      logger.error("Error generating session data", e);
     }
 
     shifts = shiftRepository.findByDates(fromTS1, fromTS2);
@@ -735,8 +734,7 @@ public class ShiftServiceImpl implements ShiftService {
       String response = restTemplate.postForObject(androidFcmUrl, httpEntity, String.class);
       System.out.println(response);
     } catch (Exception e) {
-      e.printStackTrace();
-      //LOGGER.error("Error:", e);
+      logger.error("Error sending notification", e);
     }
   }
 

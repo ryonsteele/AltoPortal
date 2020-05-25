@@ -3,9 +3,12 @@ package com.alto.config;
 
 import com.alto.model.*;
 import com.alto.repository.*;
+import com.alto.service.impl.NotificationServiceImpl;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,6 +19,8 @@ import java.util.Date;
 
 @Component
 public class InitRoot {
+
+    public static final Logger logger = LoggerFactory.getLogger(InitRoot.class);
 
     @Autowired
     UserRepository userRepository;
@@ -34,6 +39,7 @@ public class InitRoot {
     public void appReady(ApplicationReadyEvent event) {
 
         try {
+            logger.info("Starting up application");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.getApplicationDefault())
                     .setDatabaseUrl("https://alto-api.firebaseio.com/")
@@ -89,7 +95,7 @@ public class InitRoot {
             //shiftRepository.saveAndFlush(new Shift("123456", "testy@yahoo.com", "10943", "filled", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "signoff", "signoff2", "555", "client name", "order spec", "order cert", "222", "note for shift", "123 main st", "39.477285", "-84.477811", "123 main st", "39.477285", "-84.477811", true));
 
         }catch(Exception ex){
-            ex.printStackTrace();
+            logger.error("Error in InitRoot: ", ex);
         }
     }
 }

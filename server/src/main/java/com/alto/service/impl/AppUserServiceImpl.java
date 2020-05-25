@@ -11,6 +11,8 @@ import com.alto.service.AppUserService;
 import com.alto.service.AuthorityService;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -32,6 +34,8 @@ import static org.springframework.http.HttpStatus.*;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
+
+  public static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
   @Autowired
   private AppUserRepository userRepository;
@@ -81,7 +85,7 @@ public class AppUserServiceImpl implements AppUserService {
       userRec.setDevicetoken(token);
       return new ResponseEntity(userRepository.saveAndFlush(userRec), OK);
     }
-
+    logger.error("No record found when updating token for user: " + user);
     return new ResponseEntity(BAD_REQUEST);
   }
 
@@ -89,10 +93,12 @@ public class AppUserServiceImpl implements AppUserService {
   public AppUser save(AppUserRequest userRequest) {
 
     if(userRequest.getUsername() == null){
+      logger.warn("No Username was passed!");
       throw new ResponseStatusException(BAD_REQUEST);
     }
     userRequest = getTempByUsername(userRequest.getUsername(), userRequest.getPassword());
     if(userRequest.getFirstname() == null || userRequest.getLastname() == null){
+      logger.warn("First and Last Name for username: "+ userRequest.getUsername() +" was not found in HCS");
       throw new ResponseStatusException(BAD_REQUEST);
     }
 
@@ -101,7 +107,9 @@ public class AppUserServiceImpl implements AppUserService {
 
     if(exists != null){
       if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword().trim() ) && (userRequest.getFirstTime() == null || !userRequest.getFirstTime() ) ){
+        logger.warn("Username: " + userRequest.getUsername() + " Provided a non matching password. Fresh install value: "+ userRequest.getFirstTime() );
         throw new ResponseStatusException(UNAUTHORIZED);
+
       }else if(userRequest.getFirstTime() != null && userRequest.getFirstTime() ){
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
@@ -173,10 +181,7 @@ public class AppUserServiceImpl implements AppUserService {
       }
       prefs.setRegion(sbRegions.toString());
     }
-
-
     return userPreferencesRepository.saveAndFlush(prefs);
-
   }
 
   @Override
@@ -211,6 +216,7 @@ public class AppUserServiceImpl implements AppUserService {
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         started = gson.fromJson(result, TempResponse.class);
         if(started == null || started.getTempId() == null || started.getTempId().isEmpty()){
+          logger.error("No result found in HCS for username: " + username);
           throw new ResponseStatusException(BAD_REQUEST);
         }
         userRequest.setTempId(started.getTempId());
@@ -224,8 +230,7 @@ public class AppUserServiceImpl implements AppUserService {
         //started = apiResponse;
 
       } catch (Exception e) {
-      e.printStackTrace();
-        //LOGGER.error("Error getting Embed URL and Token", e);
+        logger.error("Error calling HCS for username: " + username);
       }
 
     return userRequest;

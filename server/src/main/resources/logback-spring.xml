@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--Logging is configured for every environment that the service runs on. The local profiles do not log anything
+    and print everything to console. development/integration/regression/stage/production log to the file that is
+    specified in the environments property name/value below. The default file size is 30MB for ALL environments that log to file
+    The PACKAGE_NAME property is the name of the package and will need to be adjusted for each service that has this logging
+    configuration. Also the developer will need to add any custom loggers for each of the packages he defines in the pom.xml
+    look at hibernate for example-->
+    <property name="MAX_FILE_SIZE" value="30MB" />
+    <property name="PACKAGE_NAME" value="com.alto" />
+
+
+    <property name="PRODUCTION_LOG_HOME" value="/var/log/altologs" />
+    <property name="PRODUCTION_LOG_FILENAME" value="altolog" />
+
+
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+                </Pattern>
+            </layout>
+        </appender>
+
+        <appender name="FILE-AUDIT"
+                  class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${PRODUCTION_LOG_HOME}/${PRODUCTION_LOG_FILENAME}.log</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss}[%-5level]  - %msg%n
+                </Pattern>
+            </encoder>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>${PRODUCTION_LOG_HOME}/${PRODUCTION_LOG_FILENAME}-archived/%d{yyyy-MM-dd}.%i-${PRODUCTION_LOG_FILENAME}.log
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy
+                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+
+        </appender>
+
+        <!-- Send logs to both console and file audit -->
+        <logger name="org.springframework" level="info" additivity="false">
+            <appender-ref ref="FILE-AUDIT" />
+            <!-- Uncomment this to print to console <appender-ref ref="STDOUT" />-->
+        </logger>
+
+        <!-- Send logs to file only -->
+        <logger name="${PACKAGE_NAME}"  level="debug" additivity="false">
+            <appender-ref ref="FILE-AUDIT" />
+            <!--Uncomment this to print to console <appender-ref ref="STDOUT" />-->
+        </logger>
+
+        <logger name="org.hibernate" level="info" additivity="false">
+            <appender-ref ref="FILE-AUDIT" />
+        </logger>
+
+</configuration>

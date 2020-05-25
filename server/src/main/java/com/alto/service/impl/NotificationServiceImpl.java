@@ -5,6 +5,8 @@ import com.alto.model.requests.ApplyRequest;
 import com.alto.model.requests.SentHomeRequest;
 import com.alto.repository.CandidateRepository;
 import com.alto.service.NotificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -21,6 +23,7 @@ import java.util.Properties;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+  public static final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
   @Autowired
   CandidateRepository candidateRepository;
@@ -48,11 +51,10 @@ public class NotificationServiceImpl implements NotificationService {
 
       Transport.send(message);
 
-      System.out.println("Done");
+      logger.info("Sent Home Email sent");
 
     } catch (Exception e) {
-      //throw new RuntimeException(e);
-      e.printStackTrace();
+      logger.error("Error sending sent home email", e);
       return false;
     }
     return true;
@@ -82,7 +84,9 @@ public class NotificationServiceImpl implements NotificationService {
     sb.append(" <lastName>").append(request.getLastname()).append("</lastName>");
     sb.append(" <homeRegion>27</homeRegion>");
     sb.append(" <status>Pending</status>");
-    sb.append(" <certification>").append(request.getCerts().get(0)).append("</certification>");
+    if(request.getCerts() != null && request.getCerts().isEmpty()) {
+      sb.append(" <certification>").append(request.getCerts().get(0)).append("</certification>");
+    }
     String allSpecs = "";
     if(request.getSpecs() != null && !request.getSpecs().isEmpty()) {
       for (String spec : request.getSpecs()) {
@@ -113,18 +117,16 @@ public class NotificationServiceImpl implements NotificationService {
       HttpEntity<String> requestRSS = new HttpEntity<String>(sb.toString(), headers);
       ResponseEntity<String> response = restTemplate.postForEntity("https://ctms.contingenttalentmanagement.com/cirrusconcept/clearConnect/2_0/webService.cfc", requestRSS, String.class);
 
-      System.out.println(response.toString());
+
 
       if(response.getStatusCode().is2xxSuccessful()){
+        logger.info("Application saved to RSS");
         return true;
-        //return sendApplicationEmail(request);
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("Error saving application to company", e);
       return false;
-      //todo logger
-      //LOGGER.error("Error getting Embed URL and Token", e);
     }
     return false;
   }

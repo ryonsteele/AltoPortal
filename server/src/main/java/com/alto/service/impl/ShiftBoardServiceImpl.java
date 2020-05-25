@@ -13,6 +13,8 @@ import com.alto.repository.ShiftRepository;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ import java.util.*;
 
 @Service
 public class ShiftBoardServiceImpl implements ShiftBoardService {
+
+  public static final Logger logger = LoggerFactory.getLogger(ShiftBoardServiceImpl.class);
 
 
   @Autowired
@@ -171,7 +175,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
       } catch (Exception e) {
         //todo handle this
-        //LOGGER.error("Error getting Embed URL and Token", e);
+        logger.error("Error calling HCS for shift and temp details ", e);
       }
 
       if(started == null){
@@ -215,8 +219,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       Date parsedDate = dateFormat.parse(input);
       return new java.sql.Timestamp(parsedDate.getTime());
     } catch(Exception e) { //this generic but you can control another types of exception
-      // look the origin of excption
-      e.printStackTrace();
+      logger.error("Error in conversion", e);
     }
     return null;
   }
@@ -227,8 +230,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       Date parsedDate = dateFormat.parse(input);
       return new java.sql.Timestamp(parsedDate.getTime());
     } catch(Exception e) { //this generic but you can control another types of exception
-      // look the origin of excption
-      e.printStackTrace();
+      logger.error("Error in conversion", e);
     }
     return null;
   }
