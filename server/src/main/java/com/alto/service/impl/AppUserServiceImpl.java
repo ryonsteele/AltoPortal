@@ -79,7 +79,7 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public ResponseEntity updateToken(String user, String token) {
 
-    AppUser userRec = userRepository.findByUsername(user);
+    AppUser userRec = userRepository.findByUsername(user.toLowerCase());
 
     if(userRec != null){
       userRec.setDevicetoken(token);
@@ -132,7 +132,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
 
-    user.setUsername(userRequest.getUsername());
+    user.setUsername(userRequest.getUsername().toLowerCase());
     user.setPassword(passwordEncoder.encode(userRequest.getPassword().trim()));
     user.setFirstname(userRequest.getFirstname());
     user.setLastname(userRequest.getLastname());
