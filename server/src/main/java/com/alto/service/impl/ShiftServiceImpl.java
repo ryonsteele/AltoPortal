@@ -198,7 +198,7 @@ public class ShiftServiceImpl implements ShiftService {
         }
 
       } catch (Exception e) {
-        //LOGGER.error("Error getting Embed URL and Token", e);
+        logger.error("Error calling HCS for Shift Addition", e);
       }
 
       //save to repo
@@ -224,8 +224,7 @@ public class ShiftServiceImpl implements ShiftService {
       shiftRepository.saveAndFlush(saveShift);
 
     } catch(Exception e) {
-      e.printStackTrace();
-      //LOGGER.error("Error getting Embed URL and Token", e);
+      logger.error("Error saving Shift Addition to DB", e);
     }
 
     return new ResponseEntity(saveShift, HttpStatus.OK);
