@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.internal.Utilities;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
@@ -704,6 +705,10 @@ public class ShiftServiceImpl implements ShiftService {
 
         //sendAPNSNotification(user.getDevicetoken(), message.getMsgBody());
         sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
+
+      }else if(StringUtils.isNotBlank(user.getDevicetoken())){ //try anyway
+        sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
+
       }
     }
 
