@@ -92,6 +92,7 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public AppUser save(AppUserRequest userRequest) {
 
+    boolean freshwipe = userRequest.getFirstTime();
     if(userRequest.getUsername() == null){
       logger.warn("No Username was passed!");
       throw new ResponseStatusException(BAD_REQUEST);
@@ -103,14 +104,14 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     AppUser user = new AppUser();
-    AppUser exists = findByUsername(userRequest.getUsername().trim());
+    AppUser exists = findByUsername(userRequest.getUsername().trim().toLowerCase());
 
     if(exists != null){
-      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword().trim() ) && (userRequest.getFirstTime() == null || !userRequest.getFirstTime() ) ){
+      if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword().trim() ) && ( !freshwipe ) ){
         logger.warn("Username: " + userRequest.getUsername() + " Provided a non matching password. Fresh install value: "+ userRequest.getFirstTime() );
         throw new ResponseStatusException(UNAUTHORIZED);
 
-      }else if(userRequest.getFirstTime() != null && userRequest.getFirstTime() ){
+      }else if(freshwipe){
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(passwordEncoder.encode(userRequest.getPassword()));
