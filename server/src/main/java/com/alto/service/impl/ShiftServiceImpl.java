@@ -696,13 +696,8 @@ public class ShiftServiceImpl implements ShiftService {
 
       if(user == null || user.getDevicetoken() == null ) continue;
 
-      if(user.getDevicetype().equalsIgnoreCase("Android") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
+      if( user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
 
-        sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
-        //sendAPNSNotification(user.getDevicetoken(), message.getMsgBody());
-      }else if(user.getDevicetype().equalsIgnoreCase("iOS") && user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
-
-        //sendAPNSNotification(user.getDevicetoken(), message.getMsgBody());
         sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
 
       }else if(StringUtils.isNotBlank(user.getDevicetoken())){ //try anyway
