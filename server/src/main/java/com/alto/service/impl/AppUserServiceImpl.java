@@ -79,7 +79,12 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public ResponseEntity updateToken(String user, String token) {
 
-    AppUser userRec = userRepository.findByUsername(user.toLowerCase());
+    if(StringUtils.isBlank(user) || StringUtils.isBlank(token)){
+      logger.warn("No Username or Token passed when updating token ");
+      return new ResponseEntity(BAD_REQUEST);
+    }
+
+    AppUser userRec = userRepository.findByUsername(user.trim().toLowerCase());
 
     if(userRec != null){
       userRec.setDevicetoken(token);
@@ -212,7 +217,7 @@ public class AppUserServiceImpl implements AppUserService {
         String result = restTemplate.getForObject(getTempUrl, String.class);
         result = result.replace("[","").replace("]","");
 
-        System.out.println(result);
+        //System.out.println(result);
 
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         started = gson.fromJson(result, TempResponse.class);

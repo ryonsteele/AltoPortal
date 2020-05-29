@@ -386,16 +386,6 @@ public class ShiftServiceImpl implements ShiftService {
     return new ResponseEntity(updateShift, HttpStatus.OK);
   }
 
-  private Timestamp convertFromString(String input){
-    try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-      Date parsedDate = dateFormat.parse(input);
-      return new java.sql.Timestamp(parsedDate.getTime());
-    } catch(Exception e) { //this generic but you can control another types of exception
-      logger.error("Conversion error", e);
-    }
-    return null;
-  }
 
   public Shift getShift(String orderid){
     return shiftRepository.findByOrderid(orderid);
@@ -678,7 +668,7 @@ public class ShiftServiceImpl implements ShiftService {
     if(iso == null) return "";
     long time = iso.getTime();
     Date currentDate = new Date(time);
-    DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss");
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd h:mm a", Locale.US);
 
     TimeZone zoneNewYork = TimeZone.getTimeZone("America/New_York");
     df.setTimeZone(zoneNewYork);
@@ -688,6 +678,17 @@ public class ShiftServiceImpl implements ShiftService {
     return finale;
   }
 
+
+  private Timestamp convertFromString(String input){
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+      Date parsedDate = dateFormat.parse(input);
+      return new java.sql.Timestamp(parsedDate.getTime());
+    } catch(Exception e) { //this generic but you can control another types of exception
+      logger.error("Error in conversion", e);
+    }
+    return null;
+  }
 
   public void sendPushNotification(PushMessageRequest message){
 

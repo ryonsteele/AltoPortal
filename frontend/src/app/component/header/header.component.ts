@@ -27,11 +27,12 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.authService.logout().subscribe(res => {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/']);
     });
   }
 
   hasSignedIn() {
+    if (!this.userService.currentUser) { this.authService.logout(); }
     return !!this.userService.currentUser;
   }
 

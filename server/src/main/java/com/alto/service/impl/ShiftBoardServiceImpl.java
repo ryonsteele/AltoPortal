@@ -74,10 +74,10 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
       if(rec.getConfirmed()) {
         currRec.setConfirmed(true);
-        pushReq.setMsgBody("You have been CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
+        pushReq.setMsgBody("Interested Shift CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
 
       }else{
-        pushReq.setMsgBody("You were NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
+        pushReq.setMsgBody("Interested Shift NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
 
       }
       List<String> tempid =  new ArrayList<>();
@@ -119,7 +119,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       if(currRec == null)  continue;
       shiftBoardRepository.delete(currRec);
 
-      pushReq.setMsgBody("You were NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
+      pushReq.setMsgBody("Interested Shift NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
 
       List<String> tempid =  new ArrayList<>();
       tempid.add(rec.getTempid());
