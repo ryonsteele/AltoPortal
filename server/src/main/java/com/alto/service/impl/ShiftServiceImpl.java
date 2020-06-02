@@ -543,7 +543,6 @@ public class ShiftServiceImpl implements ShiftService {
         String result = restTemplate.getForObject(getClientUrl, String.class);
         result = result.replace("[","").replace("]","");
 
-        System.out.println(result);
 
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         client = gson.fromJson(result, ClientResponse.class);
@@ -551,7 +550,6 @@ public class ShiftServiceImpl implements ShiftService {
        // getCoordsURL = getCoordsURL.replace("$searchstring",client.getAddress());
         getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " " +client.getCity()+ " " + client.getState());
 
-        //1010 Taywood Rd
         String goeResp= restTemplate.getForObject(getCoordsURL, String.class);
         Type userListType = new TypeToken<ArrayList<GeoCodeResponse>>(){}.getType();
 
@@ -564,11 +562,9 @@ public class ShiftServiceImpl implements ShiftService {
             return true;
           }
         }
-
-
-
       } catch (Exception e) {
-        logger.error("Error when checking geofence", e);
+        logger.error("Error when checking geofence - ClientID: "+ request.getClientId() + " User: " + request.getUsername(), e);
+        logger.error("Failing call: " + getCoordsURL );
       }
 
     return false;
@@ -732,7 +728,7 @@ public class ShiftServiceImpl implements ShiftService {
 
       HttpEntity<String> httpEntity = new HttpEntity<String>(json.toString(), httpHeaders);
       String response = restTemplate.postForObject(androidFcmUrl, httpEntity, String.class);
-      System.out.println(response);
+      logger.debug("Sent notification with response: " + response);
     } catch (Exception e) {
       logger.error("Error sending notification", e);
     }

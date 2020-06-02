@@ -35,3 +35,12 @@ spring:
        #ddl-auto: create
     show-sql: true
 
+jasypt:
+  encryptor:
+    password: ebead908c52a477a91b3e27ae2161cb168eb5884
+    algorithm: PBEWithMD5AndTripleDES
+
+healthcaresource:
+  username: ENC(xOeuanV1CqZK4Hym39uqxQ==)
+  password: ENC(fZOYZq1bT0Xu3MIpA4cmMwPsitIeklzp)
+  baseurl: https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=

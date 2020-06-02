@@ -1,5 +1,6 @@
 package com.alto.service.impl;
 
+import com.alto.config.HCSConfiguration;
 import com.alto.model.AppUser;
 import com.alto.model.UserPreferences;
 import com.alto.model.requests.AppUserRequest;
@@ -38,6 +39,9 @@ public class AppUserServiceImpl implements AppUserService {
   public static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
   @Autowired
+  private HCSConfiguration hcsConfiguration;
+
+  @Autowired
   private AppUserRepository userRepository;
 
   @Autowired
@@ -60,7 +64,7 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   // @PreAuthorize("hasRole('USER')")
   public AppUser findByUsername(String username) throws UsernameNotFoundException {
-    AppUser u = userRepository.findByUsername(username);
+    AppUser u = userRepository.findByUsernameEquals(username);
     return u;
   }
 
@@ -84,13 +88,13 @@ public class AppUserServiceImpl implements AppUserService {
       return new ResponseEntity(BAD_REQUEST);
     }
 
-    AppUser userRec = userRepository.findByUsername(user.trim().toLowerCase());
+    AppUser userRec = userRepository.findByUsernameEquals(user.trim().toLowerCase());
 
     if(userRec != null){
       userRec.setDevicetoken(token);
       return new ResponseEntity(userRepository.saveAndFlush(userRec), OK);
     }
-    logger.error("No record found when updating token for user: " + user);
+    //logger.error("No record found when updating token for user: " + user);
     return new ResponseEntity(BAD_REQUEST);
   }
 
@@ -102,7 +106,7 @@ public class AppUserServiceImpl implements AppUserService {
       logger.warn("No Username was passed!");
       throw new ResponseStatusException(BAD_REQUEST);
     }
-    userRequest = getTempByUsername(userRequest.getUsername(), userRequest.getPassword());
+    userRequest = getTempByUsername(userRequest.getUsername().trim().toLowerCase(), userRequest.getPassword());
     if(userRequest.getFirstname() == null || userRequest.getLastname() == null){
       logger.warn("First and Last Name for username: "+ userRequest.getUsername() +" was not found in HCS");
       throw new ResponseStatusException(BAD_REQUEST);
@@ -132,13 +136,13 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
 
-    AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
-    if(existsCheck != null){
-      return existsCheck;
-    }
+//    AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
+//    if(existsCheck != null){
+//      return existsCheck;
+//    }
 
-
-    user.setUsername(userRequest.getUsername().toLowerCase());
+    logger.debug("New User method hit: " + userRequest.getUsername().trim().toLowerCase() + " Tempid: " +userRequest.getTempId());
+    user.setUsername(userRequest.getUsername().trim().toLowerCase());
     user.setPassword(passwordEncoder.encode(userRequest.getPassword().trim()));
     user.setFirstname(userRequest.getFirstname());
     user.setLastname(userRequest.getLastname());
@@ -157,7 +161,7 @@ public class AppUserServiceImpl implements AppUserService {
     prefs = userPreferencesRepository.findByTempid(request.getTempId());
     if(prefs == null) prefs = new UserPreferences();
     prefs.setTempid(request.getTempId());
-    prefs.setUsername(request.getUsername());
+    prefs.setUsername(request.getUsername().trim().toLowerCase());
     prefs.setMonday(request.getMon());
     prefs.setTuesday(request.getTue());
     prefs.setWednesday(request.getWed());
@@ -203,8 +207,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     //todo implement sessionkey
     //todo externalize
-    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&emailLike=$email&statusIn=Active&resultType=json";
-    getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim());
+    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailLike=$email&statusIn=Active&resultType=json";
+    getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim()).replace("$username", hcsConfiguration.getUsername()).replace("$password", hcsConfiguration.getPassword());
     try {
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -231,9 +235,6 @@ public class AppUserServiceImpl implements AppUserService {
         userRequest.setCerts(started.getCertification());
         userRequest.setRegion(started.getHomeRegion());
 
-        //HttpEntity<ShiftResponse> apiResponse = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, ShiftResponse.class);
-        // ShiftResponse apiResponse = restTemplate.getForObject(getShiftUrl, ShiftResponse.class);
-        //started = apiResponse;
 
       } catch (Exception e) {
         logger.error("Error calling HCS for username: " + username);
