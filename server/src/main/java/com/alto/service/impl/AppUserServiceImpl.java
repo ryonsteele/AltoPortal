@@ -136,10 +136,10 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
 
-//    AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
-//    if(existsCheck != null){
-//      return existsCheck;
-//    }
+    AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
+    if(existsCheck != null){
+      return existsCheck;
+    }
 
     logger.debug("New User method hit: " + userRequest.getUsername().trim().toLowerCase() + " Tempid: " +userRequest.getTempId());
     user.setUsername(userRequest.getUsername().trim().toLowerCase());
