@@ -74,10 +74,22 @@ export class ConfigService {
     return this._temps_url;
   }
 
+  private _messages_url = this._api_url + '/messages';
+
+  get messages_url(): string {
+    return this._messages_url;
+  }
+
   private _shifts_url = this._api_url + '/shifts';
 
   get shifts_url(): string {
     return this._shifts_url;
+  }
+
+  private _shifts_audit_url = this._api_url + '/shifts/audit';
+
+  get shifts_audit_url(): string {
+    return this._shifts_audit_url;
   }
 
   private _pns_url = this._api_url + '/push';

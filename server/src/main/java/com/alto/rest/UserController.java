@@ -19,9 +19,6 @@ import com.alto.model.User;
 import com.alto.model.requests.UserRequest;
 import com.alto.service.UserService;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @RestController
 @CrossOrigin

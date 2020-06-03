@@ -2,6 +2,7 @@ package com.alto.rest;
 
 import com.alto.model.*;
 import com.alto.model.requests.*;
+import com.alto.model.response.MessageAudit;
 import com.alto.service.AppUserService;
 import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
@@ -34,15 +35,28 @@ public class DashboardController {
 
 
 
+
   @RequestMapping(method = GET, value = "/temps")
   //@PreAuthorize("hasRole('USER')")
   public List<AppUser> loadAllAppUsers() {
     return this.appUserService.findAll();
   }
 
+  @RequestMapping(method = GET, value = "/messages")
+  //@PreAuthorize("hasRole('USER')")
+  public List<MessageAudit> loadAllMessages() {
+    return this.appUserService.findAllMessages();
+  }
+
   @RequestMapping(method = GET, value = "/shifts")
   //@PreAuthorize("hasRole('USER')")
   public List<ShiftBoardRecord> loadAllOpenShifts() {
+    return this.shiftBoardService.findAllActive();
+  }
+
+  @RequestMapping(method = GET, value = "/shifts/audit")
+  //@PreAuthorize("hasRole('USER')")
+  public List<ShiftBoardRecord> loadAllOpenShiftsAudit() {
     return this.shiftBoardService.findAll();
   }
 

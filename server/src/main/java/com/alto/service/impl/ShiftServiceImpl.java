@@ -8,6 +8,7 @@ import com.alto.model.requests.SessionsRequest;
 import com.alto.model.requests.ShiftRequest;
 import com.alto.model.response.*;
 import com.alto.repository.AppUserRepository;
+import com.alto.repository.MessageRepository;
 import com.alto.repository.ShiftRepository;
 import com.alto.repository.UserPreferencesRepository;
 import com.alto.service.ShiftService;
@@ -45,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -83,6 +85,8 @@ public class ShiftServiceImpl implements ShiftService {
   ResourceLoader resourceLoader;
   @Autowired
   UserPreferencesRepository userPreferencesRepository;
+  @Autowired
+  MessageRepository messageRepository;
 
 
   final static int BREAK_START = 1;
@@ -688,24 +692,34 @@ public class ShiftServiceImpl implements ShiftService {
 
   public void sendPushNotification(PushMessageRequest message){
 
+    MessageAudit auditor = new MessageAudit();
+    List<String> tempnames = new ArrayList<>();
+    auditor.setUsername(message.getAudit());
+    auditor.setMessage(message.getMsgBody());
+    auditor.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
     for(String tempid : message.getTemps()){
       AppUser user = appUserRepository.findByTempid(tempid);
+      tempnames.add(user.getFirstname() + " " + user.getLastname());
 
       if(user == null || user.getDevicetoken() == null ) continue;
 
       if( user.getDevicetoken() != null && user.getDevicetoken().length() > 10){
 
-        sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
+        auditor.setSuccess(sendFMSNotigication(user.getDevicetoken(), message.getMsgBody()) );
 
       }else if(StringUtils.isNotBlank(user.getDevicetoken())){ //try anyway
-        sendFMSNotigication(user.getDevicetoken(), message.getMsgBody());
+        auditor.setSuccess(sendFMSNotigication(user.getDevicetoken(), message.getMsgBody()) );
 
+      }else{
+        auditor.setSuccess(false);
       }
     }
 
+    auditor.setRecipients(tempnames.stream().collect(Collectors.joining(",")));
+    messageRepository.saveAndFlush(auditor);
   }
 
-  private void sendFMSNotigication(String deviceToken, String messg) {
+  private boolean sendFMSNotigication(String deviceToken, String messg) {
 
     try {
       String androidFcmKey = "AAAAiJJmHX4:APA91bGFT2PxR2V8tJZr0JN7PSKVXmCR9BRnhCAR5-bpWGbcAnDdgNla16CUvJvWiGDY8n57YLnOLTcsDVwGC9nYXkH3VGoUm3_vfPqxXENzOgi3JRQRjP_RfbP-_84QCKjwoUO5Lv_l";
@@ -731,7 +745,9 @@ public class ShiftServiceImpl implements ShiftService {
       logger.debug("Sent notification with response: " + response);
     } catch (Exception e) {
       logger.error("Error sending notification", e);
+      return false;
     }
+    return true;
   }
 
   private void sendAPNSNotification(String deviceToken, String messg){

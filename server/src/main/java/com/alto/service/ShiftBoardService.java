@@ -13,6 +13,7 @@ public interface ShiftBoardService {
     ShiftBoardRecord saveRecord(InterestRequest request);
     ShiftBoardRecord getRecord(String orderid, String tempid);
     List<ShiftBoardRecord> findAll();
+    List<ShiftBoardRecord> findAllActive();
     boolean processConfirmation(ConfirmationRequest request);
     boolean processRemoval(ConfirmationRequest request);
     ResponseEntity<?> updateSession(String orderid, SessionUpdateRequest request);

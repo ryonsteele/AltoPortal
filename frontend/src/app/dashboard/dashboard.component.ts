@@ -3,7 +3,7 @@ import {Component, OnDestroy, OnInit, QueryList, TemplateRef, ViewChild, ViewChi
 import {ApiService} from '../service/api.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {ConfigService} from "../service";
+import {ConfigService, UserService} from "../service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
@@ -48,6 +48,7 @@ export class Shift {
   shiftend: string;
   orderid: string;
   confirmed: boolean;
+  audit: string;
 
   constructor(user: string, name: string, tempid: string, client: string,  shiftstart: string, shiftend: string, orderid: string,
               confirmed: boolean) {
@@ -99,6 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   startDateform: FormControl = new FormControl(new Date());
 
   constructor(
+    private userService: UserService,
     private apiService: ApiService,
     private config: ConfigService,
     private route: ActivatedRoute,
@@ -137,6 +139,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.showSessionUpdate = false;
     this.updateShiftsTable();
     this.updateTempsTable();
+
 
     this.interval = setInterval(() => {
       this.updateShiftsTable();
@@ -202,10 +205,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   confirmDialog(obj) {
     console.log(obj);
     obj.confirmed = true;
+    obj.audit = this.userService.currentUser.username;
     this.dtoShiftList = [];
     this.dtoShiftList.push(obj);
     for (let item of this.shiftList) {
       if (item.tempid != obj.tempid && item.orderid != obj.orderid) {
+        item.audit = this.userService.currentUser.username;
         this.dtoShiftList.push(item);
       }
     }
@@ -223,12 +228,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   removeDialog(obj) {
     console.log(obj);
     this.dtoShiftList = [];
+    obj.confirmed = true;
+    obj.audit = this.userService.currentUser.username;
     this.dtoShiftList.push(obj);
-    for (let item of this.shiftList) {
-      if (item.tempid != obj.tempid && item.orderid != obj.orderid) {
-        this.dtoShiftList.push(item);
-      }
-    }
+
     // console.log(JSON.stringify({records: JSON.parse(JSON.stringify(this.dtoShiftList))}));
     this.apiService.post(this.config.remove_url, {records: JSON.parse(JSON.stringify(this.dtoShiftList))})
       .pipe(map(() => {
@@ -355,14 +358,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
     let data = JSON.stringify(myChecked);
 
-    this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, temps: JSON.parse(data)})
+    this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, audit: this.userService.currentUser.username, temps: JSON.parse(data)})
       .pipe(map(() => {
         console.log('Push Notify success');
         this.updateTempsTable();
         this.messageFC.setValue('');
-      })).subscribe( item =>
-      console.log('Push Notify success bugaloo')
-    );
+      })).subscribe( );
   }
 
 

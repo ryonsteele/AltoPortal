@@ -5,9 +5,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @Entity
 @Table(name = "OPENSHIFT")
@@ -45,11 +42,17 @@ public class ShiftBoardRecord implements Serializable {
   @Column(name = "active")
   private Boolean active;
 
+  @Column(name = "audit")
+  private String audit;
+
+  @Column(name = "time")
+  private String time;
+
 
 
   public ShiftBoardRecord(){}
 
-  public ShiftBoardRecord(String orderid, String username, String fullName, String tempid, Timestamp shiftStartTime, Timestamp shiftEndTime, String clientName, Boolean conf, Boolean active) {
+  public ShiftBoardRecord(String orderid, String username, String fullName, String tempid, Timestamp shiftStartTime, Timestamp shiftEndTime, String clientName, Boolean conf, Boolean active, String audit, String time) {
     this.orderid = orderid;
     this.username = username;
     this.fullName = fullName;
@@ -59,6 +62,8 @@ public class ShiftBoardRecord implements Serializable {
     this.clientName = clientName;
     this.confirmed = conf;
     this.active = active;
+    this.audit = audit;
+    this.time = time;
   }
 
 
@@ -141,5 +146,21 @@ public class ShiftBoardRecord implements Serializable {
 
   public void setFullName(String fullName) {
     this.fullName = fullName;
+  }
+
+  public String getAudit() {
+    return audit;
+  }
+
+  public void setAudit(String audit) {
+    this.audit = audit;
+  }
+
+  public String getTime() {
+    return time;
+  }
+
+  public void setTime(String time) {
+    this.time = time;
   }
 }

@@ -44,9 +44,15 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
   private ShiftRepository shiftRepository;
 
   @Override
-  public List<ShiftBoardRecord> findAll(){
+  public List<ShiftBoardRecord> findAllActive(){
 
     return shiftBoardRepository.findByActiveTrue();
+  }
+
+  @Override
+  public List<ShiftBoardRecord> findAll(){
+
+    return shiftBoardRepository.findAll();
   }
 
   @Override
@@ -84,6 +90,8 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       tempid.add(rec.getTempid());
       pushReq.setTemps(tempid);
       currRec.setActive(false);
+      currRec.setAudit(rec.getAudit());
+      currRec.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
       shiftService.sendPushNotification(pushReq);
       shiftBoardRepository.saveAndFlush(currRec);
     }
@@ -102,6 +110,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
         tempid.add(rec.getTempid());
         pushReq.setTemps(tempid);
         currRec.setActive(false);
+        currRec.setAudit(rec.getAudit());
         shiftService.sendPushNotification(pushReq);
         shiftBoardRepository.saveAndFlush(currRec);
       }
@@ -117,7 +126,10 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     for(ShiftBoardRecord rec : request.getRecords()){
       ShiftBoardRecord currRec = shiftBoardRepository.findFirstByOrderidAndTempid(rec.getOrderid(),rec.getTempid());
       if(currRec == null)  continue;
-      shiftBoardRepository.delete(currRec);
+      currRec.setActive(false);
+      currRec.setAudit(rec.getAudit());
+      currRec.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
+      shiftBoardRepository.saveAndFlush(currRec);
 
       pushReq.setMsgBody("Interested Shift NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
 

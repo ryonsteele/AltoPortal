@@ -5,8 +5,10 @@ import com.alto.model.AppUser;
 import com.alto.model.UserPreferences;
 import com.alto.model.requests.AppUserRequest;
 import com.alto.model.requests.PreferencesRequest;
+import com.alto.model.response.MessageAudit;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
+import com.alto.repository.MessageRepository;
 import com.alto.repository.UserPreferencesRepository;
 import com.alto.service.AppUserService;
 import com.alto.service.AuthorityService;
@@ -52,6 +54,9 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Autowired
   private UserPreferencesRepository userPreferencesRepository;
+
+  @Autowired
+  MessageRepository messageRepository;
 
   public void resetCredentials() {
     List<AppUser> users = userRepository.findAll();
@@ -248,6 +253,11 @@ public class AppUserServiceImpl implements AppUserService {
     AppUserRequest temp = getTempByUsername( username);
     temp.setPassword(password);
     return temp;
+  }
+
+  @Override
+  public List<MessageAudit> findAllMessages(){
+    return messageRepository.findAll();
   }
 
 }
