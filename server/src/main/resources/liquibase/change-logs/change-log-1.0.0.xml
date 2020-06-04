@@ -1,0 +1,140 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1" author="jmchugh">
+        <createTable tableName="appusers">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__appuser"/>
+            </column>
+            <column name="username" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
+            <column name="firstname" type="varchar(255)"/>
+            <column name="lastname" type="varchar(255)"/>
+            <column name="tempid" type="varchar(255)">
+                <constraints unique="true" />
+            </column>
+            <column name="devicetoken" type="varchar(255)"/>
+            <column name="devicetype" type="varchar(255)"/>
+            <column name="certs" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="authority">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__authority"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="candidates">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__candidates"/>
+            </column>
+            <column name="firstname" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
+            <column name="lastname" type="varchar(255)"/>
+            <column name="street" type="varchar(255)"/>
+            <column name="city" type="varchar(255)"/>
+            <column name="state" type="varchar(255)"/>
+            <column name="zip" type="varchar(255)"/>
+            <column name="certs" type="varchar(255)"/>
+            <column name="specs" type="varchar(255)"/>
+            <column name="primary_phone" type="varchar(255)"/>
+            <column name="secondary_phone" type="varchar(255)"/>
+            <column name="filekey" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="shifts">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__shifts"/>
+            </column>
+            <column name="order_id" type="varchar(255)"/>
+            <column name="username" type="varchar(255)"/>
+            <column name="tempid" type="varchar(255)"/>
+            <column name="status" type="varchar(255)"/>
+            <column name="shift_starttime" type="timestamp"/>
+            <column name="shift_endtime" type="timestamp"/>
+
+            <column name="shift_starttime_actual" type="timestamp"/>
+            <column name="shift_start_signoff" type="varchar(255)"/>
+            <column name="shift_endtime_actual" type="timestamp"/>
+            <column name="shift_end_signoff" type="varchar(255)"/>
+            <column name="client_id" type="varchar(255)"/>
+            <column name="client_name" type="varchar(255)"/>
+            <column name="order_specialty" type="varchar(255)"/>
+            <column name="order_certification" type="varchar(255)"/>
+            <column name="shift_number" type="varchar(255)"/>
+            <column name="floor" type="varchar(255)"/>
+            <column name="note" type="varchar(255)"/>
+            <column name="clockin_address" type="varchar(255)"/>
+            <column name="checkin_lat" type="varchar(255)"/>
+            <column name="checkin_lon" type="varchar(255)"/>
+            <column name="clockout_address" type="varchar(255)"/>
+            <column name="checkout_lat" type="varchar(255)"/>
+            <column name="checkout_lon" type="varchar(255)"/>
+            <column name="breaks" type="boolean"/>
+        </createTable>
+        <createTable tableName="openshift">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__openshifts"/>
+            </column>
+            <column name="order_id" type="varchar(255)"/>
+            <column name="username" type="varchar(255)"/>
+            <column name="full_name" type="varchar(255)"/>
+            <column name="temp_id" type="varchar(255)"/>
+            <column name="shift_starttime" type="timestamp"/>
+            <column name="shift_endtime" type="timestamp"/>
+            <column name="client_name" type="varchar(255)"/>
+            <column name="confirmed" type="boolean"/>
+            <column name="active" type="boolean"/>
+            <column name="audit" type="varchar(255)"/>
+            <column name="time" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__users"/>
+            </column>
+            <column name="username" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
+            <column name="firstname" type="varchar(255)"/>
+            <column name="lastname" type="varchar(255)"/>
+            <column name="emailid" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="user_authority">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__user_authority"/>
+            </column>
+            <column name="user_id" type="bigint"/>
+            <column name="authority_id" type="bigint"/>
+        </createTable>
+        <createTable tableName="preferences">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__preferences"/>
+            </column>
+            <column name="username" type="varchar(255)"/>
+            <column name="temp_id" type="bigint"/>
+            <column name="monday" type="boolean"/>
+            <column name="tuesday" type="boolean"/>
+            <column name="wednesday" type="boolean"/>
+            <column name="thursday" type="boolean"/>
+            <column name="friday" type="boolean"/>
+            <column name="saturday" type="boolean"/>
+            <column name="sunday" type="boolean"/>
+            <column name="certs" type="varchar(255)"/>
+            <column name="region" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="messages">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="PK__messages"/>
+            </column>
+            <column name="username" type="varchar(255)"/>
+            <column name="recipients" type="varchar(255)"/>
+            <column name="message" type="varchar(255)"/>
+            <column name="success" type="boolean"/>
+            <column name="time" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
