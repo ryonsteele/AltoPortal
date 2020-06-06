@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by fan.jin on 2016-11-07.
- */
+
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

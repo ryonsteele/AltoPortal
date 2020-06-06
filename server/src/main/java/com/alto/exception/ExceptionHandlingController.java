@@ -30,6 +30,13 @@ public class ExceptionHandlingController {
     logger.error("Global Handler 400", ex.getMessage());
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
   }
+  
+  @ExceptionHandler(UnAuthorizedException.class)
+  public ResponseEntity handleAuthRequest(UnAuthorizedException ex) {
+
+    logger.error("Global Handler 401", ex.getMessage());
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+  }
 
   @ExceptionHandler(InternalServerException.class)
   public ResponseEntity handleInternalServerError(InternalServerException ex) {

@@ -104,17 +104,17 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public AppUser save(AppUserRequest userRequest) {
+  public ResponseEntity<?> save(AppUserRequest userRequest) {
 
     boolean freshwipe = userRequest.getFirstTime();
     if(userRequest.getUsername() == null){
       logger.warn("No Username was passed!");
-      throw new ResponseStatusException(BAD_REQUEST);
+      return new ResponseEntity("Username Required", UNAUTHORIZED);
     }
     userRequest = getTempByUsername(userRequest.getUsername().trim().toLowerCase(), userRequest.getPassword());
     if(userRequest.getFirstname() == null || userRequest.getLastname() == null){
       logger.warn("First and Last Name for username: "+ userRequest.getUsername() +" was not found in HCS");
-      throw new ResponseStatusException(BAD_REQUEST);
+      return new ResponseEntity("Username Not Found in HCS", UNAUTHORIZED);
     }
 
     AppUser user = new AppUser();
@@ -123,27 +123,27 @@ public class AppUserServiceImpl implements AppUserService {
     if(exists != null){
       if(!passwordEncoder.matches(userRequest.getPassword().trim(), exists.getPassword().trim() ) && ( !freshwipe ) ){
         logger.warn("Username: " + userRequest.getUsername() + " Provided a non matching password. Fresh install value: "+ userRequest.getFirstTime() );
-        throw new ResponseStatusException(UNAUTHORIZED);
+        return new ResponseEntity("Password Incorrect, try again or re-install App", UNAUTHORIZED);
 
       }else if(freshwipe){
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRepository.saveAndFlush(exists);
-        return exists;
+        return new ResponseEntity(exists, OK);
 
        } else{
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         userRepository.saveAndFlush(exists);
-        return exists;
+        return new ResponseEntity(exists, OK);
       }
     }
 
 
     AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
     if(existsCheck != null){
-      return existsCheck;
+    	return new ResponseEntity(exists, OK);
     }
 
     logger.debug("New User method hit: " + userRequest.getUsername().trim().toLowerCase() + " Tempid: " +userRequest.getTempId());
@@ -155,7 +155,7 @@ public class AppUserServiceImpl implements AppUserService {
     user.setDevicetype(userRequest.getDevicetype());
     user.setCerts(userRequest.getCerts());
 
-    return userRepository.saveAndFlush(user);
+    return new ResponseEntity(userRepository.saveAndFlush(user), OK);
   }
 
   @Override

@@ -198,6 +198,7 @@ public class ShiftServiceImpl implements ShiftService {
         Gson gson = new Gson();
         started = gson.fromJson(result, ShiftResponse.class);
         if(!checkGeoFence(request)){
+          logger.warn("Geofence restricted clock in/out for user: " + request.getUsername());	
           return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 

@@ -108,9 +108,9 @@ public class PublicController {
     public ResponseEntity<?> postLogin(@RequestBody AppUserRequest request) {
 
         if(StringUtils.isEmpty(request.getUsername()) || StringUtils.isEmpty(request.getPassword())){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Username/Password Required",HttpStatus.UNAUTHORIZED);
         }else {
-            return new ResponseEntity<>(appUserService.save(request), HttpStatus.OK);
+            return appUserService.save(request);
         }
     }
 

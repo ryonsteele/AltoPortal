@@ -21,7 +21,7 @@ public interface AppUserService {
 
   List<MessageAudit> findAllMessages();
 
-  AppUser save(AppUserRequest user);
+  ResponseEntity<?> save(AppUserRequest user);
 
   ResponseEntity<?> updateToken(String tempid, String token);
 
