@@ -177,6 +177,7 @@ public class ShiftServiceImpl implements ShiftService {
   }
 
   public ResponseEntity addShift(ShiftRequest request){
+	logger.debug("Clock In Request began: "+ request.getUsername());
     ShiftResponse started = null;
     Shift saveShift = new Shift();
 
@@ -232,6 +233,7 @@ public class ShiftServiceImpl implements ShiftService {
       logger.error("Error saving Shift Addition to DB", e);
     }
 
+    logger.debug("Clock In Request End: "+ request.getUsername());
     return new ResponseEntity(saveShift, HttpStatus.OK);
   }
 
@@ -328,6 +330,7 @@ public class ShiftServiceImpl implements ShiftService {
   }
 
   public List<ShiftResponse> getOpens(String tempid){
+	logger.debug("Getting Open Shifts Request Begin: "+ tempid);
     List<ShiftResponse> resultsOpens = new ArrayList<>();
     //todo externalize
     String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
@@ -349,7 +352,7 @@ public class ShiftServiceImpl implements ShiftService {
     } catch (Exception e) {
       logger.error("Error getting open shifts for tempid: "+ tempid, e);
     }
-
+    logger.debug("Getting Open Shifts Request End: "+ tempid);
     return resultsOpens;
   }
 
@@ -563,10 +566,11 @@ public class ShiftServiceImpl implements ShiftService {
         for(GeoCodeResponse geo : geoList){
           //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
           Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
-          if(dist < 0.3){
+          if(dist < 0.7){
             return true;
           }
         }
+        logger.warn("Geo restriction violated user: "+request.getUsername() +" Lat: " + Double.parseDouble(request.getLat()) + " Long: " + Double.parseDouble(geo.getLat()) );
       } catch (Exception e) {
         logger.error("Error when checking geofence - ClientID: "+ request.getClientId() + " User: " + request.getUsername(), e);
         logger.error("Failing call: " + getCoordsURL );
