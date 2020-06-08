@@ -570,7 +570,7 @@ public class ShiftServiceImpl implements ShiftService {
             return true;
           }
         }
-        logger.warn("Geo restriction violated user: "+request.getUsername() +" Lat: " + Double.parseDouble(request.getLat()) + " Long: " + Double.parseDouble(geo.getLat()) );
+        logger.warn("Geo restriction violated user: "+request.getUsername() +" Lat: " + Double.parseDouble(request.getLat()) + " Long: " + Double.parseDouble(request.getLat()) );
       } catch (Exception e) {
         logger.error("Error when checking geofence - ClientID: "+ request.getClientId() + " User: " + request.getUsername(), e);
         logger.error("Failing call: " + getCoordsURL );
