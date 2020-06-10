@@ -152,16 +152,16 @@ public class ShiftServiceImpl implements ShiftService {
     found.setTempid(req.getTempid());
     found.setUsername(user.getUsername());
     if(hcsFound.getShiftStartTime() != null) {
-      found.setShiftStartTime(convertFromString(hcsFound.getShiftStartTime()).toString());
+      found.setShiftStartTime(convertFromString(hcsFound.getShiftStartTime()));
     }
     if(hcsFound.getShiftEndTime() != null) {
-      found.setShiftEndTime(convertFromString(hcsFound.getShiftEndTime()).toString());
+      found.setShiftEndTime(convertFromString(hcsFound.getShiftEndTime()));
     }
     if(checkout){
-      found.setShiftEndTimeActual(new Timestamp(System.currentTimeMillis()).toString());
+      found.setShiftEndTimeActual(new Timestamp(System.currentTimeMillis()));
       found.setShiftEndSignoff("Alto Dashboard");
     }else{
-      found.setShiftStartTimeActual(new Timestamp(System.currentTimeMillis()).toString());
+      found.setShiftStartTimeActual(new Timestamp(System.currentTimeMillis()));
       found.setShiftStartSignoff("Alto Dashboard");
     }
     found.setStatus(hcsFound.getStatus());
@@ -211,9 +211,9 @@ public class ShiftServiceImpl implements ShiftService {
       saveShift.setOrderid(request.getOrderId());
       saveShift.setTempid(request.getTempId().toString());
       saveShift.setUsername(request.getUsername());
-      saveShift.setShiftStartTime(started.getShiftStartTime());
-      saveShift.setShiftEndTime(started.getShiftEndTime());
-      saveShift.setShiftStartTimeActual(new Timestamp(System.currentTimeMillis()).toString());
+      saveShift.setShiftStartTime(convertFromString(started.getShiftStartTime()));
+      saveShift.setShiftEndTime(convertFromString(started.getShiftEndTime()));
+      saveShift.setShiftStartTimeActual(new Timestamp(System.currentTimeMillis()));
       saveShift.setStatus(started.getStatus());
       saveShift.setClientId(started.getClientId());
       saveShift.setClientName(started.getClientName());
@@ -378,7 +378,7 @@ public class ShiftServiceImpl implements ShiftService {
 //      }else if(request.getShiftstatuskey() == BREAK_END){
 //        updateShift.setBreakEndTime(new Timestamp(System.currentTimeMillis()));
 //      }else if(request.getShiftstatuskey() == SHIFT_END){
-        updateShift.setShiftEndTimeActual(new Timestamp(System.currentTimeMillis()).toString());
+        updateShift.setShiftEndTimeActual(new Timestamp(System.currentTimeMillis()));
         updateShift.setShiftEndSignoff(request.getShiftSignoff());
         updateShift.setClockoutAddress(request.getClockedAddy());
         updateShift.setCheckoutLat(request.getLat());
@@ -672,15 +672,15 @@ public class ShiftServiceImpl implements ShiftService {
     return results;
   }
 
-  private String convertEastern(String iso){
-//    if(iso == null) return "";
-//    long time = iso.getTime();
-//    Date currentDate = new Date(time);
+  private String convertEastern(Timestamp iso){
+    if(iso == null) return "";
+    long time = iso.getTime();
+    Date currentDate = new Date(time);
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd h:mm a", Locale.US);
 
     TimeZone zoneNewYork = TimeZone.getTimeZone("America/New_York");
     df.setTimeZone(zoneNewYork);
-    String finale = df.format(iso);
+    String finale = df.format(currentDate);
     System.out.println(finale);
 
     return finale;

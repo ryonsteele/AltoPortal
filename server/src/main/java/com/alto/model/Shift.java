@@ -30,10 +30,10 @@ public class Shift implements Serializable {
   private String status;
 
   @Column(name = "shift_starttime")
-  private String shiftStartTime;
+  private Timestamp shiftStartTime;
 
   @Column(name = "shift_endtime")
-  private String shiftEndTime;
+  private Timestamp shiftEndTime;
 
 //  @Column(name = "break_starttime")
 //  private Timestamp breakStartTime;
@@ -42,13 +42,13 @@ public class Shift implements Serializable {
 //  private Timestamp breakEndTime;
 
   @Column(name = "shift_starttime_actual")
-  private String shiftStartTimeActual;
+  private Timestamp shiftStartTimeActual;
 
   @Column(name = "shift_start_signoff")
   private String shiftStartSignoff;
 
   @Column(name = "shift_endtime_actual")
-  private String shiftEndTimeActual;
+  private Timestamp shiftEndTimeActual;
 
   @Column(name = "shift_end_signoff")
   private String shiftEndSignoff;
@@ -99,8 +99,8 @@ public class Shift implements Serializable {
 
   public Shift(){}
 
-  public Shift(String orderid, String username, String tempid, String status, String shiftStartTime, String shiftEndTime,
-		  String shiftStartTimeActual, String shiftEndTimeActual,
+  public Shift(String orderid, String username, String tempid, String status, Timestamp shiftStartTime, Timestamp shiftEndTime,
+               Timestamp shiftStartTimeActual, Timestamp shiftEndTimeActual,
                String shiftStartSignoff, String shiftEndSignoff, String clientId, String clientName, String orderSpecialty,
                String orderCertification, String shiftNumber, String note, String clockInAddress, String checkinLat,
                String checkinLon, String clockoutAddress, String checkoutLat, String checkoutLon, Boolean breaks) {
@@ -181,6 +181,21 @@ public class Shift implements Serializable {
     this.status = status;
   }
 
+  public Timestamp getShiftStartTime() {
+    return shiftStartTime;
+  }
+
+  public void setShiftStartTime(Timestamp shiftStartTime) {
+    this.shiftStartTime = shiftStartTime;
+  }
+
+  public Timestamp getShiftEndTime() {
+    return shiftEndTime;
+  }
+
+  public void setShiftEndTime(Timestamp shiftEndTime) {
+    this.shiftEndTime = shiftEndTime;
+  }
 
 //  public Timestamp getBreakStartTime() {
 //    return breakStartTime;
@@ -198,6 +213,21 @@ public class Shift implements Serializable {
 //    this.breakEndTime = breakEndTime;
 //  }
 
+  public Timestamp getShiftStartTimeActual() {
+    return shiftStartTimeActual;
+  }
+
+  public void setShiftStartTimeActual(Timestamp shiftStartTimeActual) {
+    this.shiftStartTimeActual = shiftStartTimeActual;
+  }
+
+  public Timestamp getShiftEndTimeActual() {
+    return shiftEndTimeActual;
+  }
+
+  public void setShiftEndTimeActual(Timestamp shiftEndTimeActual) {
+    this.shiftEndTimeActual = shiftEndTimeActual;
+  }
 
   public String getClientId() {
     return clientId;
@@ -318,38 +348,4 @@ public class Shift implements Serializable {
   public void setCheckoutLon(String checkoutLon) {
     this.checkoutLon = checkoutLon;
   }
-
-public String getShiftStartTime() {
-	return shiftStartTime;
-}
-
-public void setShiftStartTime(String shiftStartTime) {
-	this.shiftStartTime = shiftStartTime;
-}
-
-public String getShiftEndTime() {
-	return shiftEndTime;
-}
-
-public void setShiftEndTime(String shiftEndTime) {
-	this.shiftEndTime = shiftEndTime;
-}
-
-public String getShiftStartTimeActual() {
-	return shiftStartTimeActual;
-}
-
-public void setShiftStartTimeActual(String shiftStartTimeActual) {
-	this.shiftStartTimeActual = shiftStartTimeActual;
-}
-
-public String getShiftEndTimeActual() {
-	return shiftEndTimeActual;
-}
-
-public void setShiftEndTimeActual(String shiftEndTimeActual) {
-	this.shiftEndTimeActual = shiftEndTimeActual;
-}
-  
-  
 }
