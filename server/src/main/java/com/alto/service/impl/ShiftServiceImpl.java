@@ -620,9 +620,6 @@ public class ShiftServiceImpl implements ShiftService {
       TempResponse[] mcArray = gson.fromJson(resultTemp, TempResponse[].class);
       tempHcs = new ArrayList<>(Arrays.asList(mcArray));
 
-    }catch(Exception e){
-      logger.error("Error generating session data", e);
-    }
 
     shifts = shiftRepository.findByDates(fromTS1, fromTS2);
 
@@ -668,6 +665,10 @@ public class ShiftServiceImpl implements ShiftService {
       }
         //todo else log no matching temp found for shift
     }
+    }catch(Exception e){
+        logger.error("Error generating session data", e);
+      }
+
     return results;
   }
 
