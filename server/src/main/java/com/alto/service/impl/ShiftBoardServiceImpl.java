@@ -213,11 +213,11 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     Shift update = shiftService.getShift(orderid);
 
     if(request.getShiftstart() != null && !request.getShiftstart().isEmpty()) {
-      update.setShiftStartTimeActual(convertFromString(request.getShiftstart()));
+      update.setShiftStartTimeActual(request.getShiftstart());
     }
 
     if(request.getShiftend() != null && !request.getShiftend().isEmpty()) {
-      update.setShiftEndTimeActual(convertFromString(request.getShiftend()));
+      update.setShiftEndTimeActual(request.getShiftend());
     }
     shiftRepository.saveAndFlush(update);
 
