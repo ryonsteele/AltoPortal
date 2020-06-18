@@ -731,7 +731,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     try {
       String androidFcmKey = "AAAAiJJmHX4:APA91bGFT2PxR2V8tJZr0JN7PSKVXmCR9BRnhCAR5-bpWGbcAnDdgNla16CUvJvWiGDY8n57YLnOLTcsDVwGC9nYXkH3VGoUm3_vfPqxXENzOgi3JRQRjP_RfbP-_84QCKjwoUO5Lv_l";
-      String androidFcmUrl = "http://fcm.googleapis.com/fcm/send";
+      String androidFcmUrl = "https://fcm.googleapis.com/fcm/send";
 
       RestTemplate restTemplate = new RestTemplate();
       HttpHeaders httpHeaders = new HttpHeaders();
