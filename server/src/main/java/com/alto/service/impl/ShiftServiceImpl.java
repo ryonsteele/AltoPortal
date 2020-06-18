@@ -707,7 +707,11 @@ public class ShiftServiceImpl implements ShiftService {
     auditor.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
     for(String tempid : message.getTemps()){
       AppUser user = appUserRepository.findByTempid(tempid);
-      tempnames.add(user.getFirstname() + " " + user.getLastname());
+      if(message.getTemps().size() > 10){
+        tempnames.set(0,"Too Many for Listing");
+      }else {
+        tempnames.add(user.getFirstname() + " " + user.getLastname());
+      }
 
       if(user == null || user.getDevicetoken() == null ) continue;
 
