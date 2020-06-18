@@ -47,7 +47,7 @@ public class AppUser implements Serializable {
 
   public AppUser(){}
 
-  public AppUser(String firstName, String lastName, String username, String password, String tempid, String devicetoken, String devicetype, String certs, String regions) {
+  public AppUser(String firstName, String lastName, String username, String password, String tempid, String devicetoken, String devicetype, String certs) {
     this.firstname = firstName;
     this.lastname = lastName;
     this.username = username;

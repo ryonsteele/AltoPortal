@@ -83,6 +83,9 @@
   <div class="divider"><span></span><span> Message Center </span><span></span></div>
   <div class="thead">
     <input type="text" (keyup)="applyUserFilter($event.target.value)" placeholder="search... " class="searchbox">
+    <label>
+    <input type="checkbox"  id="isCheckBox" (change)="selectAll($event)"/>  Select All
+	</label>
   </div>
 
   <mat-table [dataSource]="usersDataSource" class="mat-elevation-z8" matSort matSortActive="user"

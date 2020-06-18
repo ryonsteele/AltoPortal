@@ -152,6 +152,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+selectAll(e) {
+   if(e.target.checked){  
+	   for (let item of this.tempList) {
+         item.checked = true;  
+       }
+   }else{
+	   for (let item of this.tempList) {
+         item.checked = false;  
+       }
+   }
+}
+
   openModal(template: TemplateRef<any>) {
     this.InvalidClockVal = false;
     let myChecked = [];
