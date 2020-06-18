@@ -363,12 +363,16 @@ selectAll(e) {
       return;
     }
     let myChecked = [];
-    for (let item of this.tempList) {
-      if (item.checked) {
-        myChecked.push(item.tempid);
+    if(this.checkbox){
+      this.usersDataSource.filteredData.forEach(item => myChecked.push(item.tempid))
+    }else {
+      for (let item of this.tempList) {
+        if (item.checked) {
+          myChecked.push(item.tempid);
+        }
       }
     }
-    // console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
+     console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
     let data = JSON.stringify(myChecked);
 
     this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, audit: this.userService.currentUser.username, temps: JSON.parse(data)})
