@@ -84,7 +84,7 @@
   <div class="thead">
     <input type="text" (keyup)="applyUserFilter($event.target.value)" placeholder="search... " class="searchbox">
     <label>
-    <input type="checkbox"  id="isCheckBox" (change)="selectAll($event)"/>  Select All
+    <input type="checkbox" [(ngModel)]='checkbox' id="isCheckBox" (change)="selectAll($event)"/>  Select All
 	</label>
   </div>
 

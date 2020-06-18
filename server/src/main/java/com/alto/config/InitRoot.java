@@ -70,14 +70,14 @@ public class InitRoot {
 
 //            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "9919", "abc123", "Android", "STNA"));
 //            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "736", "abc123", "Android", "LPN"));
-//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "1234", "abc123", "Android", "STNA"));
-//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "5678", "abc123", "Android", "LPN"));
-//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "4321", "abc123", "Android", "STNA"));
-//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "8765", "abc123", "Android", "LPN"));
-//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "2323", "abc123", "Android", "STNA"));
-//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "5656", "abc123", "Android", "LPN"));
-//            appUserRepository.saveAndFlush(new AppUser("John", "Doe", "test@gmail.com", "1234", "3232", "abc123", "Android", "STNA"));
-//            appUserRepository.saveAndFlush(new AppUser("Jane", "Smith", "sophiaslc1977@aol.com", "1234", "6565", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "One", "test1@gmail.com", "1234", "1234", "abc123", "iOS", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Two", "test2@gmail.com", "1234", "5678", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Three", "test3@gmail.com", "1234", "4321", "abc123", "iOS", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Four", "test4@gmail.com", "1234", "8765", "abc123", "Android", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Five", "test5@gmail.com", "1234", "2323", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Six", "test6@gmail.com", "1234", "5656", "abc123", "iOS", "LPN"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Seven", "test7@gmail.com", "1234", "3232", "abc123", "Android", "STNA"));
+//            appUserRepository.saveAndFlush(new AppUser("Test", "Eight", "test8@gmail.com", "1234", "6565", "abc123", "Android", "LPN,STNA"));
 //
 //            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
 //            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));

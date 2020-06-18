@@ -91,6 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   InvalidUpdateResp: boolean;
   showSessionUpdate: boolean;
   interval: any;
+  checkbox: boolean;
 
   updateOrderId: string;
 
@@ -153,13 +154,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 selectAll(e) {
-   if(e.target.checked){  
+   if(e.target.checked){
 	   for (let item of this.tempList) {
-         item.checked = true;  
+         item.checked = true;
        }
    }else{
 	   for (let item of this.tempList) {
-         item.checked = false;  
+         item.checked = false;
        }
    }
 }
@@ -373,8 +374,10 @@ selectAll(e) {
     this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, audit: this.userService.currentUser.username, temps: JSON.parse(data)})
       .pipe(map(() => {
         console.log('Push Notify success');
+        this.checkbox = false;
         this.updateTempsTable();
         this.messageFC.setValue('');
+
       })).subscribe( );
   }
 
