@@ -242,7 +242,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
       } catch (Exception e) {
-        logger.error("Error calling HCS for username: " + username);
+        logger.error("Error calling HCS for username: " + username, e);
       }
 
     return userRequest;

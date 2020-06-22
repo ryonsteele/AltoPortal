@@ -568,7 +568,7 @@ public class ShiftServiceImpl implements ShiftService {
         for(GeoCodeResponse geo : geoList){
           //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
           Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
-          if(dist < 0.7){
+          if(dist < 2.0){
             return true;
           }
         }
@@ -707,7 +707,7 @@ public class ShiftServiceImpl implements ShiftService {
     auditor.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
     for(String tempid : message.getTemps()){
       AppUser user = appUserRepository.findByTempid(tempid);
-      if(message.getTemps().size() > 10){
+      if(message.getTemps().size() > 5){
         tempnames.set(0,"Too Many for Listing");
       }else {
         tempnames.add(user.getFirstname() + " " + user.getLastname());
