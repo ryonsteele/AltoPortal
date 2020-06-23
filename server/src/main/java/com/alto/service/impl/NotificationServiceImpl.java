@@ -84,16 +84,17 @@ public class NotificationServiceImpl implements NotificationService {
     sb.append(" <lastName>").append(request.getLastname()).append("</lastName>");
     sb.append(" <homeRegion>27</homeRegion>");
     sb.append(" <status>Pending</status>");
-    if(request.getCerts() != null && request.getCerts().isEmpty()) {
+    
+    if(request.getCerts() != null && !request.getCerts().isEmpty()) {
       sb.append(" <certification>").append(request.getCerts().get(0)).append("</certification>");
     }
-    String allSpecs = "";
-    if(request.getSpecs() != null && !request.getSpecs().isEmpty()) {
-      for (String spec : request.getSpecs()) {
-        allSpecs += spec + ",";
-      }
-      allSpecs = allSpecs.trim().substring(0, allSpecs.length() - 1);
-    }
+    String allSpecs = "See Description";
+//    if(request.getCerts() != null && !request.getCerts().isEmpty()) {
+//      for (String spec : request.getCerts()) {
+//        allSpecs += spec + ",";
+//      }
+//      allSpecs = allSpecs.trim().substring(0, allSpecs.length() - 1);
+//    }
     sb.append(" <specialty>").append(allSpecs).append("</specialty>");
     sb.append(" <email>").append(request.getEmail()).append("</email>");
     sb.append(" <address>").append(request.getStreet()).append("</address>");
