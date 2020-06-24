@@ -702,14 +702,16 @@ public class ShiftServiceImpl implements ShiftService {
 
     MessageAudit auditor = new MessageAudit();
     List<String> tempnames = new ArrayList<>();
+    if(message.getTemps().size() > 5){
+        tempnames.add("Too Many for Listing");
+    }
+      
     auditor.setUsername(message.getAudit());
     auditor.setMessage(message.getMsgBody());
     auditor.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
     for(String tempid : message.getTemps()){
       AppUser user = appUserRepository.findByTempid(tempid);
-      if(message.getTemps().size() > 5){
-        tempnames.set(0,"Too Many for Listing");
-      }else {
+      if(message.getTemps().size() <= 5) {
         tempnames.add(user.getFirstname() + " " + user.getLastname());
       }
 

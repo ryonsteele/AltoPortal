@@ -78,7 +78,7 @@ public class InitRoot {
 //            appUserRepository.saveAndFlush(new AppUser("Test", "Six", "test6@gmail.com", "1234", "5656", "abc123", "iOS", "LPN"));
 //            appUserRepository.saveAndFlush(new AppUser("Test", "Seven", "test7@gmail.com", "1234", "3232", "abc123", "Android", "STNA"));
 //            appUserRepository.saveAndFlush(new AppUser("Test", "Eight", "test8@gmail.com", "1234", "6565", "abc123", "Android", "LPN,STNA"));
-//
+
 //            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
 //            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
 //            shiftBoardRepository.saveAndFlush(new ShiftBoardRecord("435848", "sophiaslc1977@aol.com", "Sophia Webb", "736", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), "Allen View Nursing Home", false, true));
