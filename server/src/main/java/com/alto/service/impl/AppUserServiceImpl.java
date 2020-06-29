@@ -146,7 +146,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
     if(existsCheck != null){
-    	logger.debug("Found existing by tempid, returned new saved record");
+    	logger.debug("Found existing by tempid, returned new saved record : " + userRequest.getTempId());
+    	logger.debug("Exists record : " + existsCheck.toString());
     	return new ResponseEntity<AppUser>(exists, OK);
     }
 
