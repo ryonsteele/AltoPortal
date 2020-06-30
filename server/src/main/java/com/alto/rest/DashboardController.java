@@ -8,6 +8,7 @@ import com.alto.service.ShiftBoardService;
 import com.alto.service.ShiftService;
 import com.alto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -90,6 +91,12 @@ public class DashboardController {
   //@PreAuthorize("hasRole('USER')")
   public ResponseEntity shiftChange(@RequestBody ClockRequest request) {
     return shiftService.manualShiftClock(request);
+  }
+
+  @RequestMapping(method = POST, value = "/reset")
+  //@PreAuthorize("hasRole('USER')")
+  public ResponseEntity resetAppUser(@RequestBody ResetRequest request) {
+    return new ResponseEntity(appUserService.resetAppUser(request), HttpStatus.OK);
   }
 
 

@@ -16,16 +16,22 @@
     <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
   </ng-container>
 
-  <!-- Position Column -->
-  <ng-container matColumnDef="user">
-    <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.user}} </mat-cell>
-  </ng-container>
+<!--  &lt;!&ndash; Position Column &ndash;&gt;-->
+<!--  <ng-container matColumnDef="user">-->
+<!--    <mat-header-cell *matHeaderCellDef> User </mat-header-cell>-->
+<!--    <mat-cell *matCellDef="let element"> {{element.user}} </mat-cell>-->
+<!--  </ng-container>-->
 
   <!-- Position Column -->
   <ng-container matColumnDef="tempid">
     <mat-header-cell *matHeaderCellDef> TempID </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.tempid}} </mat-cell>
+  </ng-container>
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="tempcerts">
+    <mat-header-cell *matHeaderCellDef> Temp Certs </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.certs}} </mat-cell>
   </ng-container>
 
   <!-- Name Column -->
@@ -128,11 +134,14 @@
   ></mat-paginator>
 </div>
 <div *ngIf="InvalidClockVal == true" class="alert-danger my-error">
-  <p>Invalid Selection: Must only select one User to change Shift status</p>
+  <p>Invalid Selection: Must only select one User to change Shift status or update password</p>
 </div>
 
 <button class="btn btn-primary clockbtn"
         (click)="openModal(template)">Clock IN/OUT</button>
+
+<button class="btn btn-primary resetbtn"
+        (click)="openResetModal(resettemplate)">Change Password</button>
 
 
 <form (ngSubmit)="Submit()" class="pushcontent">
@@ -239,6 +248,41 @@
         <button mat-button (click)="onNoClick()">Cancel</button>
         <button mat-button (click)="onRangeClick()">Update</button>
       </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<div class="my-modal-wrapper">
+  <ng-template #resettemplate>
+
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Enter Password</h4>
+
+      <button type="button"
+              class="close pull-right"
+              (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <form (ngSubmit)="Reset()">
+        <input [formControl]="resetFC" matInput placeholder="Password Required" required type="password">
+        <br>
+        <br>
+        <input [formControl]="resetConfFC" matInput placeholder="Password Confirmation Required" required type="password">
+        <br>
+        <br>
+        <button mat-raised-button type="submit" color="primary">Reset</button>
+        <br>
+        <br>
+        <p>Enter a new password for this user (four character minimum!)</p>
+      </form>
+
+      <div *ngIf="InvalidResetResp == true" class="alert-danger my-error">
+        <p>Something went wrong... </p>
       </div>
     </div>
   </ng-template>

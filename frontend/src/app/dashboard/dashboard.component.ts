@@ -39,6 +39,16 @@ export class Clock {
   }
 }
 
+export class Reset {
+  reset: string;
+  tempid: string;
+
+  constructor(reset: string, tempid: string) {
+    this.reset = reset;
+    this.tempid = tempid;
+  }
+}
+
 export class Shift {
   user: string;
   name: string;
@@ -49,9 +59,10 @@ export class Shift {
   orderid: string;
   confirmed: boolean;
   audit: string;
+  certs: string;
 
   constructor(user: string, name: string, tempid: string, client: string,  shiftstart: string, shiftend: string, orderid: string,
-              confirmed: boolean) {
+              confirmed: boolean, certs: string) {
 
     this.user = user;
     this.name = name;
@@ -61,6 +72,7 @@ export class Shift {
     this.shiftend = shiftend;
     this.orderid = orderid;
     this.confirmed = confirmed;
+    this.certs = certs;
   }
 }
 
@@ -88,6 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   modalRef: BsModalRef;
   InvalidClockVal: boolean;
   InvalidClockResp: boolean;
+  InvalidResetResp: boolean;
   InvalidUpdateResp: boolean;
   showSessionUpdate: boolean;
   interval: any;
@@ -116,6 +129,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   clockFC = new FormControl('', [
     Validators.required, Validators.pattern('^[0-9]*$')
   ]);
+  resetFC = new FormControl('', [
+    Validators.required, Validators.minLength(4)
+  ]);
+  resetConfFC = new FormControl('', [
+    Validators.required, Validators.minLength(4)
+  ]);
   updateFC = new FormControl('', [
     Validators.required, Validators.pattern('^[0-9]*$')
   ]);
@@ -124,7 +143,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dtoShiftList: Shift[] = [];
 
   // User  Client  Shift  Location
-  displayedColumns: string[] = ['name', 'user', 'tempid', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
+  displayedColumns: string[] = ['name', 'tempid', 'tempcerts', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
   usertableColumns: string[] = ['checked', 'user', 'tempid', 'certs'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
   usersDataSource = new MatTableDataSource<Temp>(this.tempList);
@@ -181,6 +200,22 @@ selectAll(e) {
     }
   }
 
+  openResetModal(template: TemplateRef<any>) {
+    this.InvalidClockVal = false;
+    let myChecked = [];
+    for (let item of this.tempList) {
+      if (item.checked) {
+        myChecked.push(item.tempid);
+      }
+    }
+    if (myChecked.length == 1) {
+      this.InvalidResetResp = false;
+      this.modalRef = this.modalService.show(template);
+    } else {
+      this.InvalidClockVal = true;
+    }
+  }
+
   openUpdateSessionModal(template: TemplateRef<any>) {
       this.modalRef = this.modalService.show(template);
   }
@@ -190,7 +225,7 @@ selectAll(e) {
    this.shiftList = [];
    this.apiService.get(this.config.shifts_url).pipe(
       map((arr) => arr.map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTime, x.shiftEndTime, x.orderid,
-        false))))
+        false, x.certs))))
       .subscribe(lists => {
         lists.forEach(shift => {
           this.shiftList.push(shift);
@@ -206,7 +241,6 @@ selectAll(e) {
     this.apiService.get(this.config.temps_url).pipe(
       map((arr) => arr.map(x => new Temp(false, x.firstname  + ' ' + x.lastname, x.tempid, x.certs)))).subscribe(lists => {
       lists.forEach(temp => {
-        // console.log(temp.firstname);
         this.tempList.push(temp);
       });
       this.usersDataSource = new MatTableDataSource(this.tempList);
@@ -232,9 +266,7 @@ selectAll(e) {
       .pipe(map(() => {
         console.log('Confirm success');
         this.updateShiftsTable();
-      })).subscribe( item =>
-      console.log('Confirm success bugaloo')
-    );
+      })).subscribe();
 
   }
 
@@ -266,7 +298,6 @@ selectAll(e) {
 
   Clock() {
     this.InvalidClockResp = false;
-    console.log('Clock Submit');
     if (this.clockFC.invalid) {
       return;
     }
@@ -277,12 +308,8 @@ selectAll(e) {
         myChecked.push(item.tempid);
       }
     }
-    // let data = JSON.stringify(myChecked);
-
-    // console.log(JSON.stringify( JSON.parse(JSON.stringify(new Clock(this.clockFC.value, this.tempList[0].tempid) ) ) ) );
     this.apiService.post(this.config.clock_url, JSON.parse(JSON.stringify(new Clock(this.clockFC.value, myChecked[0]) ) ) )
       .pipe(map((response: Response) => {
-        console.log('Clock map');
         console.log(response.status);
       })).subscribe( item =>
         this.Handle(item),
@@ -291,16 +318,33 @@ selectAll(e) {
 
   }
 
+  Reset() {
+    this.InvalidResetResp = false;
+    if (this.resetFC.invalid || this.resetFC.value !== this.resetConfFC.value) {
+      return;
+    }
+    let myChecked = [];
+    for (let item of this.tempList) {
+      if (item.checked) {
+        myChecked.push(item.tempid);
+      }
+    }
+    this.apiService.post(this.config.reset_url, JSON.parse(JSON.stringify(new Reset(this.resetFC.value, myChecked[0]) ) ) )
+      .pipe(map((response: Response) => {
+      })).subscribe( item =>
+        this.Handle(item),
+      error => this.HandleError(error)
+    );
+  }
+
   UpdateShift() {
     this.InvalidClockResp = false;
-    console.log('Update Shift Submit');
     if (this.updateFC.invalid) {
       return;
     }
     this.apiService.get(this.config.shifts_url + '/' + this.updateFC.value)
       .pipe(map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTimeActual, x.shiftEndTimeActual, x.orderid,
-        false))).subscribe(data => {
-        console.log(data);
+        false, x.certs))).subscribe(data => {
         this.startDate = new Date(data.shiftstart);
         this.endDate = new Date(data.shiftend);
         this.showSessionUpdate = true;
@@ -329,14 +373,16 @@ selectAll(e) {
     this.apiService.post(this.config.shifts_url + '/' + this.updateOrderId,  JSON.parse(JSON.stringify(session)))
       .pipe(map(() => {
         console.log('update session success');
-      })).subscribe( item =>
-      console.log('update session sub')
-    );
+      })).subscribe();
   }
 
   Handle(resp: any) {
     this.modalRef.hide();
-    console.log(resp);
+    this.resetFC.setValue('');
+    this.resetConfFC.setValue('');
+    for ( let t of this.tempList ) {
+      t.checked = false;
+    }
   }
 
   HandleError(error: any) {
@@ -372,7 +418,7 @@ selectAll(e) {
         }
       }
     }
-     console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
+     // console.log(JSON.stringify({msgBody: this.messageFC.value, temps: JSON.parse(JSON.stringify(myChecked))}));
     let data = JSON.stringify(myChecked);
 
     this.apiService.post(this.config.pns_url, {msgBody: this.messageFC.value, audit: this.userService.currentUser.username, temps: JSON.parse(data)})

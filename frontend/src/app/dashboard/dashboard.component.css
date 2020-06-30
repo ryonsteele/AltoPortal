@@ -2,6 +2,8 @@
 
 button {
   width: 20%;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 form {
@@ -11,6 +13,18 @@ form {
 
 mat-select{
   display: inline;
+}
+
+.mat-column-tempcerts{
+  flex: 0 0 100px;
+}
+
+.mat-column-tempid{
+  flex: 0 0 100px;
+}
+
+.mat-column-orderid{
+  flex: 0 0 150px;
 }
 
 textarea{

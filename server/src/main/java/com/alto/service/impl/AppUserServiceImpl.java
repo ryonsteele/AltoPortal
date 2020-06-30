@@ -5,6 +5,7 @@ import com.alto.model.AppUser;
 import com.alto.model.UserPreferences;
 import com.alto.model.requests.AppUserRequest;
 import com.alto.model.requests.PreferencesRequest;
+import com.alto.model.requests.ResetRequest;
 import com.alto.model.response.MessageAudit;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
@@ -101,6 +102,18 @@ public class AppUserServiceImpl implements AppUserService {
     }
     //logger.error("No record found when updating token for user: " + user);
     return new ResponseEntity(BAD_REQUEST);
+  }
+
+  @Override
+  public AppUser resetAppUser(ResetRequest request) {
+
+    AppUser userRec = userRepository.findByTempid(request.getTempid());
+    if(userRec != null) {
+      userRec.setPassword(passwordEncoder.encode(request.getReset().trim()));
+      userRepository.saveAndFlush(userRec);
+    }
+
+    return userRec;
   }
 
   @Override

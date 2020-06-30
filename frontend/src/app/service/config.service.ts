@@ -116,6 +116,12 @@ export class ConfigService {
     return this._clock_url;
   }
 
+  private _reset_url = this._api_url + '/reset';
+
+  get reset_url(): string {
+    return this._reset_url;
+  }
+
   private _sessions_url = this._api_url + '/sessions';
 
   get sessions_url(): string {

@@ -203,6 +203,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       record.setUsername(request.getUsername());
       if(tempHcs != null) {
         record.setFullName(tempHcs.getFirstName() + " " + tempHcs.getLastName());
+        record.setCerts(tempHcs.getCertification());
       }
 
       return shiftBoardRepository.saveAndFlush(record);

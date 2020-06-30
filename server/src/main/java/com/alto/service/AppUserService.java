@@ -4,6 +4,7 @@ import com.alto.model.UserPreferences;
 import com.alto.model.requests.AppUserRequest;
 import com.alto.model.AppUser;
 import com.alto.model.requests.PreferencesRequest;
+import com.alto.model.requests.ResetRequest;
 import com.alto.model.response.MessageAudit;
 import org.springframework.http.ResponseEntity;
 
@@ -16,6 +17,8 @@ public interface AppUserService {
   AppUser findById(Long id);
 
   AppUser findByUsername(String username);
+
+  AppUser resetAppUser(ResetRequest request);
 
   List<AppUser> findAll();
 

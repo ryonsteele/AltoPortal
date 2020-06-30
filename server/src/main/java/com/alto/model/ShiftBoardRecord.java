@@ -48,11 +48,14 @@ public class ShiftBoardRecord implements Serializable {
   @Column(name = "time")
   private String time;
 
+  @Column(name = "certs")
+  private String certs;
+
 
 
   public ShiftBoardRecord(){}
 
-  public ShiftBoardRecord(String orderid, String username, String fullName, String tempid, Timestamp shiftStartTime, Timestamp shiftEndTime, String clientName, Boolean conf, Boolean active, String audit, String time) {
+  public ShiftBoardRecord(String orderid, String username, String fullName, String tempid, Timestamp shiftStartTime, Timestamp shiftEndTime, String clientName, Boolean conf, Boolean active, String audit, String time, String certs) {
     this.orderid = orderid;
     this.username = username;
     this.fullName = fullName;
@@ -64,6 +67,7 @@ public class ShiftBoardRecord implements Serializable {
     this.active = active;
     this.audit = audit;
     this.time = time;
+    this.certs = certs;
   }
 
 
@@ -162,5 +166,13 @@ public class ShiftBoardRecord implements Serializable {
 
   public void setTime(String time) {
     this.time = time;
+  }
+
+  public String getCerts() {
+    return certs;
+  }
+
+  public void setCerts(String certs) {
+    this.certs = certs;
   }
 }
