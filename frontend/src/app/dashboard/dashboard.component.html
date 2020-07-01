@@ -137,8 +137,8 @@
   <p>Invalid Selection: Must only select one User to change Shift status or update password</p>
 </div>
 
-<button class="btn btn-primary clockbtn"
-        (click)="openModal(template)">Clock IN/OUT</button>
+<!--<button class="btn btn-primary clockbtn"-->
+<!--        (click)="openModal(template)">Clock IN/OUT</button>-->
 
 <button class="btn btn-primary resetbtn"
         (click)="openResetModal(resettemplate)">Change Password</button>
@@ -160,48 +160,47 @@
 </form>
 
 
-<div class="my-modal-wrapper">
-<ng-template #template>
+<!--<div class="my-modal-wrapper">-->
+<!--<ng-template #template>-->
 
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">Enter Order ID</h4>
+<!--  <div class="modal-header">-->
+<!--    <h4 class="modal-title pull-left">Enter Order ID</h4>-->
 
-    <button type="button"
-            class="close pull-right"
-            (click)="modalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+<!--    <button type="button"-->
+<!--            class="close pull-right"-->
+<!--            (click)="modalRef.hide()">-->
+<!--      <span aria-hidden="true">&times;</span>-->
+<!--    </button>-->
+<!--  </div>-->
 
-  <!-- Modal Body -->
-  <div class="modal-body">
-    <form (ngSubmit)="Clock()">
-      <input [formControl]="clockFC" matInput placeholder="Order ID" required type="text">
-      <br>
-      <br>
-      <button mat-raised-button type="submit" color="primary">Clock</button>
-      <br>
-      <br>
-      <p>The OrderId is found at the top of the Shift Details Screen of the Users Alto App.
-        Ask the User to provide it to check into or out of Shift.</p>
-    </form>
+<!--  &lt;!&ndash; Modal Body &ndash;&gt;-->
+<!--  <div class="modal-body">-->
+<!--    <form (ngSubmit)="Clock()">-->
+<!--      <input [formControl]="clockFC" matInput placeholder="Order ID" required type="text">-->
+<!--      <br>-->
+<!--      <br>-->
+<!--      <button mat-raised-button type="submit" color="primary">Clock</button>-->
+<!--      <br>-->
+<!--      <br>-->
+<!--      <p>The OrderId is found at the top of the Shift Details Screen of the Users Alto App.-->
+<!--        Ask the User to provide it to check into or out of Shift.</p>-->
+<!--    </form>-->
 
-    <div *ngIf="InvalidClockResp == true" class="alert-danger my-error">
-      <p>OrderID either doesn't exist or has already been fulfilled!</p>
-    </div>
-  </div>
-</ng-template>
-</div>
+<!--    <div *ngIf="InvalidClockResp == true" class="alert-danger my-error">-->
+<!--      <p>OrderID either doesn't exist or has already been fulfilled!</p>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</ng-template>-->
+<!--</div>-->
 
 <div class="my-modal-wrapper">
   <ng-template #template2>
 
     <div class="modal-header">
       <h4 class="modal-title pull-left">Enter Order ID</h4>
-
       <button type="button"
               class="close pull-right"
-              (click)="modalRef.hide()">
+              (click)="onNoClick()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -209,10 +208,13 @@
     <!-- Modal Body -->
     <div class="modal-body">
       <form (ngSubmit)="UpdateShift()">
+        <input [formControl]="pinFC" matInput placeholder="Pin Required" required type="password">
+        <br>
+        <br>
         <input [formControl]="updateFC" matInput placeholder="Order ID" required type="text">
         <br>
         <br>
-        <button mat-raised-button type="submit" color="primary">Clock</button>
+        <button mat-raised-button type="submit" color="primary">Submit</button>
         <br>
         <br>
         <p>The OrderId is found at the top of the Shift Details Screen of the Users Alto App.
@@ -220,7 +222,7 @@
       </form>
 
       <div *ngIf="InvalidUpdateResp == true" class="alert-danger my-error">
-        <p>OrderID doesn't exist!</p>
+        <p>OrderID doesn't exist or Incorrect Pin</p>
       </div>
 
       <div *ngIf="showSessionUpdate == true">

@@ -119,7 +119,7 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public ResponseEntity<?> save(AppUserRequest userRequest) {
 
-	logger.debug("Saving login request");
+	//logger.debug("Saving login request");
     boolean freshwipe = userRequest.getFirstTime();
     if(userRequest.getUsername() == null){
       logger.warn("No Username was passed!");
@@ -144,14 +144,14 @@ public class AppUserServiceImpl implements AppUserService {
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         if(StringUtils.isNotBlank(userRequest.getPassword().trim())) exists.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRepository.saveAndFlush(exists);
-        logger.debug("Found existing with Freshwipe flag, returned new saved record");
+        //logger.debug("Found existing with Freshwipe flag, returned new saved record");
         return new ResponseEntity<AppUser>(exists, OK);
 
        } else{
         if(StringUtils.isNotBlank(userRequest.getDevicetoken())) exists.setDevicetoken(userRequest.getDevicetoken());
         if(StringUtils.isNotBlank(userRequest.getDevicetype())) exists.setDevicetype(userRequest.getDevicetype());
         userRepository.saveAndFlush(exists);
-        logger.debug("Found existing, returned new saved record");
+        //logger.debug("Found existing, returned new saved record");
         return new ResponseEntity<AppUser>(exists, OK);
       }
     }
@@ -159,8 +159,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     AppUser existsCheck = userRepository.findByTempid(userRequest.getTempId());
     if(existsCheck != null){
-    	logger.debug("Found existing by tempid, returned new saved record : " + userRequest.getTempId());
-    	logger.debug("Exists record : " + existsCheck.toString());
+    	//logger.debug("Found existing by tempid, returned new saved record : " + userRequest.getTempId());
+    	//logger.debug("Exists record : " + existsCheck.toString());
     	return new ResponseEntity<AppUser>(exists, OK);
     }
 

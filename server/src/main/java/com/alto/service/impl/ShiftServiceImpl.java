@@ -20,6 +20,7 @@ import com.notnoop.apns.internal.Utilities;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
+import org.joda.time.ReadablePartial;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.simple.JSONObject;
@@ -45,6 +46,7 @@ import java.text.SimpleDateFormat;
 
 import java.time.*;
 
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -311,7 +313,7 @@ public class ShiftServiceImpl implements ShiftService {
       }
       history.setHoursScheduled(String.valueOf(hoursScheduled));
 
-      worked = shiftRepository.findByTempid(tempid);
+      worked = shiftRepository.findByTempidAndDates(tempid, Timestamp.valueOf(thisPastSunday));
       double hoursWorked = 0.0;
       for(Shift sh : worked){
 
@@ -321,7 +323,6 @@ public class ShiftServiceImpl implements ShiftService {
         hoursWorked += Minutes.minutesBetween(start, end).getMinutes() / 60;
       }
       history.setHoursWorked(String.valueOf(hoursWorked));
-
 
     } catch (Exception e) {
       logger.error("Error getting historicals for tempid: "+ tempid, e);

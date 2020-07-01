@@ -138,6 +138,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   updateFC = new FormControl('', [
     Validators.required, Validators.pattern('^[0-9]*$')
   ]);
+  pinFC = new FormControl('', [
+    Validators.required, Validators.maxLength(6),
+    Validators.minLength(6), Validators.pattern('205992')
+  ]);
   tempList: Temp[] = [];
   shiftList: Shift[] = [];
   dtoShiftList: Shift[] = [];
@@ -338,8 +342,9 @@ selectAll(e) {
   }
 
   UpdateShift() {
-    this.InvalidClockResp = false;
-    if (this.updateFC.invalid) {
+    this.InvalidUpdateResp = false;
+    if (this.updateFC.invalid || this.pinFC.invalid) {
+      this.InvalidUpdateResp = true;
       return;
     }
     this.apiService.get(this.config.shifts_url + '/' + this.updateFC.value)
@@ -356,8 +361,10 @@ selectAll(e) {
   }
 
   onNoClick(): void {
-    this.modalRef.hide();
+    this.updateFC.setValue('');
+    this.pinFC.setValue('');
     this.showSessionUpdate = false;
+    this.modalRef.hide();
   }
 
   onRangeClick(): void {
@@ -396,6 +403,8 @@ selectAll(e) {
 
   HandleShiftUpdateError(error: any) {
     // this.modalRef.hide();
+    this.InvalidUpdateResp = true;
+    this.showSessionUpdate = false;
     if (error.status === 400) {
       this.InvalidUpdateResp = true;
     } else if ( error.status === 200) {
