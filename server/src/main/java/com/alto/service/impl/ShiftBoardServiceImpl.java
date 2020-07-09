@@ -163,8 +163,8 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     TempResponse tempHcs = null;
     ShiftBoardRecord record = new ShiftBoardRecord();
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&orderId=$orderId&resultType=json";
-    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&tempIdIn="+request.getTempId()+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=open&orderId=$orderId&resultType=json";
+    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=January2003!&tempIdIn="+request.getTempId()+"&resultType=json";
 
     getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
 

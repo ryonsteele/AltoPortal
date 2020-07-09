@@ -111,7 +111,7 @@ public class ShiftServiceImpl implements ShiftService {
     boolean checkout = true;
     ShiftResponse hcsFound = null;
     Shift found = shiftRepository.findByOrderid(req.getOrderid());
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=lesliekahn&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",req.getTempid());
     getShiftUrl = getShiftUrl.replace("$orderId",req.getOrderid());
 
@@ -184,7 +184,7 @@ public class ShiftServiceImpl implements ShiftService {
     Shift saveShift = new Shift();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",request.getTempId().toString());
     getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
     try {
@@ -243,7 +243,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> results = new ArrayList<>();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(2).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(2).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -285,7 +285,7 @@ public class ShiftServiceImpl implements ShiftService {
     }
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
 
     RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -334,7 +334,7 @@ public class ShiftServiceImpl implements ShiftService {
 	logger.debug("Getting Open Shifts Request Begin: "+ tempid);
     List<ShiftResponse> resultsOpens = new ArrayList<>();
     //todo externalize
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=rsteele&password=altoApp1!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
+    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     getOpensUrl = getOpensUrl.replace("$tempId",tempid);
 
     RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -511,7 +511,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     ClientResponse client = null;
     ClientAddressResponse addy = new ClientAddressResponse();
-    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=rsteele&password=altoApp1!&clientIdIn="+clientid+"&resultType=json";
+    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=lesliekahn&password=January2003!&clientIdIn="+clientid+"&resultType=json";
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     try {
@@ -545,7 +545,7 @@ public class ShiftServiceImpl implements ShiftService {
     ClientResponse client = null;
     List<GeoCodeResponse> geoList = new ArrayList<>();
 
-    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=rsteele&password=altoApp1!&clientIdIn="+request.getClientId()+"&resultType=json";
+    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=lesliekahn&password=January2003!&clientIdIn="+request.getClientId()+"&resultType=json";
     String getCoordsURL = "https://us1.locationiq.com/v1/search.php?key=01564e14da0703&q=$searchstring&format=json";
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
@@ -603,7 +603,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<Sessions> results = new ArrayList<>();
     List<Shift> shifts = new ArrayList<>();
     //todo externalize
-    String getActiveTempsUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=rsteele&password=altoApp1!&statusIn=Active&resultType=json";
+    String getActiveTempsUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=January2003!&statusIn=Active&resultType=json";
 
     try {
 

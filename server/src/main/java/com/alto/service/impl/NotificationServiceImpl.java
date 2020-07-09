@@ -74,8 +74,8 @@ public class NotificationServiceImpl implements NotificationService {
     sb.append(" <requestXmlString xsi:type=\"xsd:string\">");
     sb.append(" <![CDATA[ ");
     sb.append(" <clearviewRequest>");
-    sb.append(" <username>rsteele</username>");
-    sb.append(" <password>altoApp1!</password>");
+    sb.append(" <username>lesliekahn</username>");
+    sb.append(" <password>January2003!</password>");
     sb.append(" <action>insertTempCandidate</action>");
     sb.append(" <resultType>xml</resultType>");
     sb.append(" <tempRecords>");
