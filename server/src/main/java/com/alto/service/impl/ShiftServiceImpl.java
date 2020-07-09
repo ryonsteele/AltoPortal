@@ -431,6 +431,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     //filter based on home region compared against shift region
     for(ShiftResponse shift : openShifts) {
+      if(shift == null || shift.getRegionName() == null) continue;
       switch(shift.getRegionName())
       {
         case CINCY_REGION_TEMP_NAME:
