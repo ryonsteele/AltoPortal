@@ -137,14 +137,12 @@ public class ShiftServiceImpl implements ShiftService {
 
       if(hcsFound == null || hcsFound.getOrderId() == null ||
               (!hcsFound.getStatus().equalsIgnoreCase("open") && !hcsFound.getStatus().equalsIgnoreCase("filled")) ){
+        logger.warn("Invalid Manual Clock in operation");
         return new ResponseEntity("invalid", HttpStatus.BAD_REQUEST);
-        //todo logger
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
-      //todo logger
-      //LOGGER.error("Error getting Embed URL and Token", e);
+      logger.error("Error Manual clock in: ", e);
     }
 
     found.setClientId(hcsFound.getClientId());
@@ -243,7 +241,7 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> results = new ArrayList<>();
 
     //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(2).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(1).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -267,39 +265,31 @@ public class ShiftServiceImpl implements ShiftService {
 
   public Historicals getHistoricals(String tempid){
     List<ShiftResponse> results = new ArrayList<>();
+    List<ShiftResponse> finalResults = new ArrayList<>();
     Historicals history = new Historicals();
     List<Shift> worked = new ArrayList<>();
     LocalDateTime nextSaturday;
     LocalDateTime thisPastSunday;
 
     LocalDateTime today = LocalDateTime.now().with(LocalTime.MIDNIGHT);
-    if(today.getDayOfWeek() != SATURDAY) {
-       nextSaturday = today.with(next(SATURDAY));
-    }else{
-      nextSaturday = today;
-    }
-    if(today.getDayOfWeek() != SUNDAY) {
-       thisPastSunday = today.with(previous(SUNDAY));
-    }else{
-      thisPastSunday =today;
-    }
+    if(today.getDayOfWeek() != SATURDAY) { nextSaturday = today.with(next(SATURDAY));
+    }else{ nextSaturday = today; }
+
+    if(today.getDayOfWeek() != SUNDAY) { thisPastSunday = today.with(previous(SUNDAY));
+    }else{ thisPastSunday =today; }
 
     //todo externalize
     String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid);
-
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     try {
       String result = restTemplate.getForObject(getShiftUrl, String.class);
-
       Gson gson = new Gson(); // Or use new GsonBuilder().create();
       Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
 
       results = gson.fromJson(result, userListType);
-      if(results == null){
-        results = new ArrayList<>();
-      }
+      if(results == null){ results = new ArrayList<>(); }
       history.setDateWindowBegin(thisPastSunday.toString());
       history.setDateWindowEnd(nextSaturday.toString());
 
@@ -308,24 +298,42 @@ public class ShiftServiceImpl implements ShiftService {
 
         DateTime start = new DateTime( sh.getShiftStartTime() ) ;
         DateTime end = new DateTime( sh.getShiftEndTime() ) ;
-
         hoursScheduled += Minutes.minutesBetween(start, end).getMinutes() / 60;
       }
       history.setHoursScheduled(String.valueOf(hoursScheduled));
-
       worked = shiftRepository.findByTempidAndDates(tempid, Timestamp.valueOf(thisPastSunday));
       double hoursWorked = 0.0;
       for(Shift sh : worked){
 
         DateTime start = new DateTime(sh.getShiftStartTimeActual());
         DateTime end = new DateTime( sh.getShiftEndTimeActual() ) ;
-
         hoursWorked += Minutes.minutesBetween(start, end).getMinutes() / 60;
       }
       history.setHoursWorked(String.valueOf(hoursWorked));
-
     } catch (Exception e) {
       logger.error("Error getting historicals for tempid: "+ tempid, e);
+    }
+
+    String getHistShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(14).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    getHistShiftUrl = getHistShiftUrl.replace("$tempId",tempid);
+    restTemplate = new RestTemplateBuilder().build();
+
+    try {
+      String result = restTemplate.getForObject(getHistShiftUrl, String.class);
+      Gson gson = new Gson(); // Or use new GsonBuilder().create();
+      Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
+
+      results = gson.fromJson(result, userListType);
+      if(results == null){ results = new ArrayList<>(); }
+
+      results.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
+      for(ShiftResponse sh : results){
+        Shift comp = shiftRepository.findByOrderid(sh.getOrderId());
+        if(comp != null && comp.getShiftEndTimeActual() != null) finalResults.add(sh);
+      }
+      history.setShifts(finalResults);
+    } catch (Exception e) {
+      logger.error("Error getting scheduled shifts for tempid: "+ tempid, e);
     }
     return history;
   }
