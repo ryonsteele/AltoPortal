@@ -19,8 +19,8 @@ logging:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    username: ENC(NrPv9YU9G8T5e58NE5X3iBeQCSV5qaDC)
+    password: ENC(NrPv9YU9G8T5e58NE5X3iBeQCSV5qaDC)
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5
@@ -44,3 +44,12 @@ healthcaresource:
   username: ENC(P67NoS4V7URgTX5NlJe/i3e6dwfM50O5)
   password: ENC(Vo8ZROdAkOhnaz4p6gN7On/b/twUfgHC)
   baseurl: https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=
+  locationUrl: https://us1.locationiq.com/v1/search.php?key=01564e14da0703&q=$searchstring&format=json
+  droidFCMKey: ENC(9WFHDybm43GiNKKazgVSbcrVRlqp7v6WAinuBxTzoGP5vsJWlUNkYxJ75+zQRXL1AH5JDFyPIC/gei1qNmQZ23woUm83ZjkgwlfhUUuL5Cj/KLurEw3dBs6fC/+8O6V22mE8Q5FnnCQ5U4lvYPMkzUP+bcvt/j89SXXsqtsNYJ4b1ZV5UjvwtORebN6pkpTqXOs5GFsHHAmNRr+OYgB6DuGjzd3Ms+0M)
+
+email:
+  host: 192.168.1.10
+  username: ENC(45MzspRXLNx65tyVDATrNQ==)
+  password: ENC(O2KvGYoof46JPxqUzsr3bA==)
+  port: 25
+  debug: true

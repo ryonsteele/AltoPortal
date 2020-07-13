@@ -14,20 +14,23 @@ public class MailConfiguration {
     @Autowired
     private Environment env;
 
+    @Autowired
+    EmailConfiguration emailConfiguration;
+
     @Bean
     public JavaMailSender getMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//todo externalize
-        mailSender.setHost("192.168.1.10");
-        mailSender.setPort(25);
-        mailSender.setUsername("webapps");
-        mailSender.setPassword("W3b@pps");
+
+        mailSender.setHost(emailConfiguration.getHost());
+        mailSender.setPort(emailConfiguration.getPort());
+        mailSender.setUsername(emailConfiguration.getUsername());
+        mailSender.setPassword(emailConfiguration.getPassword());
 
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.starttls.enable", "true");
         javaMailProperties.put("mail.smtp.auth", "true");
         javaMailProperties.put("mail.transport.protocol", "smtp");
-        javaMailProperties.put("mail.debug", "true");
+        javaMailProperties.put("mail.debug", emailConfiguration.getDebug());
 
         mailSender.setJavaMailProperties(javaMailProperties);
         return mailSender;

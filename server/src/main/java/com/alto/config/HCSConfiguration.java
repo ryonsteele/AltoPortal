@@ -12,6 +12,8 @@ public class HCSConfiguration {
     private String username;
     private String password;
     private String baseurl;
+    private String locationUrl;
+    private String droidFCMKey;
 
 
 
@@ -39,5 +41,21 @@ public class HCSConfiguration {
 
     public void setBaseurl(String baseurl) {
         this.baseurl = baseurl;
+    }
+
+    public String getLocationUrl() {
+        return locationUrl;
+    }
+
+    public void setLocationUrl(String locationUrl) {
+        this.locationUrl = locationUrl;
+    }
+
+    public String getDroidFCMKey() {
+        return droidFCMKey;
+    }
+
+    public void setDroidFCMKey(String droidFCMKey) {
+        this.droidFCMKey = droidFCMKey;
     }
 }

@@ -1,6 +1,7 @@
 package com.alto.service.impl;
 
 
+import com.alto.config.HCSConfiguration;
 import com.alto.model.*;
 import com.alto.model.requests.ClockRequest;
 import com.alto.model.requests.PushMessageRequest;
@@ -89,6 +90,8 @@ public class ShiftServiceImpl implements ShiftService {
   UserPreferencesRepository userPreferencesRepository;
   @Autowired
   MessageRepository messageRepository;
+  @Autowired
+  HCSConfiguration hcsConfiguration;
 
 
   final static int BREAK_START = 1;
@@ -111,9 +114,12 @@ public class ShiftServiceImpl implements ShiftService {
     boolean checkout = true;
     ShiftResponse hcsFound = null;
     Shift found = shiftRepository.findByOrderid(req.getOrderid());
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=lesliekahn&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
-    getShiftUrl = getShiftUrl.replace("$tempId",req.getTempid());
-    getShiftUrl = getShiftUrl.replace("$orderId",req.getOrderid());
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",req.getTempid())
+                  .replace("$orderId",req.getOrderid())
+                  .replace("$username", hcsConfiguration.getUsername())
+                  .replace("$password", hcsConfiguration.getPassword());
+
 
     if(found == null){
       found = new Shift();
@@ -181,10 +187,11 @@ public class ShiftServiceImpl implements ShiftService {
     ShiftResponse started = null;
     Shift saveShift = new Shift();
 
-    //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
-    getShiftUrl = getShiftUrl.replace("$tempId",request.getTempId().toString());
-    getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",request.getTempId().toString())
+            .replace("$orderId",request.getOrderId())
+            .replace("$username", hcsConfiguration.getUsername())
+            .replace("$password", hcsConfiguration.getPassword());
     try {
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -240,9 +247,10 @@ public class ShiftServiceImpl implements ShiftService {
   public List<ShiftResponse> getScheduled(String tempid){
     List<ShiftResponse> results = new ArrayList<>();
 
-    //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(1).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
-    getShiftUrl = getShiftUrl.replace("$tempId",tempid);
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(1).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",tempid)
+                  .replace("$username", hcsConfiguration.getUsername())
+                  .replace("$password", hcsConfiguration.getPassword());
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
 
@@ -278,9 +286,11 @@ public class ShiftServiceImpl implements ShiftService {
     if(today.getDayOfWeek() != SUNDAY) { thisPastSunday = today.with(previous(SUNDAY));
     }else{ thisPastSunday =today; }
 
-    //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
-    getShiftUrl = getShiftUrl.replace("$tempId",tempid);
+
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$tempId",tempid)
+                  .replace("$username", hcsConfiguration.getUsername())
+                  .replace("$password", hcsConfiguration.getPassword());
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     try {
@@ -314,8 +324,10 @@ public class ShiftServiceImpl implements ShiftService {
       logger.error("Error getting historicals for tempid: "+ tempid, e);
     }
 
-    String getHistShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(14).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
-    getHistShiftUrl = getHistShiftUrl.replace("$tempId",tempid);
+    String getHistShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(14).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    getHistShiftUrl = getHistShiftUrl.replace("$tempId",tempid)
+                      .replace("$username", hcsConfiguration.getUsername())
+                      .replace("$password", hcsConfiguration.getPassword());
     restTemplate = new RestTemplateBuilder().build();
 
     try {
@@ -341,9 +353,11 @@ public class ShiftServiceImpl implements ShiftService {
   public List<ShiftResponse> getOpens(String tempid){
 	logger.debug("Getting Open Shifts Request Begin: "+ tempid);
     List<ShiftResponse> resultsOpens = new ArrayList<>();
-    //todo externalize
-    String getOpensUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
-    getOpensUrl = getOpensUrl.replace("$tempId",tempid);
+
+    String getOpensUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
+    getOpensUrl = getOpensUrl.replace("$tempId",tempid)
+                  .replace("$username", hcsConfiguration.getUsername())
+                  .replace("$password", hcsConfiguration.getPassword());
 
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
@@ -519,7 +533,10 @@ public class ShiftServiceImpl implements ShiftService {
 
     ClientResponse client = null;
     ClientAddressResponse addy = new ClientAddressResponse();
-    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=lesliekahn&password=January2003!&clientIdIn="+clientid+"&resultType=json";
+    String getClientUrl = hcsConfiguration.getBaseurl() + "getClients&username=$username&password=$password&clientIdIn=$clientId&resultType=json";
+    getClientUrl = getClientUrl.replace("$username", hcsConfiguration.getUsername())
+                   .replace("$password", hcsConfiguration.getPassword())
+                   .replace("$clientId", clientid);
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     try {
@@ -542,7 +559,7 @@ public class ShiftServiceImpl implements ShiftService {
         addy.setCounty(client.getCounty());
       }
 
-    } catch (Exception e) { //todo logger
+    } catch (Exception e) {
       logger.error("Error getting client record from HCS", e);
     }
     return addy;
@@ -553,8 +570,11 @@ public class ShiftServiceImpl implements ShiftService {
     ClientResponse client = null;
     List<GeoCodeResponse> geoList = new ArrayList<>();
 
-    String getClientUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getClients&username=lesliekahn&password=January2003!&clientIdIn="+request.getClientId()+"&resultType=json";
-    String getCoordsURL = "https://us1.locationiq.com/v1/search.php?key=01564e14da0703&q=$searchstring&format=json";
+    String getClientUrl = hcsConfiguration.getBaseurl() + "getClients&username=$username&password=$password&clientIdIn=$clientId&resultType=json";
+    getClientUrl = getClientUrl.replace("$username", hcsConfiguration.getUsername())
+            .replace("$password", hcsConfiguration.getPassword())
+            .replace("$clientId", request.getClientId());
+    String getCoordsURL = hcsConfiguration.getLocationUrl();
     RestTemplate restTemplate = new RestTemplateBuilder().build();
 
 
@@ -610,9 +630,10 @@ public class ShiftServiceImpl implements ShiftService {
     List<TempResponse>  tempHcs = null;
     List<Sessions> results = new ArrayList<>();
     List<Shift> shifts = new ArrayList<>();
-    //todo externalize
-    String getActiveTempsUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=January2003!&statusIn=Active&resultType=json";
 
+    String getActiveTempsUrl = hcsConfiguration.getBaseurl() +  "getTemps&username=$username&password=$password&statusIn=Active&resultType=json";
+    getActiveTempsUrl = getActiveTempsUrl.replace("$username", hcsConfiguration.getUsername())
+            .replace("$password", hcsConfiguration.getPassword());
     try {
 
       SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("E MMM dd yyyy");
@@ -671,13 +692,12 @@ public class ShiftServiceImpl implements ShiftService {
         sess.setBreaks(s.getBreaks());
 
         results.add(sess);
-
       }
-        //todo else log no matching temp found for shift
+      logger.warn("No matching temp from HCS for session record orderid:" + s.getOrderid());
     }
     }catch(Exception e){
         logger.error("Error generating session data", e);
-      }
+    }
 
     return results;
   }
@@ -746,7 +766,7 @@ public class ShiftServiceImpl implements ShiftService {
   private boolean sendFMSNotigication(String deviceToken, String messg) {
 
     try {
-      String androidFcmKey = "AAAAiJJmHX4:APA91bGFT2PxR2V8tJZr0JN7PSKVXmCR9BRnhCAR5-bpWGbcAnDdgNla16CUvJvWiGDY8n57YLnOLTcsDVwGC9nYXkH3VGoUm3_vfPqxXENzOgi3JRQRjP_RfbP-_84QCKjwoUO5Lv_l";
+      String androidFcmKey = hcsConfiguration.getDroidFCMKey();
       String androidFcmUrl = "https://fcm.googleapis.com/fcm/send";
 
       RestTemplate restTemplate = new RestTemplate();
@@ -772,41 +792,5 @@ public class ShiftServiceImpl implements ShiftService {
       return false;
     }
     return true;
-  }
-
-  private void sendAPNSNotification(String deviceToken, String messg){
-
-    try {
-
-//// See documentation on defining a message payload.
-//      Message message = Message.builder()
-//              .putData("score", "850")
-//              .putData("time", "2:45")
-//              .setToken(deviceToken)
-//              .build();
-//
-//// Send a message to the device corresponding to the provided
-//// registration token.
-//      String response = FirebaseMessaging.getInstance().send(message);
-//// Response is a message ID string.
-//      System.out.println("Successfully sent message: " + response);
-
-
-      ApnsService service;
-
-      ClassLoader classLoader = new ShiftServiceImpl().getClass().getClassLoader();
-
-      File file = new File(classLoader.getResource("apns.p12").getFile());
-      InputStream targetStream = new FileInputStream(file);
-
-      service = APNS.newService().withCert(targetStream, "altoapp")
-                .withProductionDestination().build();
-
-      String payload = APNS.newPayload().customField("customData",messg)
-              .alertBody("Message").build();
-      service.push(Utilities.encodeHex(deviceToken.getBytes()), payload);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 }

@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.alto</groupId>
-	<artifactId>angular-spring-starter</artifactId>
+	<artifactId>alto-api</artifactId>
 	<version>0.1.1</version>
 	<packaging>jar</packaging>
 
-	<name>angular-spring-starter</name>
+	<name>alto-api</name>
 	<description>The backend server for Angular7 AltoPortal and AltoStaffer</description>
 
 	<parent>

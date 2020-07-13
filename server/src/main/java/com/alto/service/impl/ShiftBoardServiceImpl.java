@@ -1,6 +1,8 @@
 package com.alto.service.impl;
 
 
+import com.alto.config.HCSConfiguration;
+import com.alto.exception.InternalServerException;
 import com.alto.model.*;
 import com.alto.model.requests.ConfirmationRequest;
 import com.alto.model.requests.InterestRequest;
@@ -42,6 +44,9 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
   @Autowired
   private ShiftRepository shiftRepository;
+
+  @Autowired
+  HCSConfiguration hcsConfiguration;
 
   @Override
   public List<ShiftBoardRecord> findAllActive(){
@@ -162,11 +167,16 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     ShiftResponse started = null;
     TempResponse tempHcs = null;
     ShiftBoardRecord record = new ShiftBoardRecord();
-    //todo externalize
-    String getShiftUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getOrders&username=lesliekahn&password=January2003!&status=open&orderId=$orderId&resultType=json";
-    String getTempUrl = "https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=getTemps&username=lesliekahn&password=January2003!&tempIdIn="+request.getTempId()+"&resultType=json";
 
-    getShiftUrl = getShiftUrl.replace("$orderId",request.getOrderId());
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open&orderId=$orderId&resultType=json";
+    getShiftUrl = getShiftUrl.replace("$username", hcsConfiguration.getUsername())
+                  .replace("$password", hcsConfiguration.getPassword())
+                  .replace("$orderId",request.getOrderId());
+    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&tempIdIn=$tempId&resultType=json";
+    getTempUrl = getTempUrl.replace("$username", hcsConfiguration.getUsername())
+            .replace("$password", hcsConfiguration.getPassword())
+            .replace("$tempId",String.valueOf(request.getTempId()));
+
 
       try {
 
@@ -186,12 +196,12 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
 
       } catch (Exception e) {
-        //todo handle this
         logger.error("Error calling HCS for shift and temp details ", e);
       }
 
       if(started == null){
-        return null; //todo handle this
+        logger.error("No result for order from HCS. Temp that requested: "+ request.getTempId());
+        throw new InternalServerException("No result for order from HCS", "");
       }
       record.setClientName(started.getClientName());
       record.setOrderid(request.getOrderId());

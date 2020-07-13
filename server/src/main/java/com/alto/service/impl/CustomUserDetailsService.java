@@ -1,10 +1,7 @@
 package com.alto.service.impl;
 
-import com.alto.config.InitRoot;
 import com.alto.model.User;
 import com.alto.repository.UserRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by fan.jin on 2016-10-31.
- */
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

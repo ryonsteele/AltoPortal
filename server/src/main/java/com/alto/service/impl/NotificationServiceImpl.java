@@ -1,6 +1,7 @@
 package com.alto.service.impl;
 
 
+import com.alto.config.HCSConfiguration;
 import com.alto.model.requests.ApplyRequest;
 import com.alto.model.requests.SentHomeRequest;
 import com.alto.repository.CandidateRepository;
@@ -27,6 +28,8 @@ public class NotificationServiceImpl implements NotificationService {
 
   @Autowired
   CandidateRepository candidateRepository;
+  @Autowired
+  HCSConfiguration hcsConfiguration;
 
   @Override
   public boolean sendSentHomeEmail(SentHomeRequest request) {
@@ -74,8 +77,8 @@ public class NotificationServiceImpl implements NotificationService {
     sb.append(" <requestXmlString xsi:type=\"xsd:string\">");
     sb.append(" <![CDATA[ ");
     sb.append(" <clearviewRequest>");
-    sb.append(" <username>lesliekahn</username>");
-    sb.append(" <password>January2003!</password>");
+    sb.append(" <username>"+hcsConfiguration.getUsername()+"</username>");
+    sb.append(" <password>"+hcsConfiguration.getPassword()+"</password>");
     sb.append(" <action>insertTempCandidate</action>");
     sb.append(" <resultType>xml</resultType>");
     sb.append(" <tempRecords>");
@@ -149,8 +152,8 @@ public class NotificationServiceImpl implements NotificationService {
 //    sb.append(" <requestXmlString xsi:type=\"xsd:string\">");
 //    sb.append(" <![CDATA[ ");
 //    sb.append(" <clearviewRequest>");
-//    sb.append(" <username>rsteele</username>");
-//    sb.append(" <password>altoApp1!</password>");
+//    sb.append(" <username></username>");
+//    sb.append(" <password></password>");
 //    sb.append(" <action>insertTempCandidate</action>");
 //    sb.append(" <resultType>xml</resultType>");
 //    sb.append(" <tempRecords>");
@@ -191,7 +194,6 @@ public class NotificationServiceImpl implements NotificationService {
 //    } catch (Exception e) {
 //      e.printStackTrace();
 //      return false;
-//      //todo logger
 //      //LOGGER.error("Error getting Embed URL and Token", e);
 //    }
 

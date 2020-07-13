@@ -229,7 +229,6 @@ public class AppUserServiceImpl implements AppUserService {
     userRequest.setUsername(username);
 
     //todo implement sessionkey
-    //todo externalize
     String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailLike=$email&statusIn=Active&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim()).replace("$username", hcsConfiguration.getUsername()).replace("$password", hcsConfiguration.getPassword());
     try {
