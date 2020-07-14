@@ -32,9 +32,12 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.*;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -182,6 +185,8 @@ public class ShiftServiceImpl implements ShiftService {
     return new ResponseEntity("success", HttpStatus.OK);
   }
 
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   public ResponseEntity addShift(ShiftRequest request){
 	logger.debug("Clock In Request began: "+ request.getUsername());
     ShiftResponse started = null;
@@ -212,6 +217,7 @@ public class ShiftServiceImpl implements ShiftService {
 
       } catch (Exception e) {
         logger.error("Error calling HCS for Shift Addition", e);
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       //save to repo
@@ -244,6 +250,8 @@ public class ShiftServiceImpl implements ShiftService {
     return new ResponseEntity(saveShift, HttpStatus.OK);
   }
 
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   public List<ShiftResponse> getScheduled(String tempid){
     List<ShiftResponse> results = new ArrayList<>();
 
@@ -271,6 +279,8 @@ public class ShiftServiceImpl implements ShiftService {
     return results;
   }
 
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   public Historicals getHistoricals(String tempid){
     List<ShiftResponse> results = new ArrayList<>();
     List<ShiftResponse> finalResults = new ArrayList<>();
@@ -350,6 +360,8 @@ public class ShiftServiceImpl implements ShiftService {
     return history;
   }
 
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   public List<ShiftResponse> getOpens(String tempid){
 	logger.debug("Getting Open Shifts Request Begin: "+ tempid);
     List<ShiftResponse> resultsOpens = new ArrayList<>();
@@ -378,6 +390,7 @@ public class ShiftServiceImpl implements ShiftService {
     logger.debug("Getting Open Shifts Request End: "+ tempid);
     return resultsOpens;
   }
+
 
   public ResponseEntity updateShift(ShiftRequest request){
 	logger.debug("Clock Out Request began: "+ request.getUsername());
@@ -529,6 +542,8 @@ public class ShiftServiceImpl implements ShiftService {
     return results;
   }
 
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   public ClientAddressResponse getClient (String clientid){
 
     ClientResponse client = null;
@@ -564,7 +579,8 @@ public class ShiftServiceImpl implements ShiftService {
     }
     return addy;
   }
-
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   private Boolean checkGeoFence(ShiftRequest request){
 
     ClientResponse client = null;

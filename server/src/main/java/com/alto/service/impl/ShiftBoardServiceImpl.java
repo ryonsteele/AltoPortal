@@ -21,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -161,7 +164,10 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     return finale;
   }
 
+
   @Override
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   public ShiftBoardRecord saveRecord(InterestRequest request){
 
     ShiftResponse started = null;
@@ -176,8 +182,6 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
     getTempUrl = getTempUrl.replace("$username", hcsConfiguration.getUsername())
             .replace("$password", hcsConfiguration.getPassword())
             .replace("$tempId",String.valueOf(request.getTempId()));
-
-
       try {
 
         RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -197,6 +201,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
       } catch (Exception e) {
         logger.error("Error calling HCS for shift and temp details ", e);
+        throw new InternalServerException("Error calling HCS for shift and temp details", "");
       }
 
       if(started == null){

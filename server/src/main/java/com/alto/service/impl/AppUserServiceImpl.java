@@ -23,11 +23,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -222,6 +225,8 @@ public class AppUserServiceImpl implements AppUserService {
     return userPreferencesRepository.findByTempid(Long.parseLong(tempid));
   }
 
+  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
+          backoff = @Backoff(delay = 1000, multiplier = 2))
   private AppUserRequest getTempByUsername(String username){
 
     TempResponse started = null;
