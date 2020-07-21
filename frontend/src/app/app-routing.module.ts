@@ -11,6 +11,7 @@ import {SignupComponent} from './signup';
 import {DashboardComponent} from './dashboard';
 import {AddUserComponent} from './add-user';
 import {AuditComponent} from './audit';
+import {RemoveUserComponent} from './remove';
 
 export const routes: Routes = [
   {
@@ -48,6 +49,11 @@ export const routes: Routes = [
     path: 'add-user',
     component: AddUserComponent,
     canActivate: [LoginGuard]
+  },
+  {
+    path: 'remove-user',
+    component: RemoveUserComponent,
+    canActivate: [AdminGuard]
   },
   {
     path: 'admin',

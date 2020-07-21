@@ -35,6 +35,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -280,6 +282,13 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public List<MessageAudit> findAllMessages(){
     return messageRepository.findAll();
+  }
+
+  @Override
+  public List<MessageAudit> findAllMessagesByTempID(String tempId){
+    Date now = new Date();
+    Date sevenDaysAgo = new Date(now.getTime() - (7 * 86400000));
+    return messageRepository.findAllByRecipient(tempId, sevenDaysAgo.toString());
   }
 
 }

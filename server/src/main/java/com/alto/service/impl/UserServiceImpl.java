@@ -16,9 +16,6 @@ import com.alto.model.requests.UserRequest;
 import com.alto.service.AuthorityService;
 import com.alto.service.UserService;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @Service
 public class UserServiceImpl implements UserService {

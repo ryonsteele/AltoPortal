@@ -22,6 +22,7 @@ import {SignupComponent} from './signup/signup.component';
 import {AddUserComponent} from './add-user/add-user.component';
 import {AngularMaterialModule} from './angular-material/angular-material.module';
 import {DashboardComponent} from './dashboard/dashboard.component';
+import {RemoveUserComponent} from './remove/remove-user.component';
 import {AuditComponent} from './audit/audit.component';
 import {MatIconRegistry,
   MatTableModule,
@@ -50,7 +51,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     AuditComponent,
     SignupComponent,
     MyModalComponent,
-    AddUserComponent
+    AddUserComponent,
+    RemoveUserComponent
   ],
   entryComponents: [MyModalComponent],
   imports: [

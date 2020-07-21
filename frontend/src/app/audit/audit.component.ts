@@ -10,14 +10,14 @@ import {MatSort} from "@angular/material/sort";
 
 export class MessageAudit {
   user: string;
-  recipients: string;
-  success: boolean
+  recipient: string;
+  success: boolean;
   time: string;
   message: string;
 
   constructor(user: string, recipients: string, success: boolean, time: string, message: string) {
     this.user = user;
-    this.recipients = recipients;
+    this.recipient = recipients;
     this.success = success;
     this.time = time;
     this.message = message;
@@ -70,7 +70,7 @@ export class AuditComponent implements OnInit, OnDestroy {
 
   // User  Client  Shift  Location
   displayedColumns: string[] = ['name', 'user', 'tempid', 'client', 'orderid', 'confirmed', 'audit', 'time'];
-  usertableColumns: string[] = ['user', 'recipients', 'success', 'time', 'message'];
+  usertableColumns: string[] = ['user', 'recipient', 'success', 'time', 'message'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
   usersDataSource = new MatTableDataSource<MessageAudit>(this.tempList);
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
@@ -106,7 +106,7 @@ export class AuditComponent implements OnInit, OnDestroy {
 
     this.tempList = [];
     this.apiService.get(this.config.messages_url).pipe(
-      map((arr) => arr.map(x => new MessageAudit(x.username,  x.recipients, x.success, x.time, x.message)))).subscribe(lists => {
+      map((arr) => arr.map(x => new MessageAudit(x.username,  x.recipient, x.success, x.time, x.message)))).subscribe(lists => {
       lists.forEach(temp => {
         // console.log(temp.firstname);
         this.tempList.push(temp);

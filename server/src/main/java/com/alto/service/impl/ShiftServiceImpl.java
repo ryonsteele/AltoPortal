@@ -74,6 +74,11 @@ public class ShiftServiceImpl implements ShiftService {
   private final static  String DAYTON_REGION_TEMP_NAME ="Clinical Temp Dayton";
   private final static  String COLUMBUS_REGION_TEMP_ID ="30";
   private final static  String COLUMBUS_REGION_TEMP_NAME ="Clinical Temp Columbus";
+  private final static  String CLEVELAND_REGION_TEMP_NAME ="Clinical Temp Cleveland";
+  private final static  String AKRON_REGION_TEMP_NAME ="Clinical Temp Akron";
+  private final static  String TOLEDO_REGION_TEMP_NAME ="Clinical Temp Toledo";
+  private final static  String INDIANA_REGION_TEMP_NAME ="Clinical Temp Indiana";
+  private final static  String ALLIED_REGION_TEMP_NAME ="Allied Health";
   private final static  String MEDICAL_OFF_REGION_TEMP_NAME ="Medical Business Division";
   private final static  String CONTRACT_TRV_REGION_TEMP_NAME ="Clinical Contract Travel";
   private final static  String ALL_REGION_TEMP_ID ="27";
@@ -454,8 +459,6 @@ public class ShiftServiceImpl implements ShiftService {
     List<ShiftResponse> regionMatches = new ArrayList<>();
     List<String> userCerts = new ArrayList<>();
 
-    String region = prefs.getRegion();
-
     //Get certifications from user preferences
     if(prefs.getCerts() != null && !prefs.getCerts().isEmpty()){
       StringTokenizer tokenizer = new StringTokenizer(prefs.getCerts(), ",", false);
@@ -467,6 +470,10 @@ public class ShiftServiceImpl implements ShiftService {
     //filter based on home region compared against shift region
     for(ShiftResponse shift : openShifts) {
       if(shift == null || shift.getRegionName() == null) continue;
+      if(prefs.getRegion() == null || prefs.getRegion().contains("ALL Regions")){
+        regionMatches.add(shift);
+        continue;
+      }
       switch(shift.getRegionName())
       {
         case CINCY_REGION_TEMP_NAME:
@@ -478,14 +485,27 @@ public class ShiftServiceImpl implements ShiftService {
         case COLUMBUS_REGION_TEMP_NAME:
           if(prefs.getRegion() != null && prefs.getRegion().contains("Columbus")) regionMatches.add(shift);
           break;
+        case CLEVELAND_REGION_TEMP_NAME:
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Cleveland")) regionMatches.add(shift);
+          break;
+        case AKRON_REGION_TEMP_NAME:
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Akron")) regionMatches.add(shift);
+          break;
+        case INDIANA_REGION_TEMP_NAME:
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Indiana")) regionMatches.add(shift);
+          break;
+        case TOLEDO_REGION_TEMP_NAME:
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Toledo")) regionMatches.add(shift);
+          break;
+        case ALLIED_REGION_TEMP_NAME:
+          if(prefs.getRegion() != null && prefs.getRegion().contains("Allied")) regionMatches.add(shift);
+          break;
         case MEDICAL_OFF_REGION_TEMP_NAME:
           if(prefs.getRegion() != null && prefs.getRegion().contains("Medical Business")) regionMatches.add(shift);
           break;
         case CONTRACT_TRV_REGION_TEMP_NAME:
           if(prefs.getRegion() != null && prefs.getRegion().contains("Contract Travel")) regionMatches.add(shift);
           break;
-        default:
-          regionMatches.add(shift);
       }
     }
 
@@ -746,20 +766,15 @@ public class ShiftServiceImpl implements ShiftService {
 
   public void sendPushNotification(PushMessageRequest message){
 
-    MessageAudit auditor = new MessageAudit();
-    List<String> tempnames = new ArrayList<>();
-    if(message.getTemps().size() > 5){
-        tempnames.add("Too Many for Listing");
-    }
-      
-    auditor.setUsername(message.getAudit());
-    auditor.setMessage(message.getMsgBody());
-    auditor.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
+
     for(String tempid : message.getTemps()){
       AppUser user = appUserRepository.findByTempid(tempid);
-      if(message.getTemps().size() <= 5) {
-        tempnames.add(user.getFirstname() + " " + user.getLastname());
-      }
+
+      MessageAudit auditor = new MessageAudit();
+      auditor.setUsername(message.getAudit());
+      auditor.setMessage(message.getMsgBody());
+      auditor.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
+      auditor.setRecipient(tempid);
 
       if(user == null || user.getDevicetoken() == null ) continue;
 
@@ -773,10 +788,10 @@ public class ShiftServiceImpl implements ShiftService {
       }else{
         auditor.setSuccess(false);
       }
+      messageRepository.saveAndFlush(auditor);
     }
 
-    auditor.setRecipients(tempnames.stream().collect(Collectors.joining(",")));
-    messageRepository.saveAndFlush(auditor);
+
   }
 
   private boolean sendFMSNotigication(String deviceToken, String messg) {

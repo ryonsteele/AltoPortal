@@ -1,0 +1,30 @@
+<div class="content" fxLayout="row" fxLayoutAlign="center">
+  <mat-card elevation="5" fxFlex>
+    <mat-card-header>
+      <mat-card-title>
+        <h2>{{ title }}</h2>
+      </mat-card-title>
+      <mat-card-subtitle>
+        <h2>Alto Staffing Portal</h2>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p *ngIf="notification" [class]="notification.msgType">{{notification.msgBody}}</p>
+      <form (ngSubmit)="onSubmit()" *ngIf="!submitted" [formGroup]="form">
+        <mat-form-field>
+          <label>Username: </label>
+          <input formControlName="username" matInput type="email" required>
+        </mat-form-field>
+        <mat-form-field>
+          <label>Dashboard User? </label>
+          <input formControlName="usertype" type="checkbox" >
+        </mat-form-field>
+        <button [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Delete User</button>
+      </form>
+      <br>
+      <mat-spinner *ngIf="submitted" mode="indeterminate"></mat-spinner>
+      <br>
+      <hr>
+    </mat-card-content>
+  </mat-card>
+</div>

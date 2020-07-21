@@ -133,6 +133,12 @@ public class PublicController {
         return shiftService.getOpens(tempid);
     }
 
+    @RequestMapping( method = GET, value= "/messages/{tempid}")
+    public List<MessageAudit> getMessages(@PathVariable String tempid) {
+
+        return appUserService.findAllMessagesByTempID(tempid);
+    }
+
     @RequestMapping( method = POST, value= "/apply")
     public ResponseEntity<?> postApplication(@RequestBody ApplyRequest request) {
 

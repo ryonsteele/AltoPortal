@@ -16,8 +16,8 @@ public class MessageAudit implements Serializable {
   @Column(name = "username")
   private String username;
 
-  @Column(name = "recipients")
-  private String recipients;
+  @Column(name = "recipient")
+  private String recipient;
 
   @Column(name = "message")
   private String message;
@@ -48,12 +48,12 @@ public class MessageAudit implements Serializable {
     this.username = username;
   }
 
-  public String getRecipients() {
-    return recipients;
+  public String getRecipient() {
+    return recipient;
   }
 
-  public void setRecipients(String recipients) {
-    this.recipients = recipients;
+  public void setRecipient(String recipient) {
+    this.recipient = recipient;
   }
 
   public String getMessage() {

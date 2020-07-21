@@ -7,9 +7,6 @@ import {ConfigService, UserService} from "../service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {map} from "rxjs/operators";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import {HttpErrorResponse} from "@angular/common/http";
-import {AngularCsv} from "angular7-csv";
-import {Session} from "../my-modal/my-modal.component";
 import {DatePipe} from "@angular/common";
 import {MatSort} from "@angular/material/sort";
 
@@ -177,11 +174,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 selectAll(e) {
-   if(e.target.checked){
+   if (e.target.checked) {
 	   for (let item of this.tempList) {
          item.checked = true;
        }
-   }else{
+   } else {
 	   for (let item of this.tempList) {
          item.checked = false;
        }

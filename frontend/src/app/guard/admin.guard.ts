@@ -16,11 +16,11 @@ export class AdminGuard implements CanActivate {
     //   this.userService.initUser();
     // }
 
-      if (localStorage.getItem('currentUser')) {
-        return true;
-      } else {
-        return false;
-      }
+      // if (localStorage.getItem('currentUser')) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
 
 
      if (this.userService.currentUser) {
