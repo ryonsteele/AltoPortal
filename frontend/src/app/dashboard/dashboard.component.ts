@@ -348,7 +348,7 @@ selectAll(e) {
     }
     this.apiService.get(this.config.shifts_url + '/' + this.updateFC.value)
       .pipe(map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTimeActual, x.shiftEndTimeActual, x.orderid,
-        false, x.certs))).subscribe(data => {
+        false, x.certs, x.requesttime))).subscribe(data => {
         this.startDate = new Date(data.shiftstart);
         this.endDate = new Date(data.shiftend);
         this.showSessionUpdate = true;
