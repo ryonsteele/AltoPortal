@@ -2,10 +2,12 @@ package com.alto.service.impl;
 
 import com.alto.config.HCSConfiguration;
 import com.alto.model.AppUser;
+import com.alto.model.User;
 import com.alto.model.UserPreferences;
 import com.alto.model.requests.AppUserRequest;
 import com.alto.model.requests.PreferencesRequest;
 import com.alto.model.requests.ResetRequest;
+import com.alto.model.requests.UserRemoveRequest;
 import com.alto.model.response.MessageAudit;
 import com.alto.model.response.TempResponse;
 import com.alto.repository.AppUserRepository;
@@ -289,6 +291,18 @@ public class AppUserServiceImpl implements AppUserService {
     Date now = new Date();
     Date sevenDaysAgo = new Date(now.getTime() - (7 * 86400000));
     return messageRepository.findAllByRecipient(tempId, sevenDaysAgo.toString());
+  }
+
+  @Override
+  public ResponseEntity<?> removeUser(UserRemoveRequest userRequest) {
+
+    AppUser user = userRepository.findByUsernameEquals(userRequest.getUsername());
+    if(user == null){
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }else{
+      userRepository.delete(user);
+      return new ResponseEntity<>( HttpStatus.OK);
+    }
   }
 
 }

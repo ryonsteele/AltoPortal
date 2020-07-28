@@ -452,6 +452,7 @@ public class ShiftServiceImpl implements ShiftService {
   private List<ShiftResponse> pruneResults(String tempid, List<ShiftResponse> openShifts){
 
     UserPreferences prefs =  userPreferencesRepository.findByTempid(Long.parseLong(tempid));
+    openShifts.forEach(s -> s.setStatus(s.getStatus().toLowerCase()));
     if(prefs == null) return openShifts;
 
     List<ShiftResponse> results = new ArrayList<>();

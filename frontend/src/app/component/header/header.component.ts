@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService, UserService} from '../../service';
 import {Router} from '@angular/router';
 import {MyModalComponent} from "../../my-modal/my-modal.component";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-header',

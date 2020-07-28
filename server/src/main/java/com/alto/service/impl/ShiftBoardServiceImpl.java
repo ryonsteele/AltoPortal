@@ -99,7 +99,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       pushReq.setTemps(tempid);
       currRec.setActive(false);
       currRec.setAudit(rec.getAudit());
-      currRec.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
+      currRec.setActiontime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
       shiftService.sendPushNotification(pushReq);
       shiftBoardRepository.saveAndFlush(currRec);
     }
@@ -136,7 +136,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       if(currRec == null)  continue;
       currRec.setActive(false);
       currRec.setAudit(rec.getAudit());
-      currRec.setTime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
+      currRec.setActiontime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
       shiftBoardRepository.saveAndFlush(currRec);
 
       pushReq.setMsgBody("Interested Shift NOT CONFIRMED for shift starting: " + convertEastern(currRec.getShiftStartTime()) + " For: " + currRec.getClientName());
@@ -215,6 +215,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       record.setTempid(request.getTempId().toString());
       record.setConfirmed(false);
       record.setActive(true);
+      record.setRequesttime(new SimpleDateFormat("MM/dd/yyyy hh.mm a").format(new Date()));
       record.setUsername(request.getUsername());
       if(tempHcs != null) {
         record.setFullName(tempHcs.getFirstName() + " " + tempHcs.getLastName());

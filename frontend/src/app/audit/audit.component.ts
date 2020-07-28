@@ -25,26 +25,26 @@ export class MessageAudit {
 }
 
 export class Shift {
-  user: string;
   name: string;
   tempid: string;
   client: string;
   orderid: string;
   confirmed: boolean;
   audit: string;
-  time: string;
+  actiontime: string;
+  requesttime: string;
 
-  constructor(user: string, name: string, tempid: string, client: string, orderid: string,
-              confirmed: boolean, audit: string, time: string) {
+  constructor( name: string, tempid: string, client: string, orderid: string, confirmed: boolean,
+               audit: string, actiontime: string, requesttime: string) {
 
-    this.user = user;
     this.name = name;
     this.tempid = tempid;
     this.client = client;
     this.orderid = orderid;
     this.confirmed = confirmed;
     this.audit = audit;
-    this.time = time;
+    this.actiontime = actiontime;
+    this.requesttime = requesttime;
   }
 }
 
@@ -69,7 +69,7 @@ export class AuditComponent implements OnInit, OnDestroy {
   shiftList: Shift[] = [];
 
   // User  Client  Shift  Location
-  displayedColumns: string[] = ['name', 'user', 'tempid', 'client', 'orderid', 'confirmed', 'audit', 'time'];
+  displayedColumns: string[] = ['name', 'tempid', 'client', 'orderid', 'confirmed', 'audit', 'actiontime', 'requesttime'];
   usertableColumns: string[] = ['user', 'recipient', 'success', 'time', 'message'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
   usersDataSource = new MatTableDataSource<MessageAudit>(this.tempList);
@@ -90,10 +90,11 @@ export class AuditComponent implements OnInit, OnDestroy {
 
    this.shiftList = [];
    this.apiService.get(this.config.shifts_audit_url).pipe(
-      map((arr) => arr.map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.orderid,
-        x.confirmed, x.audit, x.time))))
+      map((arr) => arr.map(x => new Shift(x.fullName, x.tempid, x.clientName, x.orderid,
+        x.confirmed, x.audit, x.actiontime, x.requesttime))))
       .subscribe(lists => {
         lists.forEach(shift => {
+          console.log(shift);
           this.shiftList.push(shift);
         });
         this.shiftList.reverse();

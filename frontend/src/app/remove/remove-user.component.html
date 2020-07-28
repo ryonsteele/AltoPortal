@@ -11,14 +11,12 @@
     <mat-card-content>
       <p *ngIf="notification" [class]="notification.msgType">{{notification.msgBody}}</p>
       <form (ngSubmit)="onSubmit()" *ngIf="!submitted" [formGroup]="form">
-        <mat-form-field>
-          <label>Username: </label>
-          <input formControlName="username" matInput type="email" required>
-        </mat-form-field>
-        <mat-form-field>
-          <label>Dashboard User? </label>
-          <input formControlName="usertype" type="checkbox" >
-        </mat-form-field>
+          <label>Username:
+            <input formControlName="username" matInput type="email" required>
+          </label>
+          <label>Dashboard User?
+            <input formControlName="usertype" type="checkbox" class="mycheckbox">
+          </label>
         <button [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Delete User</button>
       </form>
       <br>

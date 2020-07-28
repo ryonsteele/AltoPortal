@@ -67,6 +67,11 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
   color: mat-color($candy-app-accent);
 }
 
+.custom-dialog-container {
+  width: 600px !important;
+}
+
+
 
 @include angular-material-theme($candy-app-theme);
 

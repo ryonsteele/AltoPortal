@@ -58,6 +58,18 @@
     <mat-cell *matCellDef="let element"> {{element.orderid}} </mat-cell>
   </ng-container>
 
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="requesttime">
+    <mat-header-cell *matHeaderCellDef> RequestTime </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.requesttime}} </mat-cell>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="actiontime">
+    <mat-header-cell *matHeaderCellDef> ActionTime </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.actiontime}} </mat-cell>
+  </ng-container>
+
   <!-- Action Column -->
   <ng-container matColumnDef="action">
     <mat-header-cell  *matHeaderCellDef > Action </mat-header-cell>

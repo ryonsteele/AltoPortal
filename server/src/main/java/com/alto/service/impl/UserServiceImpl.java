@@ -4,9 +4,14 @@ import java.util.List;
 
 import com.alto.model.Authority;
 import com.alto.model.User;
+import com.alto.model.UserAuthority;
 import com.alto.model.UserRoleName;
+import com.alto.model.requests.UserRemoveRequest;
+import com.alto.repository.UserAuthorityRepository;
 import com.alto.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private AuthorityService authService;
+
+  @Autowired
+  private UserAuthorityRepository userAuthorityRepository;
 
   public void resetCredentials() {
     List<User> users = userRepository.findAll();
@@ -68,6 +76,28 @@ public class UserServiceImpl implements UserService {
     user.setAuthorities(auth);
     this.userRepository.save(user);
     return user;
+  }
+
+  @Override
+  public ResponseEntity<?> removeUser(UserRemoveRequest userRequest) {
+
+    User user = userRepository.findByUsername(userRequest.getUsername());
+    if(user == null){
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }else{
+      List<UserAuthority> auth = userAuthorityRepository.findAllByUserid(user.getId());
+      if(auth == null){
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }else{
+        for(UserAuthority authority : auth) {
+          userAuthorityRepository.deleteById(authority.getId());
+        }
+        userAuthorityRepository.flush();
+      }
+      userRepository.deleteById(user.getId());
+      userRepository.flush();
+      return new ResponseEntity<>( HttpStatus.OK);
+    }
   }
 
 }

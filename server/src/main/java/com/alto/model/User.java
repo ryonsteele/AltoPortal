@@ -9,9 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.PERSIST;
+
 
 @Entity
 @Table(name = "USERS")
@@ -51,7 +51,7 @@ public class User implements UserDetails, Serializable {
 //  @OneToMany
 ////  @JoinTable(name = "user_authority",
 ////      joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+@ManyToMany( cascade={PERSIST, DETACH}, fetch = FetchType.EAGER)
 @JoinTable(name = "user_authority",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))

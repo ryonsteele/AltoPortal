@@ -110,6 +110,12 @@ export class ConfigService {
     return this._remove_url;
   }
 
+  private _remove_user_url = this._api_url + '/removeuser';
+
+  get remove_user_url(): string {
+    return this._remove_user_url;
+  }
+
   private _clock_url = this._api_url + '/shiftchange';
 
   get clock_url(): string {

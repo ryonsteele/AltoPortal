@@ -7,11 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.alto.exception.ResourceConflictException;
+import com.alto.model.requests.ConfirmationRequest;
+import com.alto.model.requests.UserRemoveRequest;
+import com.alto.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -27,6 +31,8 @@ public class UserController {
 
   @Autowired
   private UserService userService;
+  @Autowired
+  private AppUserService appUserService;
 
 
   @RequestMapping(method = GET, value = "/user/{userId}")
@@ -60,6 +66,17 @@ public class UserController {
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(ucBuilder.path("/api/user/{userId}").buildAndExpand(user.getId()).toUri());
     return new ResponseEntity<User>(user, HttpStatus.CREATED);
+  }
+
+  @RequestMapping(method = POST, value = "/removeuser")
+  //@PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> userremove(@RequestBody UserRemoveRequest userRequest) {
+
+    if(userRequest.getUsertype()){
+      return userService.removeUser(userRequest);
+    }else{
+      return appUserService.removeUser(userRequest);
+    }
   }
 
   /*

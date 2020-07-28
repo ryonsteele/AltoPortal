@@ -24,6 +24,7 @@ import {AngularMaterialModule} from './angular-material/angular-material.module'
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {RemoveUserComponent} from './remove/remove-user.component';
 import {AuditComponent} from './audit/audit.component';
+import {ModalDialogComponent} from './mat-dialog/mat-dialog.component';
 import {MatIconRegistry,
   MatTableModule,
   MatDialogModule,
@@ -52,9 +53,10 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     SignupComponent,
     MyModalComponent,
     AddUserComponent,
-    RemoveUserComponent
+    RemoveUserComponent,
+    ModalDialogComponent
   ],
-  entryComponents: [MyModalComponent],
+  entryComponents: [MyModalComponent, ModalDialogComponent],
   imports: [
     BrowserAnimationsModule,
     Md2DatepickerModule,

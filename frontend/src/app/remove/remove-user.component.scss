@@ -12,7 +12,8 @@ mat-card {
 
 }
 
-mat-input-container {
+
+.mat-input-container {
   display: block;
 }
 
@@ -20,6 +21,12 @@ mat-spinner {
   width: 25px;
   height: 25px;
   margin: 20px auto 0 auto;
+}
+
+.mycheckbox input[type="checkbox"]
+{
+  margin-left: 10px !important;
+  padding-left: 10px !important;
 }
 
 button {
@@ -46,7 +53,7 @@ button {
   mat-card {
     /* https://github.com/angular/flex-layout/issues/295 */
     display: block !important;
-    max-width: 999px;
+    //max-width: 999px;
   }
 
 }

@@ -57,9 +57,10 @@ export class Shift {
   confirmed: boolean;
   audit: string;
   certs: string;
+  requesttime: string;
 
   constructor(user: string, name: string, tempid: string, client: string,  shiftstart: string, shiftend: string, orderid: string,
-              confirmed: boolean, certs: string) {
+              confirmed: boolean, certs: string, requesttime: string) {
 
     this.user = user;
     this.name = name;
@@ -70,6 +71,7 @@ export class Shift {
     this.orderid = orderid;
     this.confirmed = confirmed;
     this.certs = certs;
+    this.requesttime = requesttime;
   }
 }
 
@@ -144,7 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dtoShiftList: Shift[] = [];
 
   // User  Client  Shift  Location
-  displayedColumns: string[] = ['name', 'tempid', 'tempcerts', 'client', 'shiftstart', 'shiftend', 'orderid', 'action'];
+  displayedColumns: string[] = ['name', 'tempid', 'tempcerts', 'client', 'shiftstart', 'shiftend', 'orderid', 'requesttime', 'action'];
   usertableColumns: string[] = ['checked', 'user', 'tempid', 'certs'];
   dataSource = new MatTableDataSource<Shift>(this.shiftList);
   usersDataSource = new MatTableDataSource<Temp>(this.tempList);
@@ -226,7 +228,7 @@ selectAll(e) {
    this.shiftList = [];
    this.apiService.get(this.config.shifts_url).pipe(
       map((arr) => arr.map(x => new Shift(x.username, x.fullName, x.tempid, x.clientName, x.shiftStartTime, x.shiftEndTime, x.orderid,
-        false, x.certs))))
+        false, x.certs, x.requesttime))))
       .subscribe(lists => {
         lists.forEach(shift => {
           this.shiftList.push(shift);
