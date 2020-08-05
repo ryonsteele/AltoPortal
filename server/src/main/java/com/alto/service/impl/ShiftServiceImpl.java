@@ -695,10 +695,9 @@ public class ShiftServiceImpl implements ShiftService {
 
       TempResponse match = tempHcs.stream()
               .filter(temp -> s.getTempid().equals(temp.getTempId()))
-              .findAny()
-              .orElse(null);
+              .findFirst()
+              .orElse(new TempResponse());
 
-      if(match != null) {
 
         Sessions sess = new Sessions();
 //        sess.setBreakEndTime(convertEastern(s.getBreakEndTime()));
@@ -729,8 +728,7 @@ public class ShiftServiceImpl implements ShiftService {
         sess.setBreaks(s.getBreaks());
 
         results.add(sess);
-      }
-      logger.warn("No matching temp from HCS for session record orderid:" + s.getOrderid());
+
     }
     }catch(Exception e){
         logger.error("Error generating session data", e);

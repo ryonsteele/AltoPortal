@@ -128,3 +128,9 @@ textarea{
   background-image: -o-linear-gradient(180deg, #000, transparent);
   background-image: linear-gradient(90deg, #000, transparent);
 }
+
+
+mat-cell:nth-child(9),
+mat-header-cell:nth-child(9) {
+  flex: 0 0 20%;
+}
