@@ -243,16 +243,12 @@ public class AppUserServiceImpl implements AppUserService {
     try {
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
-      HttpHeaders headers = new HttpHeaders();
-
-
-      UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getTempUrl);
-      HttpEntity<?> entity = new HttpEntity<>(headers);
-
+      
         String result = restTemplate.getForObject(getTempUrl, String.class);
         result = result.replace("[","").replace("]","");
+        result = result.substring(0, result.indexOf(", \"resumeHtml\""));
+        result += "}";
 
-        //System.out.println(result);
 
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         started = gson.fromJson(result, TempResponse.class);
