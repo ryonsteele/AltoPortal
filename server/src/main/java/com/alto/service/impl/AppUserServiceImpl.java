@@ -238,16 +238,14 @@ public class AppUserServiceImpl implements AppUserService {
     userRequest.setUsername(username);
 
     //todo implement sessionkey
-    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailLike=$email&statusIn=Active&resultType=json";
+    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailStartsWith=$email&statusIn=Active&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim()).replace("$username", hcsConfiguration.getUsername()).replace("$password", hcsConfiguration.getPassword());
     try {
 
       RestTemplate restTemplate = new RestTemplateBuilder().build();
-      
+
         String result = restTemplate.getForObject(getTempUrl, String.class);
         result = result.replace("[","").replace("]","");
-        result = result.substring(0, result.indexOf(", \"resumeHtml\""));
-        result += "}";
 
 
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
