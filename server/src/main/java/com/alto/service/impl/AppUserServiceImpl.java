@@ -248,18 +248,19 @@ public class AppUserServiceImpl implements AppUserService {
         result = result.replace("[","").replace("]","");
 
 
-        Gson gson = new Gson(); 
+        Gson gson = new Gson();
         started = gson.fromJson(result, TempResponse.class);
         if(started == null || started.getTempId() == null || started.getTempId().isEmpty()){
-          logger.error("HTTP 400 No result found in HCS for username: " + username);
-          tryAuthHCSAltFilter(username);
+          logger.error("No result found with emailStartsWith in HCS for username: " + username);
+          userRequest = tryAuthHCSAltFilter(username);
           throw new ResponseStatusException(BAD_REQUEST);
+        }else {
+          userRequest.setTempId(started.getTempId());
+          userRequest.setFirstname(started.getFirstName());
+          userRequest.setLastname(started.getLastName());
+          userRequest.setCerts(started.getCertification());
+          userRequest.setRegion(started.getHomeRegion());
         }
-        userRequest.setTempId(started.getTempId());
-        userRequest.setFirstname(started.getFirstName());
-        userRequest.setLastname(started.getLastName());
-        userRequest.setCerts(started.getCertification());
-        userRequest.setRegion(started.getHomeRegion());
 
 
       } catch (Exception e) {
@@ -301,7 +302,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     } catch (Exception e) {
-      logger.error("Error calling emailLike HCS for username: " + username, e);
+      logger.error("Error calling emailLike HCS for username: " + username);
     }
 
     return userRequest;
