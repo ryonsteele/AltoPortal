@@ -248,10 +248,11 @@ public class AppUserServiceImpl implements AppUserService {
         result = result.replace("[","").replace("]","");
 
 
-        Gson gson = new Gson(); // Or use new GsonBuilder().create();
+        Gson gson = new Gson(); 
         started = gson.fromJson(result, TempResponse.class);
         if(started == null || started.getTempId() == null || started.getTempId().isEmpty()){
-          logger.error("No result found in HCS for username: " + username);
+          logger.error("HTTP 400 No result found in HCS for username: " + username);
+          tryAuthHCSAltFilter(username);
           throw new ResponseStatusException(BAD_REQUEST);
         }
         userRequest.setTempId(started.getTempId());
@@ -262,8 +263,46 @@ public class AppUserServiceImpl implements AppUserService {
 
 
       } catch (Exception e) {
-        logger.error("Error calling HCS for username: " + username, e);
+        tryAuthHCSAltFilter(username);
+        logger.error("Error calling HCS with emailStartsWith for username: " + username);
       }
+
+    return userRequest;
+  }
+
+  private AppUserRequest tryAuthHCSAltFilter(String username){
+
+    TempResponse started = null;
+    AppUserRequest userRequest = new AppUserRequest();
+    userRequest.setUsername(username);
+
+    //todo implement sessionkey
+    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailLike=$email&statusIn=Active&resultType=json";
+    getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim()).replace("$username", hcsConfiguration.getUsername()).replace("$password", hcsConfiguration.getPassword());
+    try {
+
+      RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+      String result = restTemplate.getForObject(getTempUrl, String.class);
+      result = result.replace("[","").replace("]","");
+
+
+      Gson gson = new Gson(); // Or use new GsonBuilder().create();
+      started = gson.fromJson(result, TempResponse.class);
+      if(started == null || started.getTempId() == null || started.getTempId().isEmpty()){
+        logger.error("HTTP 400 No result found in HCS for username: " + username);
+        throw new ResponseStatusException(BAD_REQUEST);
+      }
+      userRequest.setTempId(started.getTempId());
+      userRequest.setFirstname(started.getFirstName());
+      userRequest.setLastname(started.getLastName());
+      userRequest.setCerts(started.getCertification());
+      userRequest.setRegion(started.getHomeRegion());
+
+
+    } catch (Exception e) {
+      logger.error("Error calling emailLike HCS for username: " + username, e);
+    }
 
     return userRequest;
   }
