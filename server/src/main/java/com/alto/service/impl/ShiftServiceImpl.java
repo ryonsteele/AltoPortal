@@ -625,8 +625,8 @@ public class ShiftServiceImpl implements ShiftService {
         client = gson.fromJson(result, ClientResponse.class);
 
        // getCoordsURL = getCoordsURL.replace("$searchstring",client.getAddress());
-        getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " " +client.getCity()+ " " + client.getState());
-
+        getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " " +client.getState()+ " " + client.getZip());
+       // getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " Kenwood " + client.getState());
         String goeResp= restTemplate.getForObject(getCoordsURL, String.class);
         Type userListType = new TypeToken<ArrayList<GeoCodeResponse>>(){}.getType();
 
