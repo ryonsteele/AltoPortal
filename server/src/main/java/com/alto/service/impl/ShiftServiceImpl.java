@@ -624,9 +624,7 @@ public class ShiftServiceImpl implements ShiftService {
         Gson gson = new Gson(); // Or use new GsonBuilder().create();
         client = gson.fromJson(result, ClientResponse.class);
 
-       // getCoordsURL = getCoordsURL.replace("$searchstring",client.getAddress());
         getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " " +client.getState()+ " " + client.getZip());
-       // getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " Kenwood " + client.getState());
         String goeResp= restTemplate.getForObject(getCoordsURL, String.class);
         Type userListType = new TypeToken<ArrayList<GeoCodeResponse>>(){}.getType();
 
@@ -639,11 +637,45 @@ public class ShiftServiceImpl implements ShiftService {
             return true;
           }
         }
+        if(tryGeowithCity(request, client)){
+          return true;
+        }
         logger.warn("Geo restriction violated user: "+request.getUsername() +" Lat: " + Double.parseDouble(request.getLat()) + " Long: " + Double.parseDouble(request.getLon()) );
       } catch (Exception e) {
         logger.error("Error when checking geofence - ClientID: "+ request.getClientId() + " User: " + request.getUsername(), e);
         logger.error("Failing call: " + getCoordsURL );
       }
+
+    return false;
+  }
+
+  private boolean tryGeowithCity(ShiftRequest request, ClientResponse client){
+
+
+    List<GeoCodeResponse> geoList = new ArrayList<>();
+    String getCoordsURL = hcsConfiguration.getLocationUrl();
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+
+      Gson gson = new Gson();
+      getCoordsURL = getCoordsURL.replace("$searchstring", client.getAddress() + " " +client.getState()+ " " + client.getCity());
+      String goeResp= restTemplate.getForObject(getCoordsURL, String.class);
+      Type userListType = new TypeToken<ArrayList<GeoCodeResponse>>(){}.getType();
+
+      geoList = gson.fromJson(goeResp, userListType);
+
+      for(GeoCodeResponse geo : geoList){
+        //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
+        Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
+        if(dist < 2.0){
+          return true;
+        }
+      }
+    } catch (Exception e) {
+      logger.error("Error when checking geofence - ClientID: "+ request.getClientId() + " User: " + request.getUsername(), e);
+      logger.error("Failing call: " + getCoordsURL );
+    }
 
     return false;
   }

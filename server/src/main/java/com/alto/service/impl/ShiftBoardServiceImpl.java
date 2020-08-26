@@ -184,6 +184,13 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
             .replace("$tempId",String.valueOf(request.getTempId()));
       try {
 
+        ShiftBoardRecord rec = shiftBoardRepository.findFirstByOrderidAndTempid(request.getOrderId(), String.valueOf(request.getTempId()) );
+        if(rec != null) {
+          logger.warn(String.format("Interest expressed in shift {} by temp {} already exists in database", request.getOrderId(), request.getTempId()));
+          return null;
+        }
+
+
         RestTemplate restTemplate = new RestTemplateBuilder().build();
         String result = restTemplate.getForObject(getShiftUrl, String.class);
         result = result.replace("[","").replace("]","");
