@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface UserPreferencesRepository extends JpaRepository<UserPreferences, Long> {
-    UserPreferences findByTempid(Long tempid);
+    UserPreferences findTopByTempid(Long tempid);
 }
 

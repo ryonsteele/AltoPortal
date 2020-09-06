@@ -188,7 +188,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     UserPreferences prefs;
 
-    prefs = userPreferencesRepository.findByTempid(request.getTempId());
+    prefs = userPreferencesRepository.findTopByTempid(request.getTempId());
     if(prefs == null) prefs = new UserPreferences();
     prefs.setTempid(request.getTempId());
     prefs.setUsername(request.getUsername().trim().toLowerCase());
@@ -226,7 +226,7 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Override
   public UserPreferences fetchUserPrefs(String tempid){
-    return userPreferencesRepository.findByTempid(Long.parseLong(tempid));
+    return userPreferencesRepository.findTopByTempid(Long.parseLong(tempid));
   }
 
   @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
