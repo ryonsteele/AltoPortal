@@ -762,6 +762,11 @@ public class ShiftServiceImpl implements ShiftService {
         results.add(sess);
 
     }
+
+      java.time.format.DateTimeFormatter fm = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+              results.sort((o1, o2) -> LocalDateTime.parse(o1.getShiftStartTime(), fm)
+                      .compareTo(LocalDateTime.parse(o2.getShiftStartTime(), fm)));
+
     }catch(Exception e){
         logger.error("Error generating session data", e);
     }
