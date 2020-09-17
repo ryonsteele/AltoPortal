@@ -633,7 +633,7 @@ public class ShiftServiceImpl implements ShiftService {
         for(GeoCodeResponse geo : geoList){
           //Double dist = haversine(39.861742, -84.290875, Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
           Double dist = haversine(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()), Double.parseDouble(geo.getLat()), Double.parseDouble(geo.getLon()));
-          if(dist < 2.0){
+          if(dist < 4.0){
             return true;
           }
         }
