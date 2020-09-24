@@ -26,5 +26,6 @@ public interface ShiftService {
   List<ShiftResponse>getOpens(String tempid);
   ClientAddressResponse getClient(String clientid);
   void sendPushNotification(PushMessageRequest message);
+  void getOpensData_Scheduled();
 
 }

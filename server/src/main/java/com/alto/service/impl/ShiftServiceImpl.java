@@ -1,6 +1,7 @@
 package com.alto.service.impl;
 
 
+import com.alto.OpenShiftCSSRepository;
 import com.alto.config.HCSConfiguration;
 import com.alto.model.*;
 import com.alto.model.requests.ClockRequest;
@@ -365,26 +366,14 @@ public class ShiftServiceImpl implements ShiftService {
     return history;
   }
 
-  @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
-          backoff = @Backoff(delay = 1000, multiplier = 2))
+
   public List<ShiftResponse> getOpens(String tempid){
 	logger.debug("Getting Open Shifts Request Begin: "+ tempid);
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
-    String getOpensUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
-    getOpensUrl = getOpensUrl.replace("$tempId",tempid)
-                  .replace("$username", hcsConfiguration.getUsername())
-                  .replace("$password", hcsConfiguration.getPassword());
-
-    RestTemplate restTemplate = new RestTemplateBuilder().build();
-
     try {
-      String resultOpens = restTemplate.getForObject(getOpensUrl, String.class);
 
-      Gson gson = new Gson(); // Or use new GsonBuilder().create();
-      Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
-
-      resultsOpens = gson.fromJson(resultOpens, userListType);
+      resultsOpens = OpenShiftCSSRepository.getInstance().getArray();
 
       resultsOpens = pruneResults(tempid, resultsOpens);
       resultsOpens.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
@@ -394,6 +383,33 @@ public class ShiftServiceImpl implements ShiftService {
     }
     logger.debug("Getting Open Shifts Request End: "+ tempid);
     return resultsOpens;
+  }
+
+  public void getOpensData_Scheduled(){
+    logger.debug("Getting Open Shifts Request Scheduled Run Begin");
+    List<ShiftResponse> resultsOpens = new ArrayList<>();
+
+    String getOpensUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
+    getOpensUrl = getOpensUrl
+            .replace("$username", hcsConfiguration.getUsername())
+            .replace("$password", hcsConfiguration.getPassword());
+
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    try {
+      String resultOpens = restTemplate.getForObject(getOpensUrl, String.class);
+
+      Gson gson = new Gson();
+      Type userListType = new TypeToken<ArrayList<ShiftResponse>>(){}.getType();
+
+      resultsOpens = gson.fromJson(resultOpens, userListType);
+
+      resultsOpens.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
+      OpenShiftCSSRepository.getInstance().addAllToArray(resultsOpens);
+
+    } catch (Exception e) {
+      logger.error("Error getting open shifts for scheduled ", e);
+    }
   }
 
 

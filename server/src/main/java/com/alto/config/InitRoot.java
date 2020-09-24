@@ -3,6 +3,7 @@ package com.alto.config;
 
 import com.alto.model.*;
 import com.alto.repository.*;
+import com.alto.service.ShiftService;
 import com.alto.service.impl.NotificationServiceImpl;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -34,6 +37,16 @@ public class InitRoot {
     ShiftBoardRepository shiftBoardRepository;
     @Autowired
     ShiftRepository shiftRepository;
+    @Autowired
+    ShiftService shiftService;
+
+
+    @Scheduled(fixedRate = 5 * 60 * 1000)
+    //@Scheduled(fixedRate = 10000)
+    public void scheduleFixedRateTaskAsync() throws InterruptedException {
+        logger.info("Running Open Shifts Scheduler");
+        shiftService.getOpensData_Scheduled();
+    }
 
     @EventListener
     public void appReady(ApplicationReadyEvent event) {
