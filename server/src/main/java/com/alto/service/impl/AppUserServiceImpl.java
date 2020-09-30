@@ -238,7 +238,7 @@ public class AppUserServiceImpl implements AppUserService {
     userRequest.setUsername(username);
 
     //todo implement sessionkey
-    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailStartsWith=$email&statusIn=Active,Dormant&resultType=json";
+    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailStartsWith=$email&statusIn=Active,Dormant,Inactive&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim()).replace("$username", hcsConfiguration.getUsername()).replace("$password", hcsConfiguration.getPassword());
     try {
 
@@ -278,7 +278,7 @@ public class AppUserServiceImpl implements AppUserService {
     userRequest.setUsername(username);
 
     //todo implement sessionkey
-    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailLike=$email&statusIn=Active,Dormant&resultType=json";
+    String getTempUrl = hcsConfiguration.getBaseurl() + "getTemps&username=$username&password=$password&emailLike=$email&statusIn=Active,Dormant,Inactive&resultType=json";
     getTempUrl = getTempUrl.replace("$email", userRequest.getUsername().trim()).replace("$username", hcsConfiguration.getUsername()).replace("$password", hcsConfiguration.getPassword());
     try {
 
