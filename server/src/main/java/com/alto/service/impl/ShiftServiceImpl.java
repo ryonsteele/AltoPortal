@@ -216,10 +216,10 @@ public class ShiftServiceImpl implements ShiftService {
 
         Gson gson = new Gson();
         started = gson.fromJson(result, ShiftResponse.class);
-        if(!checkGeoFence(request)){
-          logger.warn("Geofence restricted clock in/out for user: " + request.getUsername());	
-          return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+//        if(!checkGeoFence(request)){
+//          logger.warn("Geofence restricted clock in/out for user: " + request.getUsername());
+//          return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
 
       } catch (Exception e) {
         logger.error("Error calling HCS for Shift Addition", e);
@@ -424,9 +424,9 @@ public class ShiftServiceImpl implements ShiftService {
       if(updateShift == null){
         throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
       }
-      if(!checkGeoFence(request)){
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
-      }
+//      if(!checkGeoFence(request)){
+//        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//      }
 
 //todo commented break stuff
       //save to repo
