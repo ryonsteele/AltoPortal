@@ -45,6 +45,7 @@ healthcaresource:
   password: ENC(Vo8ZROdAkOhnaz4p6gN7On/b/twUfgHC)
   baseurl: https://ctms.contingenttalentmanagement.com/CirrusConcept/clearConnect/2_0/index.cfm?action=
   locationUrl: https://us1.locationiq.com/v1/search.php?key=01564e14da0703&q=$searchstring&format=json
+  locationAddyUrl: https://us1.locationiq.com/v1/reverse.php?key=01564e14da0703&lat=$LAT&lon=$LONG&format=json
   droidFCMKey: ENC(9WFHDybm43GiNKKazgVSbcrVRlqp7v6WAinuBxTzoGP5vsJWlUNkYxJ75+zQRXL1AH5JDFyPIC/gei1qNmQZ23woUm83ZjkgwlfhUUuL5Cj/KLurEw3dBs6fC/+8O6V22mE8Q5FnnCQ5U4lvYPMkzUP+bcvt/j89SXXsqtsNYJ4b1ZV5UjvwtORebN6pkpTqXOs5GFsHHAmNRr+OYgB6DuGjzd3Ms+0M)
 
 email:

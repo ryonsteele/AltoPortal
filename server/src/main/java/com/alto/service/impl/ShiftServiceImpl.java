@@ -35,6 +35,8 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.*;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -63,7 +65,7 @@ import static java.time.temporal.TemporalAdjusters.previous;
 
 
 
-
+@EnableAsync
 @Service
 public class ShiftServiceImpl implements ShiftService {
 
@@ -247,6 +249,7 @@ public class ShiftServiceImpl implements ShiftService {
       saveShift.setCheckinLon(request.getLon());
 
       shiftRepository.saveAndFlush(saveShift);
+      getAddressIQ(request.getLat(), request.getLon(), saveShift, false);
 
     } catch(Exception e) {
       logger.error("Error saving Shift Addition to DB", e);
@@ -443,7 +446,7 @@ public class ShiftServiceImpl implements ShiftService {
         updateShift.setBreaks(request.getBreaks());
      // }
       shiftRepository.saveAndFlush(updateShift);
-
+      getAddressIQ(request.getLat(), request.getLon(), updateShift, true);
 
     } catch(Exception e) {
         logger.error("Error updarting shift for: "+ request.getUsername(), e);
@@ -451,6 +454,31 @@ public class ShiftServiceImpl implements ShiftService {
 
     logger.debug("Clock Out Request end: "+ request.getUsername());
     return new ResponseEntity(updateShift, HttpStatus.OK);
+  }
+
+  @Async
+  void getAddressIQ(String lat, String lon, Shift shift, boolean finalClock){
+
+    String addyResult = "";
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+
+      String url = hcsConfiguration.getLocationAddyUrl();
+      url = url.replace("$LAT",lat).replace("$LONG",lon);
+
+    GeoCodeResponse geoResp= restTemplate.getForObject(url, GeoCodeResponse.class);
+
+       if(geoResp != null && !StringUtils.isEmpty(geoResp.getDisplay_name())) {
+         addyResult = geoResp.getDisplay_name();
+       }
+
+    if(finalClock){
+      shift.setClockoutAddress(addyResult);
+    }else {
+      shift.setClockInAddress(addyResult);
+    }
+
+    shiftRepository.saveAndFlush(shift);
   }
 
 
@@ -616,6 +644,7 @@ public class ShiftServiceImpl implements ShiftService {
     }
     return addy;
   }
+
   @Retryable(maxAttempts=5, value = HttpServerErrorException.class,
           backoff = @Backoff(delay = 1000, multiplier = 2))
   private Boolean checkGeoFence(ShiftRequest request){
