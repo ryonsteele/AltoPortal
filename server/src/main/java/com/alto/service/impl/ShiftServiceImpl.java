@@ -122,7 +122,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     boolean checkout = true;
     ShiftResponse hcsFound = null;
-    Shift found = shiftRepository.findByOrderid(req.getOrderid());
+    Shift found = shiftRepository.findTopByOrderid(req.getOrderid());
     String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",req.getTempid())
                   .replace("$orderId",req.getOrderid())
@@ -356,7 +356,7 @@ public class ShiftServiceImpl implements ShiftService {
 
       results.sort(Comparator.comparing(ShiftResponse::getShiftStartTime));
       for(ShiftResponse sh : results){
-        Shift comp = shiftRepository.findByOrderid(sh.getOrderId());
+        Shift comp = shiftRepository.findTopByOrderid(sh.getOrderId());
         if(comp != null && comp.getShiftEndTimeActual() != null) finalResults.add(sh);
       }
       history.setShifts(finalResults);
@@ -420,7 +420,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     try {
 
-      updateShift = shiftRepository.findByOrderid(request.getOrderId());
+      updateShift = shiftRepository.findTopByOrderid(request.getOrderId());
       if(updateShift == null){
         throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
       }
@@ -455,7 +455,7 @@ public class ShiftServiceImpl implements ShiftService {
 
 
   public Shift getShift(String orderid){
-    return shiftRepository.findByOrderid(orderid);
+    return shiftRepository.findTopByOrderid(orderid);
   }
 
   private boolean findMatch(List<String> userCerts, String search){

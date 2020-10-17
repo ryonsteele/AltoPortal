@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ShiftRepository extends JpaRepository<Shift, Long> {
     Shift findByUsername(String username);
-    Shift findByOrderid(String orderid);
+    Shift findTopByOrderid(String orderid);
     @Query("from Shift s where s.shiftStartTime >= :start and s.shiftStartTime <= :end")
     List<Shift> findByDates(Timestamp start, Timestamp end);
     List<Shift> findByTempid(String Tempid);
