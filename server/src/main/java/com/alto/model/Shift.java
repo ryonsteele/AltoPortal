@@ -71,7 +71,7 @@ public class Shift implements Serializable {
   @Column(name = "shift_number")
   private String shiftNumber;
 
-  @Column(name = "note")
+  @Column(name = "note", length=100000)
   private String note;
 
   @Column(name = "clockin_address")
