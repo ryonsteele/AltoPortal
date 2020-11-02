@@ -489,6 +489,10 @@ public class ShiftServiceImpl implements ShiftService {
   private boolean findMatch(List<String> userCerts, String search){
     for(String s : userCerts) {
       if (s.toUpperCase().trim().contains(search.toUpperCase().trim())) return true;
+      if(s.contains("STNA") && search.contains("STNA")) return true;
+      if(s.contains("LPN") && search.contains("LPN")) return true;
+      if(s.contains("CNA") && search.contains("CNA")) return true;
+      if(s.contains("RN") && search.contains("RN")) return true;
     }
     return false;
   }
