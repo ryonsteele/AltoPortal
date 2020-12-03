@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 
 @Entity
-@Table(name = "OPENSHIFT")
+@Table(name = "OPENSHIFT", uniqueConstraints= @UniqueConstraint(columnNames = {"temp_id", "order_id"}))
 public class ShiftBoardRecord implements Serializable {
 
   @Id

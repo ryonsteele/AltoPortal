@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
@@ -229,7 +230,12 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
         record.setCerts(tempHcs.getCertification());
       }
 
+    try {
       return shiftBoardRepository.saveAndFlush(record);
+    } catch (DataAccessException ex) {
+      logger.error(ex.getLocalizedMessage());
+    }
+    return null;
   }
 
   public ResponseEntity<?> updateSession(String orderid, SessionUpdateRequest request){
