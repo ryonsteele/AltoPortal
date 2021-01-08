@@ -125,7 +125,7 @@ public class ShiftServiceImpl implements ShiftService {
     boolean checkout = true;
     ShiftResponse hcsFound = null;
     Shift found = shiftRepository.findTopByOrderid(req.getOrderid());
-    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled,Filled&tempId=$tempId&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",req.getTempid())
                   .replace("$orderId",req.getOrderid())
                   .replace("$username", hcsConfiguration.getUsername())
@@ -200,7 +200,7 @@ public class ShiftServiceImpl implements ShiftService {
     ShiftResponse started = null;
     Shift saveShift = new Shift();
 
-    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&orderId=$orderId&resultType=json";
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled,Filled&tempId=$tempId&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",request.getTempId().toString())
             .replace("$orderId",request.getOrderId())
             .replace("$username", hcsConfiguration.getUsername())
@@ -264,7 +264,7 @@ public class ShiftServiceImpl implements ShiftService {
   public List<ShiftResponse> getScheduled(String tempid){
     List<ShiftResponse> results = new ArrayList<>();
 
-    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(1).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled,Filled&tempId=$tempId&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(1).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid)
                   .replace("$username", hcsConfiguration.getUsername())
                   .replace("$password", hcsConfiguration.getPassword());
@@ -306,7 +306,7 @@ public class ShiftServiceImpl implements ShiftService {
     }else{ thisPastSunday =today; }
 
 
-    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled,Filled&tempId=$tempId&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ thisPastSunday.toString()+"&resultType=json";
     getShiftUrl = getShiftUrl.replace("$tempId",tempid)
                   .replace("$username", hcsConfiguration.getUsername())
                   .replace("$password", hcsConfiguration.getPassword());
@@ -343,7 +343,7 @@ public class ShiftServiceImpl implements ShiftService {
       logger.error("Error getting historicals for tempid: "+ tempid, e);
     }
 
-    String getHistShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled&tempId=$tempId&status=filled&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(14).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
+    String getHistShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=filled,Filled&tempId=$tempId&orderBy1=shiftStart&orderByDirection1=ASC&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).minusDays(14).format( java.time.format.DateTimeFormatter.ISO_INSTANT )+"&resultType=json";
     getHistShiftUrl = getHistShiftUrl.replace("$tempId",tempid)
                       .replace("$username", hcsConfiguration.getUsername())
                       .replace("$password", hcsConfiguration.getPassword());
@@ -392,7 +392,7 @@ public class ShiftServiceImpl implements ShiftService {
     logger.debug("Getting Open Shifts Request Scheduled Run Begin");
     List<ShiftResponse> resultsOpens = new ArrayList<>();
 
-    String getOpensUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
+    String getOpensUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open,Open&shiftStart="+ ZonedDateTime.now( ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&shiftEnd="+ ZonedDateTime.now( ZoneOffset.UTC ).plusDays(14).format( java.time.format.DateTimeFormatter.ISO_DATE )+"&resultType=json";
     getOpensUrl = getOpensUrl
             .replace("$username", hcsConfiguration.getUsername())
             .replace("$password", hcsConfiguration.getPassword());

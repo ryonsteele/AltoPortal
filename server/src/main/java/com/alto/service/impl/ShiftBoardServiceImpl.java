@@ -173,9 +173,10 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
     ShiftResponse started = null;
     TempResponse tempHcs = null;
+    String result = "";
     ShiftBoardRecord record = new ShiftBoardRecord();
 
-    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open&orderId=$orderId&resultType=json";
+    String getShiftUrl = hcsConfiguration.getBaseurl() + "getOrders&username=$username&password=$password&status=open,Open&orderId=$orderId&resultType=json";
     getShiftUrl = getShiftUrl.replace("$username", hcsConfiguration.getUsername())
                   .replace("$password", hcsConfiguration.getPassword())
                   .replace("$orderId",request.getOrderId());
@@ -193,7 +194,7 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
 
 
         RestTemplate restTemplate = new RestTemplateBuilder().build();
-        String result = restTemplate.getForObject(getShiftUrl, String.class);
+        result = restTemplate.getForObject(getShiftUrl, String.class);
         result = result.replace("[","").replace("]","");
 
         RestTemplate restTemplateTemp = new RestTemplateBuilder().build();
@@ -213,7 +214,8 @@ public class ShiftBoardServiceImpl implements ShiftBoardService {
       }
 
       if(started == null){
-        logger.error("No result for order from HCS. Temp that requested: "+ request.getTempId());
+        logger.error("No result for order from HCS. Temp that requested: {} Order: {}", request.getTempId(), request.getOrderId());
+        logger.error("Raw response: {}", result);
         throw new InternalServerException("No result for order from HCS", "");
       }
       record.setClientName(started.getClientName());
