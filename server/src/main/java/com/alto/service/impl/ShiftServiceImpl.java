@@ -567,11 +567,9 @@ public class ShiftServiceImpl implements ShiftService {
           //userCerts.add(tokenizer.nextToken());
           if (findMatch(userCerts, tokenizer.nextToken())) certMatches.add(shift);
         }
-      } else {
-        certMatches = openShifts;
       }
-
     }
+    if(certMatches.isEmpty()) certMatches = regionMatches;
 
     //filter based on days of week from user preferences
     for(ShiftResponse shift : certMatches) {
